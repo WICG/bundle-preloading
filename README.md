@@ -1,7 +1,7 @@
 # Resource bundles
 
 A resource bundle is a collection of HTTP responses, represented in a new file format. This repository supports the development of the definition of the resource bundle format as well as uses of this format:
-- The resource bundle format ([explainer](./bundle-format-md), [spec](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html))
+- The resource bundle format ([explainer](./bundle-format.md), [spec](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html))
 - Dynamic chunk loading and caching with resource bundles ([explainer](./dynamic-chunk-loading.md))
 - Streaming module loading and execution with resource bundles ([explainer](./streaming-module-loading.md))
 - Serving conventions for resource bundles ([explainer](./serving.md))
