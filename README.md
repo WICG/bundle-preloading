@@ -43,6 +43,10 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 **A**: This is the same effort, really, with a particular scope. In particular, there is a focus on same-origin static subresource loading. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project; there is no competition going on, but rather iteration and exposition.
 
+#### Q: Why the name change, then?
+
+**A**: To express the limited scope (excluding signed exchange, preserving URL semantics) and the fact that this format may be useful outside of the Web. Hopefully, these changes address the previous criticisms of Web Bundles.
+
 #### Q: How does this proposal relate to Signed Exchange?
 
 **A**: [Signed Exchange](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html) is a proposal from the Google Chrome team to allow one "distributor" to serve web content from another "publisher". In its basic form (already shipping in Chrome, and explicitly opposed by other browsers), Signed Exchange does not use bundling, but instead signs an individual HTTP response.
