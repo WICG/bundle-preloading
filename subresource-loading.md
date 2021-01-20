@@ -312,27 +312,9 @@ If dynamic bundle generation is too expensive/difficult to deploy in practice in
 
 One idea raised to reduce the cost of re-compression for dynamic subsetting: use a different bundle URL per route/component, so that these can serve as different pre-compressed units, so the subsetting is more "dense". However, it is not clear how to handle the common case of fetching multiple routes/components at once (which is the source of the combinatorial explosion in the first case).
 
-#### Q: How does this proposal relate to Signed Exchange?
-
-**A**: [Signed Exchange](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html) is a proposal from the Google Chrome team to allow one "distributor" to serve web content from another "publisher". In its basic form (already shipping in Chrome, and explicitly opposed by other browsers), Signed Exchange does not use bundling, but instead signs an individual HTTP response.
-
-This proposal does not make any special allowances for Signed Exchange, and some coauthors personally oppose the promotion of Signed Exchange through bundling. There has been high-level discussion about a concept of "signed bundles" (which led these two proposals to be coupled at some point), but the overlap is as simple as: if a bundle were signed, there would have to be some kind of section within the bundle to contain the signature for the bundle as a whole.
-
 #### Q: How does this proposal relate to Sub-resource Integrity (SRI)?
 
 **A**: Some thought has been put into various schemes to facilitate the adoption of SRI in conjunction with resource bundles. For many cases, the hashes will take up too much space to be sent to the client, and SRI adds deployment challenges (e.g., with upgrades). SRI is not included in this proposal draft, but we're interested in more discussion in this direction. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) had a closer relationship with SRI.
-
-#### Q: How does this proposal relate to the Web Package/Web Packaging/Web Bundles/Bundled Exchange effort ([repo](https://github.com/wicg/webpackage))?
-
-**A**: This is the same effort, really, with a particular focus and scope, explained above. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project.
-
-#### Q: Weren't Brave and Robin Berjon opposed to Web Bundles? How do they feel about this proposal?
-
-**A**: (TODO: Collect their opinions and post them here)
-
-#### Q: How far along is this proposal? Is it about to ship?
-
-**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this simpler explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), it is not yet on "the train" to shipping, there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
 
 #### Q: Is there a way to load a bundle in a way that all network requests from inside of it are required to be served within the bundle?
 
@@ -341,7 +323,3 @@ This proposal does not make any special allowances for Signed Exchange, and some
 #### Q: Is one level of chunking enough? Should chunking be part of a more complex tree?
 
 **A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
-
-#### Q: How is this work funded? Are there any conflicts of interest?
-
-[Eye/O](https://eyeo.com/) is funding Daniel Ehrenberg's (Igalia) work on resource bundles, and [Bloomberg](https://www.techatbloomberg.com/) had funded it previously. Many others have been collaborating, especially Yehuda Katz (Tilde), Pete Snyder (Brave) and several Google employees (inside and outside of the Chrome team). Google, including the AMP team, is also a client of Igalia, but not funding work on this project.
