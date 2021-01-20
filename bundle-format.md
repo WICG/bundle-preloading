@@ -64,3 +64,9 @@ The `primaryURL` section may optionally be used in the case of a bundle represen
 The `manifest` section serves a similar purpose, indicating the URL of the web app manifest, for packaged applications.
 
 In both cases, the body of the section is simply a `tstr`, representing a URL path.
+
+## FAQ
+
+#### Q: Why not use .tar or .zip?
+
+**A**: These both have significant problems. zip stores its index at the end, so it's not suitable for streaming. tar doesn't permit random access, and can only be used in a streaming mode. Increasing the amount of metadata (e.g., for HTTP headers) is awkward in both formats and would require new tooling anyway.
