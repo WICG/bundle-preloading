@@ -55,16 +55,6 @@ variants-value = bstr
 
 For further details about how the variants-value represents content negotiation, see [the specification's explanation](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html#section-4.2.1). Note that the proposal here is to use a simpler `index`, and move the more advanced index to the `negotiated-index` section.
 
-### Packaged applications
-
-*Note: These sections extends beyond the scope of this repository, and should be removed from this document. Proponents of this sort of use case should instead develop their own, separate proposal for these sorts of sections. They are included for illustrative purposes, to demonstrate the potential of layering/embedding to capture everything in the current Web Bundles specification.*
-
-The `primaryURL` section may optionally be used in the case of a bundle representing a sense of entry-point/fallback to the bundle. It is not used by any of the bundle applications in this repository, but may be used to build a sense of "packed application" with resource bundles, e.g., for an Electron app.
-
-The `manifest` section serves a similar purpose, indicating the URL of the web app manifest, for packaged applications.
-
-In both cases, the body of the section is simply a `tstr`, representing a URL path.
-
 ## FAQ
 
 #### Q: Why not use .tar or .zip?
