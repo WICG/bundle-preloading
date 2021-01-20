@@ -2,16 +2,6 @@
 
 This document describes a native bundle loading scheme, based on resource bundles, combining the advantages of today's bundlers and fetches of individual resources. If the HTML document explicitly links in a resource bundle for subresource loading, then the client (e.g., Web browser) *may* fetch resources inside of it from the bundle rather than individually. This scheme is designed for static, non-personalized content.
 
-(Note: There are several documents which should all point to this one, once it's ready, saying something like:
-> *Note: This document is an earlier version of the proposal which will be hosted [in wicg/resource-bundles](https://github.com/wicg/resource-bundles/blob/main/subresource-loading.md); please reference that page for current development.*
-- https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e
-- https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit#
-- https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e
-- https://gist.github.com/littledan/c54efa928b7e6ce7e69190f73673e2a0
-- https://docs.google.com/presentation/d/1smfn5YiLCLgw30L4fbkaS-C3qxQdk3O4vt6E3DO7qxA/edit
-- https://docs.google.com/presentation/d/1H52SGdUTnE1i4i8lcK7deGrQlV4iPcwmzZd2mhKwPTE/edit
-)
-
 ## Motivation
 
 ### The world today
