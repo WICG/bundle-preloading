@@ -41,7 +41,7 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 #### Q: How does this proposal relate to the Web Package/Web Packaging/Web Bundles/Bundled Exchange effort ([repo](https://github.com/wicg/webpackage))?
 
-**A**: This is the same effort, really, with a particular scope. In particular, there is a focus on same-origin static subresource loading. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project; there is no competition going on, but rather iteration and exposition.
+**A**: This is the same effort, really, with a particular scope. In particular, this repository has a focus on same-origin static subresource loading. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project; there is no competition going on, but rather iteration and exposition.
 
 #### Q: Why the name change, then?
 
