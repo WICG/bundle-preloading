@@ -76,7 +76,7 @@ Content blockers have a number of requirements when it comes to ensuring that ba
 
 Below is just one concrete place in the design space, as a concrete starting point for discussion and prototyping. There are many possible alternatives to continue considering, discussed in the Design FAQ below.
 
-(TODO: the following two paragraphs are quite confusing; clarify them)
+<!-- TODO: the following two paragraphs are quite confusing; clarify them -->
 
 The format here uses a manifest which identifies the resource bundle URL and an association between *paths* inside the resource bundle and *chunk IDs* which identify pieces of the resource bundle. A fetch to a path inside the scope of the bundle is served by the bundle (modulo "optionality", see below).
 
@@ -259,7 +259,7 @@ The [import maps proposal](https://github.com/WICG/import-maps) can also be used
 
 **A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This document takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
 
-#### Q: Is it necessary to split into two levels chunks, rather than naming individual resources?
+#### Q: Is it necessary to split into chunks, rather than naming individual resources?
 
 **A**: Moderately large modern webapps are estimated to often contain on the order of tens of thousands of source JavaScript modules, but then break down into tens or hundreds of entry-points/loadable/cacheable units. It is not practical to ship information from the client to the server, or the server to the client, about tens of thousands of resources, but hundreds may be practical. If chunking is not done at the resource bundle level, it would be necessary at some other level (e.g., using existing bundler/downleveling strategies to emulate ES module semantics, rather than shipping native ES modules to the browser). [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) sketched out an approach to individual resources, rather than chunks, being used in bundling.
 
@@ -290,7 +290,7 @@ The approach above ships a manifest to the client, which ends up standing in for
 
 **A**: Fundamentally, the set of resources that a browser has in its cache is based on the path that the user took through the application. This means that there is a combinatorial explosion of possibilities for the optimal bundle to send to the client, and dynamic subsetting could provide the best loading performance.
 
-This strategy is used in custom bundlers for some major sites such as (TODO: OK to cite this?) Google, Facebook at Netflix. This proposal aims to bring these advanced loading techniques to a broader section of web developers.
+This strategy is used in custom bundlers for some major sites. This proposal aims to bring these advanced loading techniques to a broader section of web developers.
 
 The strategy implemented today in bundles like webpack and rollup is, instead, statically generated chunks which can be served from a static file server. With static chunking, there is a tradeoff between, on one hand, better cache usage and avoiding sending duplicate/unneeded resources (where smaller chunks are better), and on the other hand, compressability and reduction of per-fetch overhead (where bigger chunks are better). [Recent work](https://web.dev/granular-chunking-nextjs/) has focused on finding an optimal middle point, but the ideal would be to cache at a small granularity but fetch/compress at a bigger granularity, as is possible with dynamic chunking in the context of native resource bundle loading.
 
