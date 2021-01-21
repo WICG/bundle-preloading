@@ -142,7 +142,7 @@ GET /pack.rbn
 Resource-Bundle-Chunk-Ids: a2FzaG
 ```
 
-The server then responds with a resource bundle which has one response in it, named `a2FzaG`, which contains a resource bundle mapping each of those two paths to their contents as listed above. `a2FzaG` is placed in the HTTP cache, so then the fetches to `style/page.css` and `style/button.css` are served from that cache.
+The server then responds with a resource bundle which has one response in it, named `a2FzaG`, which contains a resource bundle mapping each of those two paths to their contents as listed above. The response includes the header `Vary: Resource-Bundle-Chunk-Ids` to express that the response was based on the `Resource-Bundle-Chunk-Ids` header, and another request with a different header value may have a different response. `a2FzaG` is placed in the HTTP cache, so then the fetches to `style/page.css` and `style/button.css` are served from that cache.
 
 Let's say that, then, the user clicks on button "a". To fetch the needed assets, the client makes the following fetch:
 
@@ -174,10 +174,10 @@ This new chunk ID is referenced from HTML as follows:
 <script type=loadbundle>
 {
     "source": "pack.rbn",
-    "scope": "static/"
+    "scope": "static/",
     "paths": {
         "a.js": ["0ijdfs", "FzZGZq"],
-        "b.js": ["0ijdfs", "sbnNkd"]
+        "b.js": ["0ijdfs", "sbnNkd"],
         "style/": ["a2FzaG"],
     }
 }
@@ -312,9 +312,22 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 **A**: Not in this proposal. Such a limitation would make the most sense if it were document-wide, but this proposal is about loading a resource bundle *within* a document (so, the HTML had to come from somewhere else, for one). A separate proposal could create a kind of iframe which is limited to be loading contents out of a particular bundle, perhaps with the bundle loading mechanism based on this document. It will be important to evaluate the privacy implications of such a proposal.
 
-#### Q: Is one level of chunking enough? Should chunking be part of a more complex tree?
+#### Q: Is one level of chunking enough? Should chunking be part of a more complex DAG?
 
 **A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. In the current proposal, the same string of chunk IDs needs to be repeated for each entry-point to handle this case. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
+
+#### Q: To avoid letting the list of chunks get too long, could the client send the server the list of chunks it already has, instead of what it's missing?
+
+**A**: This is an advanced technique that could work in the context of a "chunk DAG" that is expressed in the manifest: if a particular parent chunk ID is requested, and most children chunk IDs are missing, but just a few are present, then the client could send the server a header that indicates this state, and the server could respond with the appropriate set of chunks. This more advanced capability is omitted from this document for simplicity; it might be better to include in a v2 proposal.
+
+#### Q: What happens if the server sends the client more chunks than it asked for?
+
+**A**: Servers are permitted to do this, and all of the subresources will end up loading, though more slowly. For example, a server could simply always reply with all of the chunks. Intelligent middleware could be responsible for filtering just the requested chunks, making it easier to deploy resource bundle loading.
+
+There are a number of different possible valid designs for which chunks a browser caches and maps in when a server returns more chunks than requested:
+- The browser could discard all additional chunks (and potentially fetch them again later)
+- The browser could cache all chunks, but only map in the requested ones (maybe the best option?)
+- The browser could cache and map in all chunks in the response
 
 #### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
 
