@@ -12,4 +12,6 @@ Advanced sections such as [content negotiation](./bundle-format.md#content-negot
 
 ## Serving resource bundle chunks
 
-In the [subresource loading with resource bundles](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md) proposal, there is a presumption of additional server logic to dynamically construct resource bundles for collections of chunk IDs. The server can be configured to create these by simply making a resource bundle which includes all chunk IDs. The request header will be all the extra context the server needs to perform the needed subsetting.
+In the [subresource loading with resource bundles](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md) proposal, there is a presumption of additional server logic to dynamically construct resource bundles for collections of chunk IDs. The server can be configured to create these by simply making a resource bundle which includes all chunk IDs. The request header will be all the extra context the server needs to perform the needed subsetting. It's also possible for a server to serve the full resource bundle with all chunks, and have some kind of optimizing intermediary do the subsetting.
+
+(TODO: Provide examples to make this all easier to understand)
