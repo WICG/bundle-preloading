@@ -294,7 +294,7 @@ This strategy is used in custom bundlers for some major sites. This proposal aim
 
 The strategy implemented today in bundles like webpack and rollup is, instead, statically generated chunks which can be served from a static file server. With static chunking, there is a tradeoff between, on one hand, better cache usage and avoiding sending duplicate/unneeded resources (where smaller chunks are better), and on the other hand, compressability and reduction of per-fetch overhead (where bigger chunks are better). [Recent work](https://web.dev/granular-chunking-nextjs/) has focused on finding an optimal middle point, but the ideal would be to cache at a small granularity but fetch/compress at a bigger granularity, as is possible with dynamic chunking in the context of native resource bundle loading.
 
-If dynamic bundle generation is too expensive/difficult to deploy in practice in many cases (whether due to usability issues for web developers or servers), resource bundle loading could be based on (either in a separate mode, or always) static chunking with each chunk served from a different URLs: the cost in terms of runtime performance is a tradeoff with easier deployability.
+If dynamic bundle generation is too expensive/difficult to deploy in practice in many cases (whether due to usability issues for web developers or servers), resource bundle loading could be based on (either in a separate mode, or always) static chunking with each chunk served from a different URLs: the cost in terms of runtime performance is a tradeoff with easier deployability. It may be that static chunking is enough in practice, if it only results in a reasonably small number of HTTP/2 fetches, and compression works relatively well with Brotli default compression dictionaries, for example.
 
 #### Q: Will it be efficient to dynamically, optimally re-compress just the requested parts of the bundle?
 
@@ -304,7 +304,7 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: How does this proposal relate to Sub-resource Integrity (SRI)?
 
-**A**: Some thought has been put into various schemes to facilitate the adoption of SRI in conjunction with resource bundles. For many cases, the hashes will take up too much space to be sent to the client, and SRI adds deployment challenges (e.g., with upgrades). SRI is not included in this proposal draft, but we're interested in more discussion in this direction. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) had a closer relationship with SRI.
+**A**: Some thought has been put into various schemes to facilitate the adoption of SRI in conjunction with resource bundles. For many cases, the hashes will take up too much space to be sent to the client, and SRI adds deployment challenges (e.g., with upgrades). Efficient SRI approaches may be beneficial and follow up proposals can be explored in this repository or elsewhere. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) had a closer relationship with SRI.
 
 #### Q: Is there a way to load a bundle in a way that all network requests from inside of it are required to be served within the bundle?
 
@@ -312,4 +312,4 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: Is one level of chunking enough? Should chunking be part of a more complex tree?
 
-**A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
+**A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. In the current proposal, the same string of chunk IDs needs to be repeated for each entry-point to handle this case. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
