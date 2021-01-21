@@ -318,4 +318,4 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
 
-**A**: Chunk IDs are the atomic unit of caching. So, either you use the whole chunk or you do not. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. (This is a tradeoff that the bunder can make.)
+**A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
