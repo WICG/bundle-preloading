@@ -315,3 +315,7 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 #### Q: Is one level of chunking enough? Should chunking be part of a more complex tree?
 
 **A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. In the current proposal, the same string of chunk IDs needs to be repeated for each entry-point to handle this case. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
+
+#### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
+
+**A**: Chunk IDs are the atomic unit of caching. So, either you use the whole chunk or you do not. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. (This is a tradeoff that the bunder can make.)
