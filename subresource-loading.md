@@ -144,7 +144,7 @@ Resource-Bundle-Chunk-Ids: a2FzaG
 
 The server then responds with a resource bundle which has one response in it, named `a2FzaG`, which contains a resource bundle mapping each of those two paths to their contents as listed above. `a2FzaG` is placed in the HTTP cache, so then the fetches to `style/page.css` and `style/button.css` are served from that cache.
 
-Let's say that, then, the user clicks on button "a". To fetch the needed assets, the server makes the following fetch:
+Let's say that, then, the user clicks on button "a". To fetch the needed assets, the client makes the following fetch:
 
 ```http
 GET /pack.rbn
