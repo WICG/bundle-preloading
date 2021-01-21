@@ -261,7 +261,9 @@ The [import maps proposal](https://github.com/WICG/import-maps) can also be used
 
 #### Q: Is it necessary to split into chunks, rather than naming individual resources?
 
-**A**: Moderately large modern webapps are estimated to often contain on the order of tens of thousands of source JavaScript modules, but then break down into tens or hundreds of entry-points/loadable/cacheable units. It is not practical to ship information from the client to the server, or the server to the client, about tens of thousands of resources, but hundreds may be practical. If chunking is not done at the resource bundle level, it would be necessary at some other level (e.g., using existing bundler/downleveling strategies to emulate ES module semantics, rather than shipping native ES modules to the browser). [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) sketched out an approach to individual resources, rather than chunks, being used in bundling.
+**A**: Moderately large modern webapps are estimated to often contain on the order of tens of thousands of source JavaScript modules, but then break down into tens or hundreds of entry-points/loadable/cacheable units. It is not practical to ship information from the client to the server, or the server to the client, about tens of thousands of resources, but hundreds may be practical. Hash-based digests can sometimes help, but with too many resources, either the hash digest may get too big or the error rate may get too high.
+
+If chunking is not done at the resource bundle level, it would be necessary at some other level (e.g., using existing bundler/downleveling strategies to emulate ES module semantics, rather than shipping native ES modules to the browser). [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) sketched out an approach to individual resources, rather than chunks, being used in bundling.
 
 #### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
 
