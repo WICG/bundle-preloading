@@ -41,7 +41,7 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 #### Q: How does this proposal relate to the Web Package/Web Packaging/Web Bundles/Bundled Exchange effort ([repo](https://github.com/wicg/webpackage))?
 
-**A**: This is the same effort, really, with a particular scope. In particular, this repository has a focus on same-origin static subresource loading. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project; there is no competition going on, but rather iteration and exposition.
+**A**: This is the same effort, really, with a particular scope. In particular, this repository has a focus on same-origin static subresource loading, while preserving the semantics and integrity of URLs. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project; there is no competition going on, but rather iteration and exposition.
 
 #### Q: Why the name change, then?
 
@@ -53,9 +53,9 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 This proposal does not make any special allowances for Signed Exchange, and some coauthors personally oppose the promotion of Signed Exchange through bundling. There has been high-level discussion about a concept of "signed bundles" (which led these two proposals to be coupled at some point), but the overlap is as simple as: if a bundle were signed, there would have to be some kind of section within the bundle to contain the signature for the bundle as a whole (rather than leave signatures to being per-response).
 
-#### Q: Weren't Brave and Robin Berjon opposed to Web Bundles? How do they feel about this proposal?
+#### Q: Weren't ad blockers and publishers opposed to Web Bundles? How do they feel about this proposal?
 
-**A**: (TODO: Collect their opinions and post them here)
+**A**: (TODO: Collect the opinions of Brave, Eye/O and Robin Berjon, and post them here)
 
 #### Q: How far along is this proposal? Is it about to ship?
 
