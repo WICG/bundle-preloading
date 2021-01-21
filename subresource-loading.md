@@ -207,7 +207,7 @@ To ensure the integrity of the semantics of URLs, which is essential for the pri
 
 Servers must make bundles faithfully represent what they would return with an independent fetch to the same URL, and browsers may enforce this, online, offline, or both.
 
-For offline enforcement, browsers may scan the Web and assemble a denylist of origins which do not implement this correspondence.
+For offline enforcement, browsers may scan the Web and assemble a denylist of origins which do not implement this correspondence. Resource bundle loading declarations on these origins would simply be ignored, and the URLs within the resource bundle's scope would simply be fetched one by one.
 
 For online enforcement: Whenever a fetch is made to something which is within the scope of a bundle declaration, the browser has three choices, all of which it may make:
 - It may fetch the resource from the bundle (details below).
@@ -319,3 +319,20 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 #### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
 
 **A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
+
+#### Q: If resource bundle loading is restricted to being same-origin, does that mean they can't be loaded from a CDN?
+
+**A**: It is fine to load a resource bundle from a CDN: that bundle will be representing URLs *on the same origin* (as well as within the path limitation). For example, `https://site.example` can contain something like the following:
+
+```html
+<!-- https://site.example/index.html -->
+<script type=loadbundle>
+    {
+        "source": "https://cdn.example/pack.rbn",
+        "scope": "https://cdn.example/pack/",
+        "paths": { /* ... */ }
+    }
+</script>
+```
+
+Because the `source` is the same origin as the `scope`, the resource bundle loading is permitted.
