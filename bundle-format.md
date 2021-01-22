@@ -60,3 +60,14 @@ For further details about how the variants-value represents content negotiation,
 #### Q: Why not use .tar or .zip?
 
 **A**: These both have significant problems. zip stores its index at the end, so it's not suitable for streaming. tar doesn't permit random access, and can only be used in a streaming mode. Increasing the amount of metadata (e.g., for HTTP headers) is awkward in both formats and would require new tooling anyway.
+
+#### Q: Should [W3C MiniApp packaging](https://w3c.github.io/miniapp/specs/packaging/) use this bundle format instead of .zip?
+
+**A**: This is really a question for the [W3C MiniApp CG](https://github.com/w3c/miniapp/), but there are some 
+- Most of the MiniApp packaging specification focuses on the format and conventions for applications, which is outside of the scope of the core bundling format described in this document. The .zip file is the simple part.
+- This proposal is not yet ready, and it would be a shame for an early version of it to ship in MiniApp with a different version shipping on the Web later.
+- MiniApp is already in wide use in the ecosystem despite lack of formal standardization, so the standardization effort around it naturally leans on the conservative side around making compatibility-affecting changes. Switching bundle formats would make new apps not work on old app runtimes.
+- .zip is an established standard which is in wide use, so it seems fine to use for MiniApp if it works well for them.
+- It's not clear if optimal streaming, random access performance, or additional metadata is so important for MiniApp, to be worth the churn of changing the archive format.
+
+Once resource bundles are an established standard, one could imagine MiniApp being extended to permit resource bundles as an alternative format alongside .zip.
