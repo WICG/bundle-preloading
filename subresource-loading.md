@@ -68,9 +68,9 @@ Resource bundles must not be used for personalized content. Intuitively, they ar
 #### Content blocking
 
 Content blockers have a number of requirements when it comes to ensuring that batching/bundling systems do not lead to them being circumvented in practice:
-- It must not be possible for a "trusted" intermediary to "repackage" sites, as this could lead to lead to situations in practice where ads and tracking are signed as the publisher. (c.f. "Origin model")
-- Resource bundles must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. "Personalization")
-- When content is blocked, it's ideal if sites don't tend to cause browsers to download the blocked content. (c.f. "code splitting")
+- It must not be possible for a "trusted" intermediary to "repackage" sites, as this could lead to lead to situations in practice where ads and tracking are signed as the publisher. (c.f. ["Origin model"](#origin-model))
+- Resource bundles must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. ["Personalization"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#personalization))
+- When content is blocked, it's ideal if sites don't tend to cause browsers to download the blocked content. (c.f. ["code splitting"](#for-web-developers))
 
 ## One design: Two-level chunking with client-side hints manifest
 
@@ -78,7 +78,7 @@ Below is just one concrete place in the design space, as a concrete starting poi
 
 <!-- TODO: the following two paragraphs are quite confusing; clarify them -->
 
-The format here uses a manifest which identifies the resource bundle URL and an association between *paths* inside the resource bundle and *chunk IDs* which identify pieces of the resource bundle. A fetch to a path inside the scope of the bundle is served by the bundle (modulo "optionality", see below).
+The format here uses a manifest which identifies the resource bundle URL and an association between *paths* inside the resource bundle and *chunk IDs* which identify pieces of the resource bundle. A fetch to a path inside the scope of the bundle is served by the bundle (modulo ["optionality"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#optionality-and-url-integrity)).
 
 When the document fetches a path which has chunk IDs associated with it, if those chunk IDs are not in cache for this bundle, then a GET request is made to the server, indicating all needed chunk IDs in a new header. The response is expected to be a resource bundle, with one response for each chunk ID, associating each of those chunk IDs with *another* resource bundle with the associated subset of resources.
 
