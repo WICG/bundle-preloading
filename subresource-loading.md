@@ -241,7 +241,7 @@ When returning to the event loop, if there are any chunk IDs on the list to fetc
 
 These questions are all up for discussion; please file an issue if you disagree with one of the answers here. This Q/A explains how the above proposal was arrived at, but the document describes a very early proposal which is still 
 
-##### Q: Rather than add bundling into the platform, why not fix HTTP?
+#### Q: Rather than add bundling into the platform, why not fix HTTP?
 
 **A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have ideas.
 
