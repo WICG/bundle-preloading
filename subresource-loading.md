@@ -12,7 +12,7 @@ URLs addressing individually fetched resources are the basis for the architectur
 - Each response has a MIME type and can be fetched in a streaming way, permitting incremental and/or parallel processing by the browser by default.
 - Each response can be cached individually according to its URL and the response's cache control directives.
 
-Today's bundlers serve a number of number of purposes not met by fetches of individual resources:
+Today's bundlers serve a number of purposes not met by fetches of individual resources:
 - Bundlers group multiple resources into a smaller number of virtualized resources, reducing the significant per-resource overhead present in all web browser today and enabling high-quality compression.
 - Bundlers facilitate the use of long-lived caching modes by implementing schemes where URLs are rotated as their contents change.
 - Bundlers track nested dependencies, prefetching the appropriate content when a new component or route is loaded ("code splitting") while avoiding duplication of shared dependencies.
