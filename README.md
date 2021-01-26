@@ -49,7 +49,7 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 #### Q: How does this proposal relate to Signed Exchange?
 
-**A**: [Signed Exchange](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html) is a proposal from the Google Chrome team to allow one "distributor" to serve web content from another "publisher". In its basic form (already shipping in Chrome, and explicitly opposed by other browsers), Signed Exchange does not use bundling, but instead signs an individual HTTP response.
+**A**: [Signed Exchange](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html) is a proposal from the Google Chrome team to allow one "distributor" to serve web content from another "publisher". In its basic form ([shipping in Chrome, Edge, and Opera](https://caniuse.com/sxg), but explicitly opposed by other engines), Signed Exchange does not use bundling, but instead signs an individual HTTP response.
 
 This proposal does not make any special allowances for Signed Exchange, and some coauthors personally oppose the promotion of Signed Exchange through bundling. There has been high-level discussion about a concept of "signed bundles" (which led these two proposals to be coupled at some point), but the overlap is as simple as: if a bundle were signed, there would have to be some kind of section within the bundle to contain the signature for the bundle as a whole (rather than leave signatures to being per-response).
 
