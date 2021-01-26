@@ -62,7 +62,7 @@ This proposal does not make any special allowances for Signed Exchange, and some
 
 #### Q: How far along is this proposal? Is it about to ship?
 
-**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this simpler explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), it is not yet on "the train" to shipping, there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
+**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this simpler explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
 
 #### Q: How is this work funded? Are there any conflicts of interest?
 
