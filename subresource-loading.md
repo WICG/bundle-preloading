@@ -12,7 +12,7 @@ URLs addressing individually fetched resources are the basis for the architectur
 - Each response has a MIME type and can be fetched in a streaming way, permitting incremental and/or parallel processing by the browser by default.
 - Each response can be cached individually according to its URL and the response's cache control directives.
 
-Today's bundlers serve a number of purposes not met by fetches of individual resources:
+Today's bundlers serve a number of number of purposes not met by fetches of individual resources:
 - Bundlers group multiple resources into a smaller number of virtualized resources, reducing the significant per-resource overhead present in all web browser today and enabling high-quality compression.
 - Bundlers facilitate the use of long-lived caching modes by implementing schemes where URLs are rotated as their contents change.
 - Bundlers track nested dependencies, prefetching the appropriate content when a new component or route is loaded ("code splitting") while avoiding duplication of shared dependencies.
@@ -47,15 +47,15 @@ Existing bundlers like webpack should be able to support a mode outputting resou
 
 #### For servers
 
-- Web servers, as well as optimizing/caching intermediaries such as CDNs, should be able to implement the appropriate serving side of resource bundles within reasonable resource constraints.
-- The serving logic should be somehow "commoditized" and not require a lot of extra work to get going (unlike HTTP/2 PUSH).
-- Protocols must be stateless, with the server not having to remember what an individual client's cache contains.
-- Deployment of static content using resource bundles to servers should be possible simply by copying files over, for a server which supports resource bundles. Deployment should be stateless: the server shouldn't have to remember anything about the previous version of the site.
+- Web servers, as well as optimizing/caching intermediaries such as CDNs, should be able to implement the appropriate serving side of resource bundles within reasonable resource constraints and without being required to buffer the entire bundle.
+- The serving logic should be simple enough to be "commoditized" and not require complex logic to get right (e.g. unlike HTTP/2 PUSH):
+  - Protocols must be stateless, with the server not having to remember what an individual client's cache contains, nor previous bundles/files a certain site has served in the past.
+  - Deployment of static content using resource bundles to servers should be possible simply by copying files over, for a server which supports resource bundles. 
 
 #### For browsers
 
 - Graceful degradation should be possible in multiple ways:
-    - Always: Sites which use resource bundles transparently fall back to 
+    - Always: Sites which use resource bundles transparently fall back to loading the resources individually for non-supporting sites.
     - Optionally (decision of the build infrastucture): Various forms of feature detection (client-side and server-side) can note the lack of resource bundle support and serve a emulated bundle format when appropriate.
 - Resource bundle loading should be reasonable to implement, fitting into something related to browsers' existing fetching and caching architectures while providing performance benefits in practice.
 
@@ -101,7 +101,7 @@ When the document fetches a path which has chunk IDs associated with it, if thos
 <button onclick="import('static/a.js')">a</button>
 <button onclick="import('static/b.js')">b</button>
 ```
-
+<!-- Yoav: that part is not clear to me. Would be good to clarify how the paths relate to the chunkID and why they are not 1:1. e.g. it's not clear to me why you're defining dependencies here. -->
 
 Resources are grouped into bundle chunk IDs with contents as follows:
 - a2FzaG: style/page.css, style/button.css
