@@ -26,7 +26,7 @@ section-lengths = [* (section-name: tstr, length: uint) ],
 The `index` section maps URLs to offset/length pairs in the resources section. The URLs are simply relative paths, within the same origin and directory as the bundle was fetched.
 
 ```
-index = {* tstr => location-in-responses }
+index = {* tstr => [location-in-responses] }
 location-in-responses = (offset: uint, length: uint)
 ```
 
