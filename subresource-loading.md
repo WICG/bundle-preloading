@@ -92,7 +92,7 @@ When the document fetches a path which has chunk IDs associated with it, if thos
     "paths": {
         "a.js": ["bGpobG", "FzZGZq"],
         "b.js": ["bGpobG", "sbnNkd"]
-        "style/": ["a2FzaG"],
+        "style/page.css": ["a2FzaG"],
     }
 }
 </script>
@@ -227,7 +227,7 @@ Two new data structures are added:
 
 When a URL is fetched, if any entry in the ephemeral mapping is a prefix of the URL, then this fetch may be served from the resource bundle, as follows:
 - If any of the mapped in chunk IDs contain the response, return that response.
-- If the URL is listed in the `paths` of the `<script type=loadbundle>` tag (including being a prefix of a path that ends with `/`), then add the chunk IDs associated with the path to the list to fetch.
+- If the URL is listed in the `paths` of the `<script type=loadbundle>` tag, then add the chunk IDs associated with the path to the list to fetch.
 - Otherwise, return a 404 error
 
 When returning to the event loop, if there are any chunk IDs on the list to fetch:
