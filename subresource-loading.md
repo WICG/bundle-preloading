@@ -178,7 +178,7 @@ This new chunk ID is referenced from HTML as follows:
     "paths": {
         "a.js": ["0ijdfs", "FzZGZq"],
         "b.js": ["0ijdfs", "sbnNkd"],
-        "style/": ["a2FzaG"],
+        "style/page.css": ["a2FzaG"],
     }
 }
 </script>
