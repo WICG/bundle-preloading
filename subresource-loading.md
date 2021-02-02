@@ -247,13 +247,15 @@ These questions are all up for discussion; please file an issue if you disagree 
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
-**A**: JavaScript-only bundling is explored in [JavaScript module bundles](https://gist.github.com/littledan/c54efa928b7e6ce7e69190f73673e2a0), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
+**A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/littledan/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
 
 The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls)).
 
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
-**A**: This proposal works at the network fetch level, not the module map level. This means that, when executing a JavaScript module graph, some browser machinery needs to be engaged. Different web browser maintainers have made different predictions about how optimizable this machinery will be (while keeping the code maintainable). The plan is to prototype resource bundle loading, ideally in multiple browsers, to assess the impact.
+**A**: Indeed, it may. This proposal works at the network fetch level, not the module map level. This means that, when executing a JavaScript module graph, some browser machinery needs to be engaged. Multiple browser maintainers have expressed concern about whether the fetch/network machinery can scale up to 10000+ JS modules. Although resource bundles will help save *some* of the overhead, they may not be enough. JavaScript-specific [module fragments](https://github.com/littledan/proposal-module-fragments/) may be implementable with less overhead, as they work at the module map level.
+
+It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, JS module fragments should be nested inside resource bundles. This way, the expressiveness of resource bundles can be combined with the low per-asset overhead of JS module fragments: most of the "blow-up" in terms of the number of assets today is JS modules, so it makes sense to have a specialized solution for that case, which can be contained inside the JS engine. The plan from here will be to develop prototype implementations (both in browsers and build tools) to validate this hypothesis before shipping.
 
 #### Q: Should we start with a simpler kind of bundle loading, without subsetting or versioning?
 
