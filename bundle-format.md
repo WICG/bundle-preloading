@@ -1,6 +1,8 @@
 Resource bundles represent a mapping from URL paths to HTTP responses. They are based on an extensible binary format, where new "sections" can be defined over time for different kinds of data.
 
-The resource bundle format is specified in [this draft](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html) within the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/). This document explains what the format means at a high level, and something about the motivation for its design.
+This document describes the high-level design of resource bundles' format, and how this format relates to applications like subresource loading and serving. A standard to describe this format would be a bit divorced from the content, motivations and implied semantics discussed below.
+
+The broader area of binary formats for bundles of HTTP responses is under discussion in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/), which would be the ideal body to standardize this work. This document is based on previous Internet-Drafts by Jeffrey Yasskin published in the IETF WPACK WG.
 
 ## Binary section architecture
 
@@ -71,3 +73,19 @@ For further details about how the variants-value represents content negotiation,
 - It's not clear if optimal streaming, random access performance, or additional metadata is so important for MiniApp, to be worth the churn of changing the archive format.
 
 Once resource bundles are an established standard, one could imagine MiniApp being extended to permit resource bundles as an alternative format alongside .zip.
+
+#### Q: Should this format include more fields for offline web pages?
+
+**A**: It's not really clear which fields are needed or what their semantics should be, but in general, this format would permit someone who is designing an offline web page format to design custom sections for the data they need. 
+
+#### Q: How will this format be standardized?
+
+**A**: The idea is to standardize the format in IETF, probably the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/). IETF has good infrastructure for the use of CBOR in specifications, and many important stakeholders in this problem space are in IETF and specifically the WPACK WG, which was assembled to work on the bundling problem space. In this repository, we'll develop a draft of a specification, which can hopefully be adopted by an IETF WG and become an RFC. The draft here is based on [Jeffrey Yasskin's prior proposal](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html), which has been introduced as an Internet-Draft in IETF. The resource bundle section registry would be created within IANA.
+
+#### Q: The above document hints at how resource bundles have meaning in subresource loading and on servers, but what are the semantics in the abstract?
+
+**A**: It's hard to say exactly. This file format is useful for several different kinds of applications that have different needs and semantics--subresource loading and serving are already fairly different from each other. There is currently no concrete plan to define a higher-level document like [HTTP semantics](https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html) for resource bundles, to complement the operationally-oriented documents like resource bundle loading and serving. We'll probably have to feel this space out with various applications/endpoints to understand where to generalize, similar to the history of HTTP.
+
+#### Q: How does this proposal relate to Jeffrey Yasskin's [Web Bundle format](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html)?
+
+**A**: Daniel Ehrenberg and Jeffrey Yasskin have been working together closely on this proposal. Our current drafts have some mismatches, but the idea is to talk this through with more stakeholders and come to common conclusions.
