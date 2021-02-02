@@ -365,6 +365,10 @@ Ads seem to have somewhat different needs for loading compared to static subreso
 
 It's possible that some kind of *other* ad loading proposal could reuse the resource bundle format in some way, but the actual loading mechanism is likely to be quite different from what is described in this document. Ad loading with resource bundles would be a very separate project, outside the scope of this repository.
 
+#### Q: How would the server know which kind of loading mode the client is asking for (e.g., in ads vs subresource loading)
+
+**A**: In general, the loading mode should be indicated by the HTML (here, the `<script type=loadbundle>` tag). If the client knows how to interpret that, then it will send the appropriate request to the server, indicating what it wants. There are further possibilities if more optional sections are added to the bundle format, such as an `Accept-Resource-Bundle-Sections` header describing what the client knows how to interpret (where no such header would indicate that only the `index` and `responses` sections are interpreted).
+
 #### Q: How would WebExtensions (e.g., for content blocking) interact with resource bundle loading?
 
 **A**: More design work is still needed here, but one idea is: if the extension intercepts fetches today, it will be able to intercept fetches that will be served by the resource bundle, as well as the underlying fetches to the resource bundle itself. However, this could be quite expensive for extensions which intercept fetches (e.g., content blockers), and it may be beneficial to introduce certain changes to the [`webRequest`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API to facilitate optimizations: For example, a new [`RequestFilter`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter) field could be added to distinguish requests served from bundles, to allow work to focus on the request for the bundle chunks, rather than the individual included requests.
