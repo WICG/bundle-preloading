@@ -105,25 +105,27 @@ When the document fetches a path which has chunk IDs associated with it, if thos
 
 Resources are grouped into bundle chunk IDs with contents as follows:
 - a2FzaG: style/page.css, style/button.css
-```css=
+```css
 /* page.css */
 body { background-color: purple; } 
+```
+```css
 /* button.css */
 button { margin: 3em }
 ```
 - bGpobG: common.js
-```js=
+```js
 // common.js
 export const say = alert;
 ```
 - FzZGZq: a.js
-```js=
+```js
 // a.js
 import { say } from "./common.js";
 say("a");
 ```
 - sbnNkd: b.js
-```js=
+```js
 // b.js
 import { say } from "./common.js";
 say("b");
@@ -233,7 +235,7 @@ When a URL is fetched, if any entry in the ephemeral mapping is a prefix of the 
 When returning to the event loop, if there are any chunk IDs on the list to fetch:
 - For each cache ID:
     - If the persistent cache contains that chunk ID, map it in and remove it from the list
-- Then, if there are any remaining chunk IDs, make a single non-credentialed GET request for all chunk IDs together (space-separated in the `Resource-Bundle-Chunk-Ids` header).
+- Then, if there are any remaining chunk IDs, make a single cookie-less (`crossorigin="omit"`) GET request for all chunk IDs together (space-separated in the `Resource-Bundle-Chunk-Ids` header).
 - When the fetch returns from the server, map in all fetched chunk IDs and add them to the persistent cache.
 - Then, the original fetch can continue at the top of the algorithm. It should either be served by a mapped-in chunk or 404.
 
@@ -351,3 +353,14 @@ There are a number of different possible valid designs for which chunks a browse
 ```
 
 Because the `source` is the same origin as the `scope`, the resource bundle loading is permitted.
+
+#### Q: I think it'd be great to use resource bundles to serve ads, which need to be personalized. Can the no-personalization requirement be relaxed?
+
+**A**: Some people have interesting ideas for how some kind of loading involving resource bundles could improve the efficiency of ad loading and even *reduce* the privilege level of ads. At the same time, it's quite tricky to get these privacy and security issues right, and it's important that whatever is adopted remains compatible with various interventions that user agents want to make (such as content blocking). This is a big problem space and research area.
+
+Ads seem to have somewhat different needs for loading compared to static subresource loading explained above. For example:
+- Ads often need to run at a lower privilege level than the surrounding page (e.g., in a cross-origin iframe), whereas subresource loading is often for fully privileged resources.
+- Ads often need to download their entirety, whereas subresource loading benefits from reusing things from the browser cache.
+- Ads are often negotiated for what to load differently for each user, whereas subresource loading generally uses broadly shared assets.
+
+It's possible that some kind of *other* ad loading proposal could reuse the resource bundle format in some way, but the actual loading mechanism is likely to be quite different from what is described in this document. Ad loading with resource bundles would be a very separate project, outside the scope of this repository.
