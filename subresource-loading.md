@@ -364,3 +364,17 @@ Ads seem to have somewhat different needs for loading compared to static subreso
 - Ads are often negotiated for what to load differently for each user, whereas subresource loading generally uses broadly shared assets.
 
 It's possible that some kind of *other* ad loading proposal could reuse the resource bundle format in some way, but the actual loading mechanism is likely to be quite different from what is described in this document. Ad loading with resource bundles would be a very separate project, outside the scope of this repository.
+
+#### Q: How would WebExtensions (e.g., for content blocking) interact with resource bundle loading?
+
+**A**: More design work is still needed here, but one idea is: if the extension intercepts fetches today, it will be able to intercept fetches that will be served by the resource bundle, as well as the underlying fetches to the resource bundle itself. However, this could be quite expensive for extensions which intercept fetches (e.g., content blockers), and it may be beneficial to introduce certain changes to the [`webRequest`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API to facilitate optimizations: For example, a new [`RequestFilter`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter) field could be added to distinguish requests served from bundles, to allow work to focus on the request for the bundle chunks, rather than the individual included requests.
+
+#### Q: How would ServiceWorker interact with resource bundle loading?
+
+**A**: More design work is needed still, but one possibility is: a ServiceWorker fetch event would be dispatched for each fetch, both of resources served by resource bundles, and the resource bundle chunk fetches themselves. Unfortunately, unlike WebExtensions, there doesn't seem to be an API (besides the path prefix) to filter which requests hit the ServiceWorker.
+
+#### Q: Will the overhead of going to plugins and ServiceWorker make resource bundle loading too slow?
+
+**A**: It's possible that these factors could cause significant overhead, if the number of resources is too great. A couple ways to consider mitigating this overhead:
+- At the application level, greater use of [JS module fragments](https://github.com/littledan/proposal-module-fragments/) could reduce the number of resources, and therefore reduce the overhead.
+- In extensions and ServiceWorker, a batch-based API could be added to call out once per chunk instead of once per fetch within the chunk, or improved filters could be added to lessen the impact.
