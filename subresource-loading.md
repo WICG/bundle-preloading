@@ -12,7 +12,7 @@ URLs addressing individually fetched resources are the basis for the architectur
 - Each response has a MIME type and can be fetched in a streaming way, permitting incremental and/or parallel processing by the browser by default.
 - Each response can be cached individually according to its URL and the response's cache control directives.
 
-Today's bundlers serve a number of number of purposes not met by fetches of individual resources:
+Today's bundlers serve a number of purposes not met by fetches of individual resources:
 - Bundlers group multiple resources into a smaller number of virtualized resources, reducing the significant per-resource overhead present in all web browser today and enabling high-quality compression.
 - Bundlers facilitate the use of long-lived caching modes by implementing schemes where URLs are rotated as their contents change.
 - Bundlers track nested dependencies, prefetching the appropriate content when a new component or route is loaded ("code splitting") while avoiding duplication of shared dependencies.
@@ -68,7 +68,7 @@ Resource bundles must not be used for personalized content. Intuitively, they ar
 #### Content blocking
 
 Content blockers have a number of requirements when it comes to ensuring that batching/bundling systems do not lead to them being circumvented in practice:
-- It must not be possible for a "trusted" intermediary to "repackage" sites, as this could lead to lead to situations in practice where ads and tracking are signed as the publisher. (c.f. ["Origin model"](#origin-model))
+- It must not be possible for a "trusted" intermediary to "repackage" sites, as this could lead to situations in practice where ads and tracking are signed as the publisher. (c.f. ["Origin model"](#origin-model))
 - Resource bundles must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. ["Personalization"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#personalization))
 - When content is blocked, it's ideal if sites don't tend to cause browsers to download the blocked content. (c.f. ["code splitting"](#for-web-developers))
 
@@ -91,7 +91,7 @@ When the document fetches a path which has chunk IDs associated with it, if thos
     "scope": "static/"
     "paths": {
         "a.js": ["bGpobG", "FzZGZq"],
-        "b.js": ["bGpobG", "sbnNkd"]
+        "b.js": ["bGpobG", "sbnNkd"],
         "style/page.css": ["a2FzaG"],
     }
 }
