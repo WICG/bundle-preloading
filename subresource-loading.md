@@ -4,8 +4,6 @@ This document describes a native bundle loading scheme, based on resource bundle
 
 ## Motivation
 
-### The world today
-
 When loading subresources on the Web, developers currently have an unfortunate choice between serving resources individually, or using bundlers (such as [webpack](https://webpack.js.org/)), both of which have disadvantages affecting loading performance.
 
 URLs addressing individually fetched resources are the basis for the architecture of the Web today. Web browsers and other HTTP clients contain several mechanisms based on this architecture, which are unfortunately obscured by bundlers today:
@@ -27,7 +25,7 @@ By implementing a native bundling scheme, web browsers would be better able to u
 
 This proposal aims to strongly preserve the Web's origin model. On the Web, resources, including bundles, are fetched from a URL in a particular `https://` origin. Resource bundles represent resources within the same `https://` origin as the bundle was fetched from.
 
-(A possible extension would be to lower the privilege level even further with mutually-isolated segments within an `https://` origin, but this is not part of the proposal.)
+(A possible extension would be to lower the privilege level even further with mutually-isolated segments within an `https://` origin, but this feature is beyond the scope of this repository.)
 
 #### Path restriction
 
@@ -76,11 +74,20 @@ Content blockers have a number of requirements when it comes to ensuring that ba
 
 Below is just one concrete place in the design space, as a concrete starting point for discussion and prototyping. There are many possible alternatives to continue considering, discussed in the Design FAQ below.
 
-<!-- TODO: the following two paragraphs are quite confusing; clarify them -->
+### Loading by chunk IDs
 
-The format here uses a manifest which identifies the resource bundle URL and an association between *paths* inside the resource bundle and *chunk IDs* which identify pieces of the resource bundle. A fetch to a path inside the scope of the bundle is served by the bundle (modulo ["optionality"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#optionality-and-url-integrity)).
+In this proposal, resource bundles are broken into *chunks*. A chunk represents a subset of the broader bundle. This subset can contain any path within the scope of the bundle. When a chunk is loaded, all of the paths inside the chunk are made available for fetches to that path.
 
-When the document fetches a path which has chunk IDs associated with it, if those chunk IDs are not in cache for this bundle, then a GET request is made to the server, indicating all needed chunk IDs in a new header. The response is expected to be a resource bundle, with one response for each chunk ID, associating each of those chunk IDs with *another* resource bundle with the associated subset of resources.
+Each chunk is identified by a *chunk ID*. A chunk ID names not just the subset paths but also their contents. (Chunk IDs can be allocated based on hashing the bundle subset.) This way, chunks can be cached by the browser as "immutable", with the chunk ID rotating when contents change.
+
+### `loadbundle` JSON manifest
+
+The set of chunk IDs to request is indicated in a JSON manifest, which can be included in HTML in a `<script type=loadmodule>` tag. This JSON includes just a few fields:
+- `"source"`: The URL (relative to the document) of the bundle to fetch from
+- `"scope"`: The URL prefix (relative to the document) within which all fetches will be served by the bundle, rather than individual fetches (modulo ["optionality"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#optionality-and-url-integrity)). This avoids race conditions: if a bundle fetch corresponding to this scope is currently pending, then a fetch against something in the scope that's not in cache will wait until that bundle fetch returns. (Resources not served from the bundle may result in a 404, modulo ["optionality"](https://github.com/littledan/resource-bundles/blob/main/subresource-loading.md#optionality-and-url-integrity).)
+- `"paths"`: For a subset of paths (relative to the scope), the list of chunk IDs to load from the bundle when fetching that path. This can include multiple entries, e.g., in the case of dependencies: the resource being fetched may depend on some other resources from another chunk, so it makes sense to initiate the fetch to those dependencies as soon as the path is fetched.
+
+Note that not all paths that are served within the scope are explicitly listed in `"paths"`. Chunks may have multiple responses in them, for multiple paths, and some chunks may be loaded even if none of the paths inside the chunk are explicitly listed (in the case of dependencies).
 
 ### Example
 
@@ -144,7 +151,7 @@ GET /pack.rbn
 Resource-Bundle-Chunk-Ids: a2FzaG
 ```
 
-The server then responds with a resource bundle which has one response in it, named `a2FzaG`, which contains a resource bundle mapping each of those two paths to their contents as listed above. The response includes the header `Vary: Resource-Bundle-Chunk-Ids` to express that the response was based on the `Resource-Bundle-Chunk-Ids` header, and another request with a different header value may have a different response. `a2FzaG` is placed in the HTTP cache, so then the fetches to `style/page.css` and `style/button.css` are served from that cache.
+The server then responds with a resource bundle which has one response in it, named `a2FzaG`, which contains a resource bundle mapping each of those two paths to their contents as listed above. The response includes the header `Vary: Resource-Bundle-Chunk-Ids` to express that the response was based on the `Resource-Bundle-Chunk-Ids` header, and another request with a different header value may have a different response. `a2FzaG` is placed in the HTTP cache, so then the fetches to `style/page.css` and `style/button.css` are served from that cache. (Note that `style/button.css` is loaded by virtue of coming along for the ride of what was requested for `style/page.css`, despite not having an entry in the `loadbundle` manifest.)
 
 Let's say that, then, the user clicks on button "a". To fetch the needed assets, the client makes the following fetch:
 
@@ -153,6 +160,8 @@ GET /pack.rbn
 Resource-Bundle-Chunk-Ids: bGpobG FzZGZq
 ```
 
+Note that `bGpobG`, containing `common.js`, is fetched, even though there was no explicit request for `common.js` yet. The `loadbundle` manifest caused the fetch of `a.js` to trigger `common.js` to be *prefetched* by virtue of both chunk IDs being listed in the `"paths"` entry for `"a.js"`. This prefetch happens with just one fetch over the network, grouped with `a.js`, permitting `a.js` and `common.js` to share a compression dictionary.
+
 If, following that, the "b" button is clicked, the server would make a smaller fetch:
 
 ```http
@@ -160,9 +169,11 @@ GET /pack.rbn
 Resource-Bundle-Chunk-Ids: sbnNkd
 ```
 
+Even though the `"paths"` for `"b.js"` includes the chunk ID `bGpobG`, that chunk ID is already found in cache, so it is not loaded again.
+
 #### Update example
 
-Let's say we want to ship a new version of lodash, but other resources stay the same on the page. Some clients will be loading the new version fresh, and some may have loaded the page before, with or without clicking each of the buttons.
+Let's say we want to ship a new version of `common.js`, but other resources stay the same on the page. Some clients will be loading the new version fresh, and some may have loaded the page before, with or without clicking each of the buttons.
 
 In the new version, we have a new chunk ID:
 - 0ijdfs: common.js
@@ -245,13 +256,17 @@ These questions are all up for discussion; please file an issue if you disagree 
 
 #### Q: Rather than add bundling into the platform, why not fix HTTP?
 
-**A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have ideas.
+**A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have concrete ideas.
+
+#### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundle chunks, themselves?
+
+**A**: No. This is a job for bundlers to do ([explainer](https://github.com/littledan/resource-bundles/blob/main/tools.md)). Hopefully, bundlers will take an application and output a resource bundle of chunks ([interpreted by the server](https://github.com/littledan/resource-bundles/blob/main/serving.md) to send just the requested chunk IDs to the client) alongside a `loadbundle` manifest (which can be pasted into the HTML inline).
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
 **A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/littledan/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
 
-The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls)).
+The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls) or [fetch maps](https://discourse.wicg.io/t/proposal-fetch-maps/4259)).
 
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
@@ -265,9 +280,11 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 #### Q: Is it necessary to split into chunks, rather than naming individual resources?
 
-**A**: Moderately large modern webapps are estimated to often contain on the order of tens of thousands of source JavaScript modules, but then break down into tens or hundreds of entry-points/loadable/cacheable units. It is not practical to ship information from the client to the server, or the server to the client, about tens of thousands of resources, but hundreds may be practical. Hash-based digests can sometimes help, but with too many resources, either the hash digest may get too big or the error rate may get too high.
+**A**: If the resources are individually named, then it might be necessary to name them in the `<script type=loadbundle>` manifest. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/littledan/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
 
-If chunking is not done at the resource bundle level, it would be necessary at some other level (e.g., using existing bundler/downleveling strategies to emulate ES module semantics, rather than shipping native ES modules to the browser). [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) sketched out an approach to individual resources, rather than chunks, being used in bundling.
+Breaking into more, smaller chunks, or at the limit, individual resources, turns the knob towards transmitting more metadata (both from the server to the client, and from the client to the server) in exchange for getting better cache granularity. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
+
+[This gist](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) and [this document](https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit?disco=AAAAHioQK1I&usp_dm=false&ts=5fef03c5) sketched out various approaches to individual resources, rather than chunks, being used in bundle subset serving. 
 
 #### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
 
@@ -304,7 +321,7 @@ If dynamic bundle generation is too expensive/difficult to deploy in practice in
 
 #### Q: Will it be efficient to dynamically, optimally re-compress just the requested parts of the bundle?
 
-**A**: In general, the hope is that there can be a high-quality-compressed version of the entire bundle produced and deployed to the server, and the server would be able to efficiently calculate dynamic subsets. However, the efficiency of this subsetting is unclear, and depends on the compression algorithm used. More research is needed. (c.f. [this blog post](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5), [this comment](https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit?disco=AAAAGdV5qt0)).
+**A**: In general, the hope is that there can be a high-quality-compressed version of the entire bundle produced and deployed to the server, and the server would be able to efficiently calculate dynamic subsets. However, the efficiency of compressing this subset is unclear, and depends on the compression algorithm used. More research is needed. (c.f. [this blog post](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5), [this comment](https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit?disco=AAAAGdV5qt0)).
 
 One idea raised to reduce the cost of re-compression for dynamic subsetting: use a different bundle URL per route/component, so that these can serve as different pre-compressed units, so the subsetting is more "dense". However, it is not clear how to handle the common case of fetching multiple routes/components at once (which is the source of the combinatorial explosion in the first case).
 
@@ -339,7 +356,7 @@ There are a number of different possible valid designs for which chunks a browse
 
 #### Q: If resource bundle loading is restricted to being same-origin, does that mean they can't be loaded from a CDN?
 
-**A**: It is fine to load a resource bundle from a CDN: that bundle will be representing URLs *on the same origin* (as well as within the path limitation). For example, `https://site.example` can contain something like the following:
+**A**: It is fine to load a resource bundle from a CDN: that bundle will be representing URLs *on the same origin as the bundle* (as well as within the path limitation). For example, `https://site.example` can contain something like the following:
 
 ```html
 <!-- https://site.example/index.html -->
