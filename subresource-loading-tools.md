@@ -9,7 +9,7 @@ Due to their place in the ecosystem, if we want to give Web/JS developers a path
 Bundlers act as the central build system for JS/Web applcations, allowing developers tie together various kinds of code transformation, including:
 - Transformations from other languages and JS supersets to JS (e.g., [TypeScript](https://www.typescriptlang.org/))
 - Downleveling to earlier versions of JS (e.g., [Babel](https://babeljs.io/))
-- Custom, semantics-changing transformations within or between files (e.g., [webpack tree shaking options](https://webpack.js.org/guides/tree-shaking/))
+- Transformations which apply across files (e.g., [webpack tree shaking options](https://webpack.js.org/guides/tree-shaking/))
 - Minifiers (e.g., [Terser](https://terser.org/))
 
 In addition to these options, there is a certain common core that modern bundlers all share:
