@@ -121,6 +121,14 @@ The `Link:` header, and even further, [HTTP Early Hints](https://www.fastly.com/
 
 The approach above ships a manifest to the client, which ends up standing in for the set of resources needed for each route/component. An alternative strategy would be to ship, to the server, both a digest of the relevant part of the browser's HTTP cache, as well as a representation of which routes/components are requested. [This document](https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit) explores techniques for sending a digest of the browser's HTTP cache to the server, and some advanced dynamic bundling solutions use a related technique.
 
+#### Q: Could the manifest be delivered to the client incrementally, instead of all at once?
+
+**A**: Such an approach makes sense if fetching some chunks exposes the possible need for even more chunks in the future, that couldn't have been triggered previously. For example, say there is a rarely loaded but very large "admin" pane, which has several tabs within it: when you first load the admin pane, you may have more manifest to load for those inner tabs, which isn't necessary on first page load. There are a couple ways that this could be implemented:
+- *Imperatively*: There should probably be a JavaScript API for imperatively adding additional paths, each corresponding to chunk IDs to be loaded. This API can be invoked explicitly after clicking on the admin pane, based on logic embedded in it.
+- *Declaratively*: If we find that this is a common pattern/need, then resource bundle chunks could contain an additional section in them which is the section of paths that needs to be added for it, so that this can occur without running JavaScript.
+
+Incremental manifest fetching is another advanced technique that could be included in a v2 proposal, or even initially if experimentation finds that it is needed for sufficient performance.
+
 #### Q: How does this proposal relate to Sub-resource Integrity (SRI)?
 
 **A**: Some thought has been put into various schemes to facilitate the adoption of SRI in conjunction with resource bundles. For many cases, the hashes will take up too much space to be sent to the client, and SRI adds deployment challenges (e.g., with upgrades). Efficient SRI approaches may be beneficial and follow up proposals can be explored in this repository or elsewhere. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) had a closer relationship with SRI.
@@ -222,14 +230,17 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: How should bundlers decide how big/small to make the chunks?
 
-**A**: Ah, this is where they get to be smart/have different policies
+**A**: There are many possible policies here, just as bundlers today have many possible policies, but the (hoped-for) increased efficiency from resource bundles allows the search/design space to be a bit larger. Some possible factors to consider when dividing resources into chunks:
+- *Fetching exactly what's needed*: In one sense, code splitting is "optimal" when you send the client only the information they need to render a particular set of routes/components, and nothing additional. This becomes a bit complicated when certain dependencies are shared and others are not. The problem is thoroughly solved by current bundlers, but this "optimal" solution can lead to more chunks than one might expect.
+- *Cache reuse*: The smaller the chunks are, the greater chance there is that, when just one resource changes, the maximal amount of information can be reused from cache. At the limit, this would mean putting each resource in its own chunk, however this strategy has cost:
+- *Avoiding excessive numbers of chunks*: More chunks means more metadata, both in the information sent between the client and the server, as well as for the browser to process internally. At some point, it makes sense to stop dividing the chunks smaller and smaller to reduce this cost. However, chunks are likely cheaper than independent fetches, so the calculus is shifted a bit compared [existing tuning](https://web.dev/granular-chunking-nextjs/).
 
 #### Q: When should bundlers decide to break up different units into module fragments?
 
-**A**: Ah, more policy questions
+**A**: Yet another interesting design space to explore! The general idea is to start using module fragments rather than separate resources in the resource bundle when necessary, to avoid the excess overhead of separate resources. One neat solution would be to put each "package" (e.g., in npm) in a single JS file using module fragments, but this may not yet be efficient enough. We'll likely need to experiment with real implementations to figure out what the optimal point is.
 
 #### Q: How can this feature be used when some browsers will support it and others will not?
 
 **A**: Two options:
-- Just let things happen (graceful degradation)
-- Detect the lack of this feature and invoke a legacy-bundled fallback
+- *Graceful degradation*: Because individual resources in a resource bundle must be served from the same URL with the same contents, sites will "just work" if resource bundles are simply turned off. However, performance will often not be good enough, for all the reasons developers use bundlers in the first place today.
+- *Feature detection*: Detect the lack of this feature and invoke a legacy-bundled fallback. The detection can be done by introspecting the DOM and checking how the `loadbundle` manifest was parsed.
