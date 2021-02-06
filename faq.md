@@ -8,7 +8,7 @@
 
 #### Q: Why the name change, then?
 
-**A**: To express the limited scope (excluding signed exchange, preserving URL semantics) and the fact that this format may be useful outside of the Web. Hopefully, these changes address the previous criticisms of Web Bundles.
+**A**: To express the limited scope (excluding Signed Exchange, preserving URL semantics) and the fact that this format may be useful outside of the Web (e.g., in Node.js). Hopefully, these changes address the previous criticisms of Web Bundles.
 
 #### Q: How does this proposal relate to Signed Exchange?
 
