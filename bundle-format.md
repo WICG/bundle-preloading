@@ -1,6 +1,6 @@
 Resource bundles represent a mapping from URL paths to HTTP responses. They are based on an extensible binary format, where new "sections" can be defined over time for different kinds of data.
 
-This document describes the high-level design of resource bundles' format, and how this format relates to applications like subresource loading and serving. A standard to describe this format would be a bit divorced from the content, motivations and implied semantics discussed below.
+This document describes the high-level design of resource bundles' format, and how this format relates to applications like subresource loading and serving. A standard to describe this format would be a bit divorced from the content, motivations and implied semantics discussed below (see ["Specification"](#specification)).
 
 The broader area of binary formats for bundles of HTTP responses is under discussion in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/), which would be the ideal body to standardize this work. This document is based on previous Internet-Drafts by Jeffrey Yasskin published in the IETF WPACK WG.
 
@@ -56,5 +56,9 @@ variants-value = bstr
 ```
 
 For further details about how the variants-value represents content negotiation, see [the specification's explanation](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html#section-4.2.1). Note that the proposal here is to use a simpler `index`, and move the more advanced index to the `negotiated-index` section.
+
+## Specification
+
+The format above matches the [Web Bundles specification](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html) if PRs [#617](https://github.com/WICG/webpackage/pull/617) and [#618](https://github.com/WICG/webpackage/pull/618) are landed, and if some further sections are factored out into separate documents.
 
 *See the [bundle format FAQ](./faq.md#bundle-format) for more information.*
