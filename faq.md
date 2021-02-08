@@ -25,7 +25,7 @@ This proposal does not make any special allowances for Signed Exchange, and some
 
 #### Q: How far along is this proposal? Is it about to ship?
 
-**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this simpler explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
+**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
 
 #### Q: How is this work funded? Are there any conflicts of interest?
 
@@ -63,6 +63,10 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 #### Q: How does bundle format proposal relate to Jeffrey Yasskin's [Web Bundle format](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html)?
 
 **A**: Daniel Ehrenberg and Jeffrey Yasskin have been working together closely on this proposal. Our current drafts have some mismatches, but the idea is to talk this through with more stakeholders and come to common conclusions.
+
+#### Q: How does error handling work, given that CBOR leaves that a bit open?
+
+**A**: Web specifications for subresource loading in browsers will describe how parsing and error reporting work operationally, including error reporting. In general, the idea is to be strict about reporting errors when they are encountered (not trying to silently correct them), but also to permit errors to be detected somewhat "lazily", to permit resource bundles to be used even without the whole thing having been parsed (e.g., in a streaming or random-access way).
 
 ## Subresource loading
 
