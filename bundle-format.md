@@ -59,6 +59,6 @@ For further details about how the variants-value represents content negotiation,
 
 ## Specification
 
-The format above matches the [Web Bundles specification](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html) if PRs [#617](https://github.com/WICG/webpackage/pull/617) and [#618](https://github.com/WICG/webpackage/pull/618) are landed, and if some further sections are factored out into separate documents.
+The format above matches the [Web Bundles specification](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html) if PRs [#617](https://github.com/WICG/webpackage/pull/617), [#618](https://github.com/WICG/webpackage/pull/618) and [#619](https://github.com/WICG/webpackage/pull/619) are landed.
 
 *See the [bundle format FAQ](./faq.md#bundle-format) for more information.*
