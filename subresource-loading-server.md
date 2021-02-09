@@ -1,10 +1,14 @@
 # Server support for resource bundle loading
 
-To allow [efficient resource bundle loading](./subresource-loading), additional support on the server is helpful: Clients may request just a subset of a resource bundle by listing certain chunk IDs in the request, and the server should provide a response with just those chunks. Clients may also request an individual resource in a bundle, and the server must provide the same response as it would provide in a bundle.
+To allow [efficient resource bundle loading](./subresource-loading), additional support on the server is helpful: Clients may request just a subset of a resource bundle by listing certain chunk IDs in the request, and the server should provide a response with just those chunks.
+
+Clients may also request an individual resource in a bundle, and the server must provide the same response as it would provide in a bundle. It is likely appropriate to use a header like `Cache-Control: no-store` or a relatively short lifetime, if the chunk IDs in the resource bundle may be rotated in the future, to provide different a different response for the same URL.
 
 ## Client/server subsetting protocol
 
 To fetch a subset of a resource bundle, the client makes a `GET` request to the bundle's URL, providing the `Resource-Bundle-Chunk-Ids` HTTP header. The server is expected to respond with a response with the MIME type `application/resource-bundle`, with a resource bundle mapping those chunk IDs to resource bundles with the individual resources in it.
+
+Such a response must include a `Vary: Resource-Bundle-Chunk-Ids` header in the response. It is likely appropriate to use a long-lived `Cache-Control` header for chunks (e.g., `immutable`).
 
 <!-- TODO: Provide examples to make this all easier to understand -->
 
