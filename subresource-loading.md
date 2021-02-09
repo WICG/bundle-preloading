@@ -93,6 +93,8 @@ GET /pack.rbn
 Resource-Bundle-Chunk-Ids: bGpobG FzZGZq
 ```
 
+(TODO: The list of chunk IDs should be serialized with [Structured Fields](https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-19); probably this means they are comma-separated rather than space-separated.)
+
 Note that `bGpobG`, containing `common.js`, is fetched, even though there was no explicit request for `common.js` yet. The `loadbundle` manifest caused the fetch of `a.js` to trigger `common.js` to be *prefetched* by virtue of both chunk IDs being listed in the `"paths"` entry for `"a.js"`. This prefetch happens with just one fetch over the network, grouped with `a.js`, permitting `a.js` and `common.js` to share a compression dictionary.
 
 If, following that, the "b" button is clicked, the server would make a smaller fetch:
