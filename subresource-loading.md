@@ -8,7 +8,7 @@ Below is just one concrete place in the design space, as a concrete starting poi
 
 This proposal assumes the following:
 * The site's code is bundled into a single "mega bundle".
-* The bundle declaration on each entry points contains a *complete* list of routes and their dependencies.
+* The bundle declaration on each entry points contains a *complete* list of routes or components and their dependencies.
   - Specifically, the browser is not aware of the full list of resources the bundle contains, just of the top-level routes. If that list is not complete, secondary resources can be discovered by the browser before the bundle's index is fetched, resulting in spurious downloads.
 * A single chunk can contain multiple resources, in case they are typically fetched together. That is trading off caching granularity, in favor of reduction in the meta information that needs to be communicated between client and server.
 
@@ -196,13 +196,12 @@ When returning to the event loop, if there are any chunk IDs on the list to fetc
 #### Pros
 * Mixing in decelration of the resources in the bundle and scopes covered by it in ways that enable use of both techniques, without requiring hard-to-implement [Cache Digests](https://tools.ietf.org/html/draft-ietf-httpbis-cache-digest-05).
 * Decouples the resource number from the number of chunks in ways that enable higher scalability in cases of closely knit, very small modules.
-* Update flow doesn't require content-addressable URLs, which avoids problems with unnecessary cache invalidation of references, as well as "purge" like semantics when resource version changes.
-  - Unclear if that part would work properly in the "online URL enforcement" revalidation flow.
 
 #### Cons
 * Requires declaring full dependency map on each entry point, that includes all the chunks required by all the entry points. If developers will get that wrong, it can result in spurious downloads.
-* A "just download the entire bundle" fallback is not feasible, since the full bundle can be extremely large. Related, caches that ignores Vary will have have A Bad Time™. 
-* As the downloaded resources are likely to be significantly smaller than the the complete bundle, [compression benefits of subset recompression](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5) are likely to be small. (See [results](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5#results) for 90% removal)
+* A "just download the entire bundle" fallback is not feasible, since the full bundle contains all of the code-split parts, but initial load should only load the necessary parts. Related, caches that ignores Vary will have have A Bad Time™. 
+* It could be prohibitively slow to dynamically compress collections of chunks to a high quality, as there are certain techniques that work quickly in the case of a large subset, but not as well in a smaller subset
+(See [results](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5#results) for 90% removal)
 * It's improbable that all entry points require the same order of resources. This proposal doesn't provide a way for bundlers to address this and enable different chunk order for different entry points.
 
 
@@ -220,7 +219,7 @@ These questions are all up for discussion; please file an issue if you disagree 
 
 The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls)).
 
-<-- Should we mention https://discourse.wicg.io/t/proposal-fetch-maps/4259 -->
+[Fetch maps]([https://discourse.wicg.io/t/proposal-fetch-maps/4259) could similarly be used for non-module subresources.
 
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
@@ -304,7 +303,7 @@ There are a number of different possible valid designs for which chunks a browse
 
 **A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
 
-<!-- Can there be multiple chunks in a scoped directory? Or are developers expected to break up the directory into subdirectories in such cases? -->
+<!-- How can the browser map URLs in certain chunk scopes to specific chunk IDs? -->
 
 #### Q: If resource bundle loading is restricted to being same-origin, does that mean they can't be loaded from a CDN?
 
