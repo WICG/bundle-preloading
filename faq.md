@@ -84,6 +84,8 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls) or [fetch maps](https://discourse.wicg.io/t/proposal-fetch-maps/4259)).
 
+[Fetch maps]([https://discourse.wicg.io/t/proposal-fetch-maps/4259) could similarly be used for non-module subresources.
+
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
 **A**: Indeed, it may. This proposal works at the network fetch level, not the module map level. This means that, when executing a JavaScript module graph, some browser machinery needs to be engaged. Multiple browser maintainers have expressed concern about whether the fetch/network machinery can scale up to 10000+ JS modules. Although resource bundles will help save *some* of the overhead, they may not be enough. JavaScript-specific [module fragments](https://github.com/littledan/proposal-module-fragments/) may be implementable with less overhead, as they work at the module map level.
