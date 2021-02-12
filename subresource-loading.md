@@ -198,7 +198,7 @@ When returning to the event loop, if there are any chunk IDs on the list to fetc
 * Decouples the resource number from the number of chunks in ways that enable higher scalability in cases of closely knit, very small modules.
 
 #### Cons
-* Requires declaring full dependency map on each entry point, that includes all the chunks required by all the entry points. If developers will get that wrong, it can result in spurious downloads.
+* Requires declaring full dependency map on each entry point, that includes all the chunks required by all the entry points. If developer tooling will get that wrong, it can result in spurious downloads.
 * A "just download the entire bundle" fallback is not feasible, since the full bundle contains all of the code-split parts, but initial load should only load the necessary parts. Related, caches that ignores Vary will have have A Bad Time™. 
 * It could be prohibitively slow to dynamically compress collections of chunks to a high quality, as there are certain techniques that work quickly in the case of a large subset, but not as well in a smaller subset
 (See [results](https://dev.to/riknelix/fast-and-efficient-recompression-using-previous-compression-artifacts-47g5#results) for 90% removal)
