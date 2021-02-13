@@ -21,15 +21,18 @@ In addition to these options, there is a certain common core that modern bundler
 ## How resource bundle loading compares to existing bundlers
 
 The core of bundlers corresponds exactly to what is needed to generate resource bundles for efficient subresource loading, in a way that has the potential work even better:
-- **Code splitting**: Resources are split at the level of separate chunk IDs. Rather than [making a tradeoff between granular chunking and minimizing the number of separate requests](https://web.dev/granular-chunking-nextjs/), small chunks can safely be used while many are requested at once, resulting in effective use of caching and compression, while having minimal HTTP overhead and unused bytes sent over the network.
+- **Code splitting**: Resources are split at a more granular level, down to the individual resource (or chunk). Rather than [making a tradeoff between granular chunking and minimizing the number of separate requests](https://web.dev/granular-chunking-nextjs/), the request can contain just the resources or small chunks that are needed, since many are requested at once. This results in effective use of caching and compression, while having minimal HTTP overhead and unused bytes sent over the network.
 - **Bundling**: The bundling format is native resource bundles, which can be understood directly by the browser. Unlike with enumated bundles, browsers know how to interpret them as they are streamed in, and don't require any JavaScript to execute to make them visible to the browser.
-- **Naming**: To use long-lived caching modes, the hash is keyed by chunk ID. When content changes, the chunk ID changes. At the same time, all of the contained URLs can actually be the semantically relevant one, rather than a generated one. This means that unchanged files don't need a new revision just because one of their dependencies has a new version.
+- **Naming**: To use long-lived caching modes, the hash is keyed by ETag (or chunk ID, depending on the mechanism). When content changes, the ETag/chunk ID changes. At the same time, all of the contained URLs can actually be the semantically relevant one, rather than a generated one. This means that unchanged files don't need a new revision just because one of their dependencies has a new version.
 
 ## Input and output of bundlers
 
 In the basic model, the input of bundlers is as today (both in terms of developers' source code, as well as much of what goes into bundlers' configuration files), and the big difference is the output: Rather than outputting a directory of files to serve statically, bundlers would instead output two files:
 - A `loadbundle` manifest to include directly in HTML, inline.
-- A resource bundle, mapping chunk IDs to inner resource bundles, which contain the various resources. Servers are then expected to [serve subsets of this resource bundle](./subresource-loading-server.md) based on which chunk IDs the client requests.
+- A resource bundle to be served, with details depending on the subsetting mechanism selected:
+    - *ETags*: A resource bundle with the individual responses, each with an appropriate ETag as a response header.
+    - *Chunking*: A resource bundle, mapping chunk IDs to inner resource bundles, which contain the various resources. Servers are then expected to [serve subsets of this resource bundle](./subresource-loading-server.md) based on which chunk IDs the client requests.
+    - *Cuckoo hash*: Several resource bundles, corresponding to different routes <!-- TODO(yoavweiss): Elaborate -->
 
 It is possible that tools could use resource bundles in [further ways](./other-uses.md) as well.
 

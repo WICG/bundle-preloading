@@ -82,9 +82,9 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 **A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/littledan/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
 
-The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving (though it could be possible with [import: URLs](https://github.com/WICG/import-maps#import-urls) or [fetch maps](https://discourse.wicg.io/t/proposal-fetch-maps/4259)).
+The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving
 
-[Fetch maps]([https://discourse.wicg.io/t/proposal-fetch-maps/4259) could similarly be used for non-module subresources.
+[Fetch maps]([https://discourse.wicg.io/t/proposal-fetch-maps/4259) could similarly be used for non-module subresources. Alternatively, [import: URLs](https://github.com/WICG/import-maps#import-urls) could be used to reference non-module assets while indirecting through an import map.
 
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
@@ -94,7 +94,7 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 #### Q: Should we start with a simpler kind of bundle loading, without subsetting or versioning?
 
-**A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This document takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
+**A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This repository takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
 
 #### Q: Is it necessary to split into chunks, rather than naming individual resources?
 
@@ -102,7 +102,7 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 Breaking into more, smaller chunks, or at the limit, individual resources, turns the knob towards transmitting more metadata (both from the server to the client, and from the client to the server) in exchange for getting better cache granularity. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
 
-[This gist](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) and [this document](https://docs.google.com/document/d/11t4Ix2bvF1_ZCV9HKfafGfWu82zbOD7aUhZ_FyDAgmA/edit?disco=AAAAHioQK1I&usp_dm=false&ts=5fef03c5) sketched out various approaches to individual resources, rather than chunks, being used in bundle subset serving. 
+Chunking comes at the significant cost of not exposing each URL to the client, to decide whether to fetch it individually. Instead, responses are returned from the server in chunks of bundles, with new URLs in responses coming as a potential "surprise". This violates the requirement that content blockers can avoid such overhead, making the chunking approach potentially not viable. The [ETags](./subresource-loading.md#option-2-etags) and [Cuckoo hash](./subresource-loading.md#option-3-cuckoo-hash) mechanisms avoid chunking.
 
 #### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
 
@@ -232,7 +232,7 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: How would the server know which kind of loading mode the client is asking for (e.g., in personalized ads vs non-personalized subresource loading)?
 
-**A**: In general, the loading mode should be indicated by the HTML (here, the `<script type=loadbundle>` tag). If the client knows how to interpret that, then it will send the appropriate request to the server, indicating what it wants. There are further possibilities to let the server know if more optional sections are added to the bundle format, such as an `Accept-Resource-Bundle-Sections` header describing what the client knows how to interpret (where no such header would indicate that only the `index` and `responses` sections are interpreted).
+**A**: In general, the loading mode should be indicated by the HTML (here, the `<script type=loadbundle>` tag). If the client knows how to interpret that, then it will send the appropriate request to the server, indicating what it wants. There are further possibilities to let the server know if more optional sections are added to the bundle format, such as an `Accept-Bundle-Sections` header describing what the client knows how to interpret (where no such header would indicate that only the `index` and `responses` sections are interpreted).
 
 ## Tools
 
