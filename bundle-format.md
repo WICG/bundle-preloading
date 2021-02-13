@@ -4,10 +4,6 @@ Resource bundles represent a mapping from URL paths to HTTP responses. They are 
 
 This document describes the high-level design of resource bundle format, and how this format relates to applications like subresource loading and serving. A standard to describe this format would be a bit divorced from the content, motivations and implied semantics discussed below (see ["Specification"](#specification)).
 
-> This document does **not** fully describe the **protocol** that clients will use to fetch and validate resource bundles. We expect many more tools to need to process the resource bundle format than participate in the protocol.
-
-> TODO: Create a separate document describing the protocol, and link to it from the above note.
-
 The broader area of binary formats for bundles of HTTP responses is under discussion in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/), which would be the ideal body to standardize this work. This document is based on previous Internet-Drafts by Jeffrey Yasskin published in the IETF WPACK WG.
 
 ## Formal Grammar
@@ -19,6 +15,8 @@ Resource bundles are defined in [CDDL], a language for expressing grammars over 
 At the top level of their binary format, resource bundles are defined as a series of named sections, each with a length. The `section-lengths` field contains a table of contents, and the sections are found in the main `sections` field.
 
 > To maintain compatibility across versions and environments, a resource bundle begins with [a magic number](#ref-magic-number), then a version number, and ends with its length.
+
+Even though this format starts out with just two sections, the section architecture ensures that the format is extensible. Over time, more sections can be defined and used in conjunction with resource bundles, without being a breaking change--a property which doesn't come for free in binary formats. Other binary formats such as [WebAssembly bytecode](https://webassembly.github.io/spec/core/binary/modules.html#sections) have made a similar design decision.
 
 #### Type: `bundle`
 
@@ -105,43 +103,6 @@ headers = {* bstr => bstr}
 ```
 
 </details>
-
-## Supplemental sections
-
-The resource bundle format intentionally supports extensible sections, in order to support use-cases that go beyond the core goal of mapping from paths to responses. Such use-cases are application-specific, and may not be included in the main resource bundles specification. Whether included in the specification or not, custom sections should be registered in a registry of known resource bundle sections.
-
-The remainder of this document describes custom sections that we expect might exist, and describes how they would work.
-
-### Content negotiation
-
-Servers perform content negotiation--determining the response based on attributes of the request--as a part of serving the web. Packaged applications (which are outside of the core scope of this repository) may also need to perform these similar server-side functions on the client side.
-
-The `negotiated-index` section provides a more detailed mapping from URLs + request headers to response offset/length pairs. The reponses here 'override' the responses found in the named `index`, if they conflict. The `index`'s value is used as a fallback if the request does not match any of the variants named for content negotiation.
-
-#### Type: `negotiated-index`
-
-| name               | type                                                                                        | size     | description                                                                  |
-| ------------------ | ------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
-| `negotiated-index` | map (<code>[whatwg-url]</code> => <code>[index-value](#type-negotiated-index-value)</code>) | variable | A map of [field name](#ref-http-headers) to [field value](#ref-http-headers) |
-
-#### Type: `index-value` (array)
-
-| index | type                                 | size     | description                              |
-| ----- | ------------------------------------ | -------- | ---------------------------------------- |
-| `0`   | <code>[bstr]</code>                  | variable | the value of the variant                 |
-| `1`   | <code>[location-in-responses]</code> | variable | see <code>[location-in-responses]</code> |
-
-<details>
-  <summary>CDDL Spec</summary>
-
-```cddl
-negotiated-index = {* whatwg-url => [ variants-value, +location-in-responses ] }
-variants-value = bstr
-```
-
-</details>
-
-For further details about how the variants-value represents content negotiation, see [the specification's explanation](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html#section-4.2.1). Note that the proposal here is to use a simpler `index`, and move the more advanced index to the `negotiated-index` section.
 
 ## Specification
 
