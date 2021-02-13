@@ -19,7 +19,7 @@ In an attempt to address these performance issues without losing the ability to 
 
 Developers have also found ways to bundle newer file types (such as WebAssembly) with their JavaScript by [base64 encoding](https://guido.io/posts/embedding-webassembly-in-javascript/) them and including them in the combined JavaScript files that are created by build tools.
 
-Modern tools that automate these ad-hoc strategies are known as "bundlers". The most popular bundlers are Webpack, Rollup, and Parcel. A number of new bundlers, such as Snowpack and esbuild, aim to make better use of native support for JavaScript modules.
+Modern tools that automate these ad-hoc strategies are known as "bundlers". Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
 
 Each bundler ecosystem is effectively a walled garden. Their bundling strategies are implementation details that are non-standard and not interoperable. In other words, there is no way for an application bundle that was created using Webpack to access an image inside of an application bundle that was created using Parcel.
 
