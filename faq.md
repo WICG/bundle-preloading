@@ -8,7 +8,7 @@
 
 #### Q: Why the name change, then?
 
-**A**: To express the limited scope (excluding Signed Exchange, preserving URL semantics) and the fact that this format may be useful outside of the Web (e.g., in Node.js). Hopefully, these changes address the previous criticisms of Web Bundles.
+**A**: To express the limited scope (separating from Signed Exchange, preserving URL semantics) and the fact that this format may be useful outside of the Web (e.g., in Node.js). Hopefully, these changes address the previous criticisms of Web Bundles.
 
 #### Q: How does this proposal relate to Signed Exchange?
 
@@ -37,6 +37,8 @@ This proposal does not make any special allowances for Signed Exchange, and some
 
 **A**: These both have significant problems. zip stores its index at the end, so it's not suitable for streaming. tar doesn't permit random access, and can only be used in a streaming mode. Increasing the amount of metadata (e.g., for HTTP headers) is awkward in both formats and would require new tooling anyway.
 
+Interestingly, an effort to bring packages to the web by the W3C TAG (Technical Architecture Group) in 2015 [identified many of these same issues](https://www.w3.org/TR/web-packaging/#intro). That effort was ultimately unsuccessful, but the fact that the champions of a related proposal independently identified the same issues makes us more confident about them.
+
 #### Q: Should [W3C MiniApp packaging](https://w3c.github.io/miniapp/specs/packaging/) use this bundle format instead of .zip?
 
 **A**: This is really a question for the [W3C MiniApp CG](https://github.com/w3c/miniapp/), but there are some valid reasons why the MiniApp CG may decide to leave things as is:
@@ -50,15 +52,11 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 #### Q: Should this format include more fields for offline web pages?
 
-**A**: It's not really clear which fields are needed or what their semantics should be, but in general, this format would permit someone who is designing an offline web page format to design custom sections for the data they need. 
+**A**: It's not really clear which fields are needed or what their semantics should be, but in general, this format would permit someone who is designing an offline web page format to design custom sections for the data they need.
 
 #### Q: How will this format be standardized?
 
-**A**: The idea is to standardize the format in IETF, probably the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/). IETF has good infrastructure for the use of CBOR in specifications, and many important stakeholders in this problem space are in IETF and specifically the WPACK WG, which was assembled to work on the bundling problem space. In this repository, we'll develop a draft of a specification, which can hopefully be adopted by an IETF WG and become an RFC. The draft here is based on [Jeffrey Yasskin's prior proposal](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html), which has been introduced as an Internet-Draft in IETF. The resource bundle section registry would be created within IANA.
-
-#### Q: The above document hints at how resource bundles have meaning in subresource loading and on servers, but what are the semantics in the abstract?
-
-**A**: It's hard to say exactly. This file format is useful for several different kinds of applications that have different needs and semantics--subresource loading and serving are already fairly different from each other. There is currently no concrete plan to define a higher-level document like [HTTP semantics](https://httpwg.org/http-core/draft-ietf-httpbis-semantics-latest.html) for resource bundles, to complement the operationally-oriented documents like resource bundle loading and serving. We'll probably have to feel this space out with various applications/endpoints to understand where to generalize, similar to the history of HTTP.
+**A**: The idea is to standardize the format in IETF, probably in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/). IETF has good infrastructure for the use of CBOR in specifications, and many important stakeholders in this problem space are in IETF and specifically the WPACK WG, which was assembled to work on the bundling problem space. In this repository, we'll develop a draft of a specification, which can hopefully be adopted by an IETF WG and become an RFC. The draft here is based on [Jeffrey Yasskin's prior proposal](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html), which has been introduced as an Internet-Draft in IETF. The resource bundle section registry would be created within IANA.
 
 #### Q: How does bundle format proposal relate to Jeffrey Yasskin's [Web Bundle format](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html)?
 
@@ -74,6 +72,10 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 **A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have concrete ideas.
 
+This question has been raised over the years in response to previous web packaging proposals. During those prior discussions, folks who were actively working on HTTP/2 felt optimistic that HTTP/2 would ultimately obviate the need for a web packaging standard. Since then, many of those folks have become more pessimistic about solving the problem of packaging entirely through HTTP. Jake Archibald wrote a post explaining some of the unexpected subtleties of HTTP/2 called [HTTP/2 push is tougher than I thought](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/).
+
+Sharing compression dictionaries across multiple HTTP responses is a particularly challenging part. Although HTTPWG has developed various draft proposals in this area, concerns have been raised about privacy, security, implementation complexity, and the ability to use high-quality compression techniques on-line.
+
 #### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundles, themselves?
 
 **A**: No. This is a job for bundlers to do ([explainer](https://github.com/littledan/resource-bundles/blob/main/tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](https://github.com/littledan/resource-bundles/blob/main/serving.md) to send just the requested resources to the client. The bundler will also create a `loadbundle` manifest, which can be pasted into the HTML inline.
@@ -81,6 +83,8 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
 **A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/littledan/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
+
+Among other problems, these approaches make the resources opaque to the browser, which limits how effectively browsers can apply optimizations to them. It is also impossible to target these individual resources using browser APIs such as CSP. It is also impossible for these bundled resources to have their own headers. A JS-only bundle format may encourage these patterns to continue.
 
 The [import maps proposal](https://github.com/WICG/import-maps) can also be used to [map away hashes in script filenames](https://github.com/WICG/import-maps#mapping-away-hashes-in-script-filenames). This can be useful for "cache busting" for JavaScript, but not for other resource types. However, in practice, similar techniques are needed for CSS, images, and other resource types, which a module-map-based approach has trouble solving
 
@@ -98,13 +102,13 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 #### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
 
-**A**: In the above proposal, resource bundle loading serves fundamentally as a *hint* for how to get the same content faster--these semantics correspond to the privacy goals above. It is ideal if this hint can be declared in just one place, rather than sprinkled throughout the code.
+**A**: In this proposal, resource bundle loading serves fundamentally as a *hint* for how to get the same content faster--these semantics correspond to the privacy goals above. It is ideal if this hint can be declared in just one place, rather than sprinkled throughout the code.
 
 If an imperative API were used to load a subset of the bundle, then it would have to be invoked explicitly in each case that a resource served from a bundle is going to be used. This would be quite awkward and redundant, requiring additional tooling to generate that code. It is more usable if the platform handles this logic. [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) used an imperative API for loading bundles.
 
 #### Q: Why does the syntax for loading a resource bundle use a `<script>` tag?
 
-**A**: It is important for browsers' preload scanners to be able to fetch resource bundles as appropriate, so a declarative syntax (here, through a `<script>` tag) is required. `<script>` is used rather than `<link>` due to [concerns from WebKit and Google security experts](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html) about injection attacks. But more syntax, in addition to the `<script>` tag, may actually be needed.
+**A**: It is important for browsers' preload scanners to be able to fetch resource bundles as appropriate, so a declarative syntax (here, through a `<script>` tag) is required. `<script>` is used rather than `<link>` due to [concerns from WebKit](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html) about injection attacks. But more syntax, in addition to the `<script>` tag, may actually be needed.
 
 Several use cases for resource bundle loading take place without the presence of the DOM, e.g, from a Worker. Therefore, a non-DOM-based JavaScript API is necessary, possibly something like `navigator.loadbundle({"source": "example.rbn", /* ... */})`.
 
@@ -237,9 +241,11 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 ## Tools
 
-#### Q: How should bundlers decide how big/small to make the chunks?
+#### Q: In the chunking approach, how should bundlers decide how big/small to make the chunks?
 
-**A**: There are many possible policies here, just as bundlers today have many possible policies, but the (hoped-for) increased efficiency from resource bundles allows the search/design space to be a bit larger. Some possible factors to consider when dividing resources into chunks:
+**A**: (Note that, in the ETags approach, the bundler gives output at the individual resource granularity, and does not need to form chunks.)
+
+There are many possible policies here, just as bundlers today have many possible policies, but the (hoped-for) increased efficiency from resource bundles allows the search/design space to be a bit larger. Some possible factors to consider when dividing resources into chunks:
 - *Fetching exactly what's needed*: In one sense, code splitting is "optimal" when you send the client only the information they need to render a particular set of routes/components, and nothing additional. This becomes a bit complicated when certain dependencies are shared and others are not. The problem is thoroughly solved by current bundlers, but this "optimal" solution can lead to more chunks than one might expect.
 - *Cache reuse*: The smaller the chunks are, the greater chance there is that, when just one resource changes, the maximal amount of information can be reused from cache. At the limit, this would mean putting each resource in its own chunk, however this strategy has cost:
 - *Avoiding excessive numbers of chunks*: More chunks means more metadata, both in the information sent between the client and the server, as well as for the browser to process internally. At some point, it makes sense to stop dividing the chunks smaller and smaller to reduce this cost. However, chunks are likely cheaper than independent fetches, so the calculus is shifted a bit compared [existing tuning](https://web.dev/granular-chunking-nextjs/).
