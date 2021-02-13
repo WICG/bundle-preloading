@@ -74,9 +74,9 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 **A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have concrete ideas.
 
-#### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundle chunks, themselves?
+#### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundles, themselves?
 
-**A**: No. This is a job for bundlers to do ([explainer](https://github.com/littledan/resource-bundles/blob/main/tools.md)). Hopefully, bundlers will take an application and output a resource bundle of chunks ([interpreted by the server](https://github.com/littledan/resource-bundles/blob/main/serving.md) to send just the requested chunk IDs to the client) alongside a `loadbundle` manifest (which can be pasted into the HTML inline).
+**A**: No. This is a job for bundlers to do ([explainer](https://github.com/littledan/resource-bundles/blob/main/tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](https://github.com/littledan/resource-bundles/blob/main/serving.md) to send just the requested resources to the client. The bundler will also create a `loadbundle` manifest, which can be pasted into the HTML inline.
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
@@ -95,14 +95,6 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 #### Q: Should we start with a simpler kind of bundle loading, without subsetting or versioning?
 
 **A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This repository takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
-
-#### Q: Is it necessary to split into chunks, rather than naming individual resources?
-
-**A**: If the resources are individually named, then it might be necessary to name them in the `<script type=loadbundle>` manifest. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/littledan/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
-
-Breaking into more, smaller chunks, or at the limit, individual resources, turns the knob towards transmitting more metadata (both from the server to the client, and from the client to the server) in exchange for getting better cache granularity. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
-
-Chunking comes at the significant cost of not exposing each URL to the client, to decide whether to fetch it individually. Instead, responses are returned from the server in chunks of bundles, with new URLs in responses coming as a potential "surprise". This violates the requirement that content blockers can avoid such overhead, making the chunking approach potentially not viable. The [ETags](./subresource-loading.md#option-2-etags) and [Cuckoo hash](./subresource-loading.md#option-3-cuckoo-hash) mechanisms avoid chunking.
 
 #### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
 
@@ -129,9 +121,9 @@ The approach above ships a manifest to the client, which ends up standing in for
 
 #### Q: Could the manifest be delivered to the client incrementally, instead of all at once?
 
-**A**: Such an approach makes sense if fetching some chunks exposes the possible need for even more chunks in the future, that couldn't have been triggered previously. For example, say there is a rarely loaded but very large "admin" pane, which has several tabs within it: when you first load the admin pane, you may have more manifest to load for those inner tabs, which isn't necessary on first page load. There are a couple ways that this could be implemented:
-- *Imperatively*: There should probably be a JavaScript API for imperatively adding additional paths, each corresponding to chunk IDs to be loaded. This API can be invoked explicitly after clicking on the admin pane, based on logic embedded in it.
-- *Declaratively*: If we find that this is a common pattern/need, then resource bundle chunks could contain an additional section in them which is the section of paths that needs to be added for it, so that this can occur without running JavaScript.
+**A**: Such an approach makes sense if fetching some ETags/chunks exposes the possible need for even more ETags/chunks in the future, that couldn't have been triggered previously. For example, say there is a rarely loaded but very large "admin" pane, which has several tabs within it: when you first load the admin pane, you may have more manifest to load for those inner tabs, which isn't necessary on first page load. There are a couple ways that this could be implemented:
+- *Imperatively*: There should probably be a JavaScript API for imperatively adding additional paths, each corresponding to ETags/chunk IDs to be loaded. This API can be invoked explicitly after clicking on the admin pane, based on logic embedded in it.
+- *Declaratively*: If we find that this is a common pattern/need, then resource bundles could contain an additional section in them which is the section of paths that needs to be added for it, so that this can occur without running JavaScript.
 
 Incremental manifest fetching is another advanced technique that could be included in a v2 proposal, or even initially if experimentation finds that it is needed for sufficient performance.
 
@@ -143,26 +135,13 @@ Incremental manifest fetching is another advanced technique that could be includ
 
 **A**: Not in this proposal. Such a limitation would make the most sense if it were document-wide, but this proposal is about loading a resource bundle *within* a document (so, the HTML had to come from somewhere else, for one). A separate proposal could create a kind of iframe which is limited to be loading contents out of a particular bundle, perhaps with the bundle loading mechanism based on this document. It will be important to evaluate the privacy implications of such a proposal.
 
-#### Q: Is one level of chunking enough? Should chunking be part of a more complex DAG?
+#### Q: What happens if the server sends the client more ETags or chunks than it asked for?
 
-**A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. In the current proposal, the same string of chunk IDs needs to be repeated for each entry-point to handle this case. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
+**A**: Servers are permitted to do this, and all of the subresources will end up loading, though more slowly. For example, a server could simply always reply with all of the ETags/chunks. Intelligent middleware could be responsible for filtering just the requested parts, making it easier to deploy resource bundle loading.
 
-#### Q: To avoid letting the list of chunks get too long, could the client send the server the list of chunks it already has, instead of what it's missing?
-
-**A**: This is an advanced technique that could work in the context of a "chunk DAG" that is expressed in the manifest: if a particular parent chunk ID is requested, and most children chunk IDs are missing, but just a few are present, then the client could send the server a header that indicates this state, and the server could respond with the appropriate set of chunks. This more advanced capability is omitted from this document for simplicity; it might be better to include in a v2 proposal.
-
-#### Q: What happens if the server sends the client more chunks than it asked for?
-
-**A**: Servers are permitted to do this, and all of the subresources will end up loading, though more slowly. For example, a server could simply always reply with all of the chunks. Intelligent middleware could be responsible for filtering just the requested chunks, making it easier to deploy resource bundle loading.
-
-There are a number of different possible valid designs for which chunks a browser caches and maps in when a server returns more chunks than requested:
-- The browser could discard all additional chunks (and potentially fetch them again later)
-- The browser could cache all chunks, but only map in the requested ones (maybe the best option?)
-- The browser could cache and map in all chunks in the response
-
-#### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
-
-**A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
+There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
+- The browser could discard all additional resources
+- The browser could cache everything and make it available to the application
 
 #### Q: If resource bundle loading is restricted to being same-origin, does that mean they can't be loaded from a CDN?
 
@@ -206,11 +185,33 @@ However, this could be quite expensive for extensions which intercept fetches (e
 
 **A**: It's possible that these factors could cause significant overhead, if the number of resources is too great. A couple ways to consider mitigating this overhead:
 - At the application level, greater use of [JS module fragments](https://github.com/littledan/proposal-module-fragments/) could reduce the number of resources, and therefore reduce the overhead.
-- In extensions and ServiceWorker, a batch-based API could be added to call out once per chunk instead of once per fetch within the chunk, or improved filters could be added to lessen the impact.
+- In extensions and ServiceWorker, a batch-based API could be added to handle fetches which are served from resource bundles.
 
-#### Q: Would this proposal work with readable chunk IDs instead of random numbers and letters?
+#### Q: Would this proposal work with readable ETags/chunk IDs instead of random numbers and letters?
 
-**A**: Yes. The chunk IDs are allocated by the creator of the resource bundles--in practice, the bundler. A simple way to allocate chunk IDs is to base it on a hash of the contents of the chunk. This matches a common practice with cache busting URLs. An advantage is that it's "stateless": the bundler does not have to think about what chunk IDs may have been used in the past and exist in cache, by betting that there will not be a collision. However, the chunk IDs could also be allocated in any other way, including one that makes more sense to humans.
+**A**: Yes. ETags and chunk IDs are allocated by the creator of the resource bundles--in practice, the bundler. A simple way to allocate such IDs is to base it on a hash of the contents of the response or chunk. This matches a common practice with cache busting URLs. An advantage is that it's "stateless": the bundler does not have to think about what IDs may have been used in the past and exist in cache, by betting that there will not be a collision. However, the IDs could also be allocated in any other way, including one that makes more sense to humans.
+
+### Chunking
+
+#### Q: Why bother with chunking, rather than the simpler ETags approach of naming individual resources?
+
+**A**: Naming individual resources results in a larger `<script type=loadbundle>` manifest, as well as more lengthy headers. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/littledan/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
+
+The larger amount of metadata with the ETags approach has the benefit of better cache granularity and more efficiency gains due to content blocking. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
+
+Chunking comes at the significant cost of not exposing each URL to the client, to decide whether to fetch it individually. Instead, responses are returned from the server in chunks of bundles, with new URLs in responses coming as a potential "surprise". This violates the requirement that content blockers can avoid such overhead, making the chunking approach potentially not viable.
+
+#### Q: Is one level of chunking enough? Should chunking be part of a more complex DAG?
+
+**A**: Sometimes, several different entry-points require a common set of resources repeatedly, even if these break down into multiple cache units. In the current proposal, the same string of chunk IDs needs to be repeated for each entry-point to handle this case. It would be possible to extend the manifest language to give these sets an explicit representation. It's not clear if such sets would have any advantages over compression, and it would add complexity, so this version of the proposal omits that, for simplicitly. A [previous draft](https://gist.github.com/littledan/18a1bd6e14e4f0ddb305a2a051ced01e#file-dynamic-chunk-loading-md) was based around such sets.
+
+#### Q: To avoid letting the list of chunks get too long, could the client send the server the list of chunks it already has, instead of what it's missing?
+
+**A**: This is an advanced technique that could work in the context of a "chunk DAG" that is expressed in the manifest: if a particular parent chunk ID is requested, and most children chunk IDs are missing, but just a few are present, then the client could send the server a header that indicates this state, and the server could respond with the appropriate set of chunks. This more advanced capability is omitted from this document for simplicity; it might be better to include in a v2 proposal.
+
+#### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
+
+**A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
 
 ## Serving
 
