@@ -100,9 +100,19 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 **A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This repository takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
 
-#### Q: Why associate bundle loading with fetches to URLs, rather than exposing an imperative API?
+#### Q: Why address resources within a bundle with URLs that look like they come from outside of the bundle, instead of something which more explicitly notes their source, like `https://example.com/bundle.rbn#resource-within-bundle`?
 
-**A**: In this proposal, resource bundle loading serves fundamentally as a *hint* for how to get the same content faster--these semantics correspond to the privacy goals above. It is ideal if this hint can be declared in just one place, rather than sprinkled throughout the code.
+**A**: Although this is a possible approach, it would come with significant costs:
+- Web developers write application code with resources identified by paths, not fragments. The use of fragments would require that bundlers continue to virtualize paths, whereas this proposal aims to reduce the amount of virtualization that bundlers need to do.
+- Lots of code in different places likely depends on how a network request to fetch a URL is not affected by the fragment; this particular scheme breaks that assumption.
+    - One example of such code is the filter rules of content blockers, but this may be fixable; it just requires some investigation.
+- In such a scheme, there is no sense of an "underlying URL" to verify against, so it's unclear how to prevent low-cost, per-request rotation of URLs, which could pose a problem for content blockers.
+
+A different [`package:` scheme](https://github.com/WICG/webpackage/blob/master/explainers/bundle-urls-and-origins.md) has also been proposed for this purpose, which avoids the use of fragments, but causes even more issues because introducing a new scheme is expensive, and the authority of such URLs is unclear due to the presence of multiple origins.
+
+#### Q: Why trigger bundle loading automatically when certain URLs are fetched, rather than exposing an imperative API?
+
+**A**: In this proposal, resource bundle loading serves fundamentally as a *hint* for how to get the same content faster--these semantics correspond to the privacy goals. It is ideal if this hint can be declared in just one place, rather than sprinkled throughout the code.
 
 If an imperative API were used to load a subset of the bundle, then it would have to be invoked explicitly in each case that a resource served from a bundle is going to be used. This would be quite awkward and redundant, requiring additional tooling to generate that code. It is more usable if the platform handles this logic. [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) used an imperative API for loading bundles.
 
@@ -146,6 +156,10 @@ Incremental manifest fetching is another advanced technique that could be includ
 There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
 - The browser could discard all additional resources
 - The browser could cache everything and make it available to the application
+
+#### Q: Why are the requested ETags/chunks listed as a header parameter, rather than in the URL as a query parameter?
+
+**A**: Both alternatives would be possible. In a way, this is a sort of bikeshed, which would be fine to iterate on. Layering-wise, it's a bit unusual for network protocols to add query parameters this way, but it may be helpful to deal with length limitations in headers (which may be higher for URLs) and intermediaries which don't handle `Vary:` properly (whereas everyone keys off of the full URL).
 
 #### Q: If resource bundle loading is restricted to being same-origin, does that mean they can't be loaded from a CDN?
 
