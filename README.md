@@ -58,8 +58,8 @@ We forsee the need for the following implementation efforts (and expect to suppo
 
 - **Web browsers**: Implementations of resource bundle loading APIs
 - **Programming languages**: Utilities and libraries to create, introspect and manipulate resource bundles
-- **Static web servers** (such as Apache and nginx): support for dynamic chunk serving
-- **Dynamic web server standards** (such as WSGI, Rack, Java Servlets and Express.js): middleware for dynamic chunk serving
+- **Static web servers** (such as Apache and nginx): support for dynamic subset serving
+- **Dynamic web server standards** (such as WSGI, Rack, Java Servlets and Express.js): middleware for dynamic subset serving
 - **Web bundlers and frameworks**: Support for emitting the resource bundle format as a new target type
 
 We also expect to support:
