@@ -78,7 +78,7 @@ Sharing compression dictionaries across multiple HTTP responses is a particularl
 
 #### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundles, themselves?
 
-**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](https://github.com/littledan/resource-bundles/blob/main/serving.md) to send just the requested resources to the client. The bundler will also create a `loadbundle` manifest, which can be pasted into the HTML inline.
+**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `loadbundle` manifest, which can be pasted into the HTML inline.
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
