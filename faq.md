@@ -18,10 +18,10 @@ This proposal does not make any special allowances for Signed Exchange, and some
 
 #### Q: Weren't ad blockers and publishers opposed to Web Bundles? How do they feel about this proposal?
 
-**A**: (TODO: Collect the opinions of Brave and Eye/O, and post them here)
-
-[Robin Berjon](https://twitter.com/robinberjon) from the New York Times said,
+**A**: [Robin Berjon](https://twitter.com/robinberjon) from the New York Times said,
 > It's a useful approach to address the bundling mess we see in JS (and other similar issues), building on smart work from Jeffrey Yasskin and Yoav Weiss but without the bits that help Google take over the Web.
+
+An analysis by Brave is [in this issue comment](https://github.com/littledan/resource-bundles/issues/14#issuecomment-779531021).
 
 #### Q: How far along is this proposal? Is it about to ship?
 
