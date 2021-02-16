@@ -22,7 +22,7 @@ These mechanisms are just starting points for discussion and prototyping. There 
 
 ## Optionality and URL integrity
 
-Common to all mechanisms is ensuring the integrity and semantics of URLs, which is essential for the privacy-preserving properties explained above. To achieve this goal, the browser's use of resource bundles is optional and verifiable, in the following sense:
+Common to all mechanisms is ensuring the integrity and semantics of URLs, which is essential for the privacy-preserving properties explained above. To achieve this goal, the browser's use of resource bundles is optional and verifiable, in the following sense (credits for this idea go to Pete Snyder of Brave):
 
 Servers must make bundles faithfully represent what they would return with an independent fetch to the same URL, and browsers may enforce this, online, offline, or both.
 
