@@ -107,6 +107,7 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 - Lots of code in different places likely depends on how a network request to fetch a URL is not affected by the fragment; this particular scheme breaks that assumption.
     - One example of such code is the filter rules of content blockers, but this may be fixable; it just requires some investigation.
 - In such a scheme, there is no sense of an "underlying URL" to verify against, so it's unclear how to prevent low-cost, per-request rotation of URLs, which could pose a problem for content blockers.
+- Fragment syntax doesn't quite "nest". If you have a resource served from a bundle, identified by a fragment in the URL, then we'd need to develop some other syntax to put another fragment on top of it.
 
 A different [`package:` scheme](https://github.com/WICG/webpackage/blob/master/explainers/bundle-urls-and-origins.md) has also been proposed for this purpose, which avoids the use of fragments, but causes even more issues because introducing a new scheme is expensive, and the authority of such URLs is unclear due to the presence of multiple origins.
 
