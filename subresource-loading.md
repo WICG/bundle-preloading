@@ -10,6 +10,10 @@ All versions have the [same goals](https://github.com/littledan/resource-bundles
 - **Space**: Messages from the server to the client, and from the client to the server, are only extended minimally to support these protocols, ensuring that space overhead is not a barrier to adoption.
 - **Fallback**: In browsers which do not support bundling, if the request to load the bundle is ignored, then the application can load anyway, though it may be much slower to start up and not cached well.
 
+Note that all of *these ideas are very early, have significant problems, and will be iterated on in the future*. The most significant problem is complexity: all versions are highly complex, and it would be ideal to start with a simpler mechanism, if someone can develop a suitable design.
+
+To load a very large number of JavaScript modules, these ideas may be best used in conjunction with the [module fragments proposal](https://github.com/littledan/proposal-module-fragments/), as [described in the FAQ](https://github.com/littledan/resource-bundles/blob/main/faq.md#q-will-support-for-non-js-assets-make-resource-bundle-loading-too-heavy-weightslow). 
+
 To summarize the three versions described in this document:
 1. *ETags*: Each resource in the resource bundle has an ETag described in a manifest which is inline in HTML (to avoid an extra round trip), together with a list of other ETags to prefetch along with it. The server is sent a single request with a list of ETags to load together, in a resource bundle.
     - Caveat: This mechanism might require manifests which are too large, risking the space goals.
