@@ -21,7 +21,7 @@ Developers have also found ways to bundle newer file types (such as WebAssembly)
 
 Modern tools that automate these ad-hoc strategies are known as "bundlers". Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
 
-Each bundler ecosystem is effectively a walled garden. Their bundling strategies are implementation details that are non-standard and not interoperable. In other words, there is no way for an application bundle that was created using Webpack to access an image inside of an application bundle that was created using Parcel.
+Each bundler ecosystem is effectively a walled garden. Their bundling strategies are implementation details that are non-standard and not interoperable. In other words, there is no way for an application bundle that was created using webpack to access an image inside of an application bundle that was created using Parcel.
 
 This proposal aims to create a first-class bundling API for the web that would satisfy the use-cases that motivated today's bundler ecosystem, while allowing resources served as part of a bundle to behave like individual resources once they are used in a page.
 
