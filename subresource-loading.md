@@ -12,6 +12,8 @@ All versions have the [same goals](https://github.com/littledan/resource-bundles
 
 Note that all of *these ideas are very early, have significant problems, and will be iterated on in the future*. The most significant problem is complexity: all versions are highly complex, and it would be ideal to start with a simpler mechanism, if someone can develop a suitable design.
 
+TODO(littledan): v1 should be basically like [resource batch preloading](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e), and then the below mechanisms could be layered on top of it as v2. Rewrite this document to explain this layering.
+
 To load a very large number of JavaScript modules, these ideas may be best used in conjunction with the [module fragments proposal](https://github.com/littledan/proposal-module-fragments/), as [described in the FAQ](https://github.com/littledan/resource-bundles/blob/main/faq.md#q-will-support-for-non-js-assets-make-resource-bundle-loading-too-heavy-weightslow). 
 
 To summarize the three versions described in this document:
