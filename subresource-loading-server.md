@@ -1,3 +1,7 @@
+# 🚧 OUT OF DATE
+
+_Please note_: This page's content is in an inconsistent state relative to the rest of the proposal. It is being rewritten (notice 2021-05-13).
+
 # Server support for resource bundle loading
 
 To allow [efficient resource bundle loading](./subresource-loading.md), additional support on the server is helpful: Clients may request just a subset of a resource bundle by indicating what they need in the request with a `Bundle-ETags:` or `Bundle-Chunk-IDs:` header, and the server should provide a response with just those ETags or chunks.

@@ -1,3 +1,7 @@
+# 🚧 OUT OF DATE
+
+_Please note_: This page's content is in an inconsistent state relative to the rest of the proposal. It is being rewritten (notice 2021-05-13).
+
 # Subresource loading with resource bundles
 
 This document describes multiple versions of possible native bundle loading mechanisms, based on resource bundles, combining the advantages of today's bundlers and fetches of individual resources. Multiple versions are under investigation because there are tricky performance tradeoffs that we expect to only be able to make based on more concrete prototyping.
