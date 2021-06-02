@@ -1,3 +1,7 @@
+# 🚧 OUT OF DATE
+
+_Please note_: This page's content is in an inconsistent state relative to the rest of the proposal. It is being rewritten (notice 2021-05-13).
+
 # Tooling support for resource bundle loading
 
 Resource bundles and the `loadbundle` manifests are not expected to be created manually by developers. Instead, the idea is that the bundlers which developers use today (such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) or [esbuild](https://esbuild.github.io/)) would output this new format. The transition enables more direct interpretation of assets by the browser and improved compression performance and cache hit rates.
