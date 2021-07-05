@@ -4,7 +4,7 @@ Resource bundles represent a mapping from URL paths to HTTP responses. They are 
 
 This document describes the high-level design of resource bundle format, and how this format relates to applications like subresource loading and serving. A standard to describe this format would be a bit divorced from the content, motivations and implied semantics discussed below (see ["Specification"](#specification)).
 
-The broader area of binary formats for bundles of HTTP responses is under discussion in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/), which would be the ideal body to standardize this work. This document is based on previous Internet-Drafts by Jeffrey Yasskin published in the IETF WPACK WG.
+The broader area of binary formats for bundles of HTTP responses is under discussion in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/), which would be the ideal body to standardize this work. This document is based on the draft at https://github.com/wpack-wg/bundled-responses.
 
 ## Formal Grammar
 
@@ -23,7 +23,7 @@ Even though this format starts out with just two sections, the section architect
 | name              | type                   | size     | description                                                                   |
 | ----------------- | ---------------------- | -------- | ----------------------------------------------------------------------------- |
 | `magic`           | literal                | 64 bits  | F0 9F 8C 90 F0 9F 93 A6                                                       |
-| `version`         | `bytes`: raw bytes     | 32 bits  | the version of the resource                                                   |
+| `version`         | `bytes`: raw bytes     | 32 bits  | the version of the specification                                                   
 | `section-lengths` | array (section-length) | variable | [see below](#defn-section-length "section-length") _(section-length)_         |
 | `sections`        | array                  | variable | [see next section](#section-index "The index section")] _(The index section)_ |
 | `length`          | `bytes`: raw bytes     | 64 bits  | The number of bytes in the bundle                                             |
@@ -41,21 +41,25 @@ Even though this format starts out with just two sections, the section architect
 ```cddl
 resourcebundle = [
   magic: h'F0 9F 8C 90 F0 9F 93 A6',
-  version: bytes .siz
+  version: bytes .size 4,
   section-lengths: bytes .cbor section-lengths,
   sections: [* any ],
-  length: bytes .size 8,  ; Big-endian number of bytes in the bundle.
+  length: bytes .size 8, ; Big-endian number of bytes in the bundle.
 ]
-section-lengths = [* (section-name: tstr, length: uint) ],
+  
+whatwg-url = tstr
+section-lengths = [* (section-name: tstr, length: uint) ]
 ```
 
 </details>
 
-## Core sections: `index` and `resources`
+## Core sections: `index`, `critical` and `responses`
 
 ### The `index` section
 
-<span id="section-index">The `index` section</span> is the table of contents for the entire bundle. It maps URLs to offset/length pairs in the resources section. The URLs are simply relative paths, within the same origin and directory as the bundle was fetched.
+<span id="section-index">The `index` section</span> is the table of contents for the entire bundle. It maps URLs to offset/length pairs in the responses section.
+
+The URLs are relative paths within the same origin and directory as the bundle was fetched.
 
 #### Type: `index`
 
@@ -69,29 +73,29 @@ section-lengths = [* (section-name: tstr, length: uint) ],
 
 | name     | type                     | size     | description                            |
 | -------- | ------------------------ | -------- | -------------------------------------- |
-| `offset` | `uint`: unsigned integer | variable | An offset within the resources section |
-| `length` | `uint`: unsigned integer | variable | The size of the resource in bytes      |
+| `offset` | `uint`: unsigned integer | variable | An offset within the responses section |
+| `length` | `uint`: unsigned integer | variable | The size of the response in bytes      |
 
 <details>
   <summary>CDDL Spec</summary>
 
 ```cddl
-index = {* tstr => [location-in-responses] }
+index = {* whatwg-url => [ location-in-responses ] }
 location-in-responses = (offset: uint, length: uint)
 ```
 
 </details>
 
-### The `resources` section
+### The `responses` section
 
-The `resources` section contains an array of responses. Each response contains response headers and the response body.
+The `responses` section contains an array of HTTP responses; each response contains response headers and the response body.
 
 #### Type: `response`
 
 | name      | type                                             | size     | description                                                                  |
 | --------- | ------------------------------------------------ | -------- | ---------------------------------------------------------------------------- |
 | `headers` | map (<code>[bstr]</code> => <code>[bstr]</code>) | variable | A map of [field name](#ref-http-headers) to [field value](#ref-http-headers) |
-| `payload` | <code>[bstr]</code>                              | variable | The content of the resource as a byte string                                 |
+| `payload` | <code>[bstr]</code>                              | variable | The content of the HTTP response as a byte string                                 |
 
 <details>
   <summary>CDDL Spec</summary>
@@ -106,7 +110,7 @@ headers = {* bstr => bstr}
 
 ## Specification
 
-The format above matches the [Web Bundles specification](#ref-web-bundles) (assuming that PRs [#617](https://github.com/WICG/webpackage/pull/617), [#618](https://github.com/WICG/webpackage/pull/618) and [#619](https://github.com/WICG/webpackage/pull/619) are landed).
+The format above matches the [Web Bundles specification](#ref-web-bundles) (assuming that PRs [#5](https://github.com/wpack-wg/bundled-responses/pull/5), [#6](https://github.com/wpack-wg/bundled-responses/pull/6) and [#7](https://github.com/wpack-wg/bundled-responses/pull/7) are landed).
 
 _See the [bundle format FAQ](./faq.md#bundle-format) for more information._
 
@@ -169,7 +173,7 @@ URL: <https://url.spec.whatwg.org/>
 [web-bundles]: #ref-web-bundles "Concise Data Definition Language"
 
 Web Bundles<br>
-URL: <https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html>
+URL: <https://wpack-wg.github.io/bundled-responses/draft-ietf-wpack-bundled-responses.html>
 
   </dd>
 </dl>
