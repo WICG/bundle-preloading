@@ -23,7 +23,7 @@ Even though this format starts out with just two sections, the section architect
 | name              | type                   | size     | description                                                                   |
 | ----------------- | ---------------------- | -------- | ----------------------------------------------------------------------------- |
 | `magic`           | literal                | 64 bits  | F0 9F 8C 90 F0 9F 93 A6                                                       |
-| `version`         | `bytes`: raw bytes     | 32 bits  | the version of the specification                                                   
+| `version`         | `bytes`: raw bytes     | 32 bits  | the version of the specification                                              |
 | `section-lengths` | array (section-length) | variable | [see below](#defn-section-length "section-length") _(section-length)_         |
 | `sections`        | array                  | variable | [see next section](#section-index "The index section")] _(The index section)_ |
 | `length`          | `bytes`: raw bytes     | 64 bits  | The number of bytes in the bundle                                             |
@@ -47,7 +47,6 @@ resourcebundle = [
   length: bytes .size 8, ; Big-endian number of bytes in the bundle.
 ]
   
-whatwg-url = tstr
 section-lengths = [* (section-name: tstr, length: uint) ]
 ```
 
@@ -63,11 +62,17 @@ The URLs are relative paths within the same origin and directory as the bundle w
 
 #### Type: `index`
 
-| name    | type                                                              | size     | description                                         |
-| ------- | ----------------------------------------------------------------- | -------- | --------------------------------------------------- |
-| `index` | map (<code>[tstr]</code> => <code>[location-in-responses]</code>) | variable | A map from URL (as a variable string) to a location |
+| name    | type                                                                    | size     | description                                         |
+| ------- | ----------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| `index` | map (<code>[whatwg-url]</code> => <code>[location-in-responses]</code>) | variable | A map from URL (as a variable string) to a location |
 
 [location-in-responses]: #location-in-responses
+
+#### Type: `whatwg-url`
+
+| name         | type                                                                        | size     | description                  |
+| ------------ | --------------------------------------------------------------------------- | -------- | ---------------------------- |
+| `whatwg-url` | <abbr title="Text String (CBOR Major Type 3)">[`tstr`][tstr]</abbr>: string | variable | A URL (as a variable string) |
 
 #### Type: `location-in-responses`
 
@@ -81,6 +86,7 @@ The URLs are relative paths within the same origin and directory as the bundle w
 
 ```cddl
 index = {* whatwg-url => [ location-in-responses ] }
+whatwg-url = tstr
 location-in-responses = (offset: uint, length: uint)
 ```
 
