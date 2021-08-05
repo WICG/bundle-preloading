@@ -43,13 +43,13 @@ https://www.example.com/assets/sidebar.js
 https://www.example.com/assets/profile.png
 ```
 
-For more details on the bundled response format, see the [IETF draft](https://github.com/seanturner/wpack-bundled-responses).
+For more details on the bundled response format, see the [IETF WEBPACK draft](https://github.com/wpack-wg/bundled-responses).
 
 Any references to these resources later in the document _may_ be loaded from the bundled response. For example, if the following elements are present later on the page, the comments indicate what the browser may do:
 
 ```html
 <img src="profile.png" />
-p<!-- results in new request to https://example.com/profile.png -->
+<!-- results in new request to https://example.com/profile.png -->
 
 <img src="assets/profile.png" />
 <!-- the image may be loaded from the bundle without an additional request -->
@@ -58,7 +58,7 @@ p<!-- results in new request to https://example.com/profile.png -->
 <!-- the image may be loaded from the bundle without an additional request -->
 ```
 
-Note that all of the bundled responses may only be accessed at URLs with the same base path component as the bundle's source, where "base path component" refers to the URL trucated before the last path component.
+Note that all of the bundled responses may only be accessed at URLs with the same base path component as the bundle's source, where "base path component" refers to the URL truncated before the last path component.
 
 ## JavaScript API
 
@@ -148,6 +148,8 @@ Let's consider a web application with the following layout:
 ```
 
 `site.wbn` is a bundle containing all of the other files under `assets/`.
+
+Note that from the point of view of this protocol, it is not strictly necessary that the content of the bundle is duplicated in the server's filesystem. In theory, it would be possible for the server to store just the bundle file and use it to serve single (not bundled) requests to individual resources. Detailed prototyping will be necessary to evaluate the performance implications of that alternative approach.
 
 ### Code splitting
 
@@ -290,7 +292,7 @@ Wait! We know, there are some complicated edge cases. We've probably missed a fe
 
 We explain many of the design decisions and tradeoffs in the other pages of this proposal. There's also a page for [frequently asked questions](./faq.md). We've made a lot of changes to this proposal, so some of those sections may be marked as out-of-date with 🚧 warnings 🚧; stay tuned for more updates to those sections soon. For any other questions, the [README](./README.md) covers where discussion happens - in the issues on this repository and our open Matrix channel.
 
-# Checkpointing
+## Summary
 
 This is a quick overview of bundle preloading. In summary:
 

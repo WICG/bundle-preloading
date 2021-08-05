@@ -5,12 +5,15 @@
 * @cjtenny
 * @littledan
 * @wycats
+* @felipeerias
 
 ## Introduction
 
-Bundled responses are a collection of HTTP responses, represented in [a new file format](https://github.com/seanturner/wpack-bundled-responses). This document describes a mechanism and semantics for efficient preloading of multiple resources from bundled responses.
+This document describes a mechanism and semantics for efficient preloading of multiple resources using bundled responses, which contain a collection of HTTP responses in [the Web Bundles format](https://github.com/wpack-wg/bundled-responses).
 
-Web bundlers currently face lots of hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. A bundling format alone does not address all of their issues. This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries in ways complementary to [HTTP3/QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC).
+Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why developers usually use *bundlers*, tools that combine and transform resources for efficient deployment.
+
+However, bundlers currently face lots of hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. A bundling format alone does not address all of their issues. This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries in ways complementary to [HTTP3/QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC).
 
 There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [previous](https://datatracker.ietf.org/doc/html/rfc7541) [attempts](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cache-digest-05) to implement aspects of efficient resource bundling on the web. Unfortunately, they failed to gain widespread adoption due to constraints imposed on bundlers, servers, and clients. This proposal attempts to avoid the failures of those previous attempts. It does so by:
 - Offering imperative and declarative client-side control to web developers
@@ -40,15 +43,14 @@ We recommend starting with the [motivation](./motivation.md) and [examples](./ex
 
 The remaining sections go into more detail about the design tradeoffs and possible scenarios relating to gradual adoption, backwards compatibility, and graceful degradation for specific audiences.
 
-🚧 = Out of date, being rewritten to be consistent with current state of proposal (2021-05-13)
-
 - [Motivation, goals and constraints](./motivation.md)
 - [Basic usage: bundle preloading examples](./examples.md)
 - Considerations for bundlers, servers, and browsers
-  - 🚧 [Bundle preloading for clients](./subresource-loading.md) 🚧
-  - 🚧 [Bundle preloading for servers](./subresource-loading-server.md) 🚧
-  - 🚧 [Suggestions for bundlers & tools](./subresource-loading-tools.md) 🚧
-- 🚧 [FAQ](./faq.md) 🚧
+  - [Bundle preloading for clients](./subresource-loading.md)
+  - [Bundle preloading for servers](./subresource-loading-server.md)
+  - [Suggestions for bundlers & tools](./subresource-loading-tools.md)
+- [FAQ](./faq.md)
+- [Ideas for the future evolution of the proposal](./subresource-loading-evolution.md)
 - [Glossary](./glossary.md)
 - [Prototyping and implementation](./implementation.md) 
 

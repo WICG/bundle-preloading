@@ -8,13 +8,9 @@ To load a very large number of JavaScript modules, these ideas may be best used 
 
 ## Base solution
 
-Resources to be fetched in a bundle must be explicitly requested.  To this end, the Web document declares a list of resources to be preloaded.
+The process of bundled resource preloading begins with the Web document specifying a list of resources to be preloaded.
 
-Only the resources included in this list may be requested by the client or returned by the server. Any additional resources included in a client request or server response will be ignored.
-
-Because of [same origin](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) and [path](glossary.md) restrictions, the resources can only correspond to URLs with the same origin and `path - 1` as the bundle itself.
-
-<!-- TODO explain path restriction -->
+Because of [origin model](./motivation.d#origin-model) and [path restriction](./motivation.md#path-restriction), those resources can only correspond to URLs with the same origin and `path - 1` as the bundle file itself.
 
 There are two APIs available for expressing the lkist of resources to be preloaded:
 
@@ -73,7 +69,6 @@ These resources may be cached and references to them later on may be loaded from
 
 This initial version simply relies on the general HTTP cache. A further evolution could be to provide more fine-grained control to the developer by specifying a named cache using the [CacheStorage API](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
 
-
 See the [Examples](examples.md) document for a more detailed explanation.
 
 ## Optionality and URL integrity
@@ -93,6 +88,6 @@ For online enforcement: Whenever a fetch is made to something which is within th
 Online enforcement through the second or third bullet point would be most practical when it is done only rarely, for a small percentage of fetches, so that the overhead is low.
 
 
-## Future evolution alternatives
+## Future evolution
 
-After this initial version of resource preloading, more flexible mechanisms could be added to fulfil additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](subresource-loading-evolution.md).
+After this initial version of resource preloading, more flexible mechanisms could be added to fulfill additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](subresource-loading-evolution.md).

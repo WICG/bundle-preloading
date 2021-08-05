@@ -1,43 +1,49 @@
-# 🚧 OUT OF DATE
-
-_Please note_: This page's content is in an inconsistent state relative to the rest of the proposal. It is being rewritten (notice 2021-05-13).
-
 # Tooling support for resource bundle loading
 
-Resource bundles and the `loadbundle` manifests are not expected to be created manually by developers. Instead, the idea is that the bundlers which developers use today (such as [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) or [esbuild](https://esbuild.github.io/)) would output this new format. The transition enables more direct interpretation of assets by the browser and improved compression performance and cache hit rates.
+Resource bundles and `bundlepreload` manifests are not expected to be created and mantained manually by developers. Instead, the idea is that the bundler tools which developers use today would output this new format.
 
-Due to their place in the ecosystem, if we want to give Web/JS developers a path to improving loading performance, the working at the bundler level is a natural place. Bundlers already "speak the language" that developers speak, and they understand the set of resources involved and their relationship. In particular, the "back end" of bundlers--where they generate resources to be sent over the wire--is more relevant than the "front end"--where configuration files are processed, language supersets are handled, etc.
+Due to their place in the ecosystem, if we want to give Web/JS developers a path to improving loading performance, working at the bundler level is a natural choice. Bundlers already "speak the language" of developers, and they understand the set of resources involved and their relationships. In particular, the "back end" of bundlers--where they generate resources to be sent over the wire--is more relevant than the "front end"--where configuration files are processed, language supersets are handled, etc.
 
-## Background: What bundlers do today
 
-Bundlers act as the central build system for JS/Web applcations, allowing developers tie together various kinds of code transformation, including:
+## Background: Bundling and the JS ecosystem
+
+Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one would have very poor performance, which is why developers have created *bundlers*: tools that transform and combine resources for efficient deployment.
+
+Some examples of bundler tools are [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) or [esbuild](https://esbuild.github.io/)). In general, they all share a common set of core functionality:
+
+- **Dependency tracking**: Understanding where all of the assets in an application are, and the dependencies between them (webpack [dependency graph](https://webpack.js.org/concepts/dependency-graph/), [asset management](https://webpack.js.org/guides/asset-management/))
+- **Bundling**: Packaging up several resources into fewer files to be transported more efficiently, e.g., through emulating ES modules, embedding CSS and binary data in JS source code ("virtualization"), etc.
+- **Code splitting**: Breaking up the graph of resources into groups of components which can be loaded together or separately ([webpack code splitting docs](https://webpack.js.org/guides/code-splitting/))
+- **Tree shaking**: identify and remove unused code ([MDN documentation](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking))
+- **Naming**: Naming chunks with URLs based on a hash of the contents, to enable long-lived caching modes ("cache busting", [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#revved_resources); [a detailed article about strategies](https://css-tricks.com/strategies-for-cache-busting-css/); [webpack caching docs](https://webpack.js.org/guides/caching/))
+
+Since bundlers act as the central build system for JS/Web applications, this allows them to also perform various kinds of code transformation, including:
+
 - Transformations from other languages and JS supersets to JS (e.g., [TypeScript](https://www.typescriptlang.org/))
 - Downleveling to earlier versions of JS (e.g., [Babel](https://babeljs.io/))
 - Transformations which apply across files (e.g., [webpack tree shaking options](https://webpack.js.org/guides/tree-shaking/))
 - Minifiers (e.g., [Terser](https://terser.org/))
 
-In addition to these options, there is a certain common core that modern bundlers all share:
-- **Dependency tracking**: Understanding where all of the assets in an application are, and the dependencies between them ([webpack asset management docs](https://webpack.js.org/guides/asset-management/))
-- **Code splitting**: Breaking up the graph of resources into certain components which are loaded together or separately ([webpack code splitting docs](https://webpack.js.org/guides/code-splitting/))
-- **Bundling**: Packaging up several resources into fewer files to be transported more efficiently, e.g., through emulating ES modules, putting CSS in strings, binary data in base64 strings, etc. ("bundling")
-- **Naming**: Naming chunks with URLs based on a hash of the contents, to enable long-lived caching modes ("cache busting", [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#revved_resources); [a detailed article about strategies](https://css-tricks.com/strategies-for-cache-busting-css/); [webpack caching docs](https://webpack.js.org/guides/caching/))
 
 ## How resource bundle loading compares to existing bundlers
 
-The core of bundlers corresponds exactly to what is needed to generate resource bundles for efficient subresource loading, in a way that has the potential work even better:
+This would enable more direct interpretation of assets by the browser, as well as improved compression performance and cache hit rates.
+
+The core functionality of bundlers matches what would be needed to generate resource bundles for efficient subresource loading, in a way that has significant potential for improvement over the status quo:
+
 - **Code splitting**: Resources are split at a more granular level, down to the individual resource (or chunk). Rather than [making a tradeoff between granular chunking and minimizing the number of separate requests](https://web.dev/granular-chunking-nextjs/), the request can contain just the resources or small chunks that are needed, since many are requested at once. This results in effective use of caching and compression, while having minimal HTTP overhead and unused bytes sent over the network.
-- **Bundling**: The bundling format is native resource bundles, which can be understood directly by the browser. Unlike with enumated bundles, browsers know how to interpret them as they are streamed in, and don't require any JavaScript to execute to make them visible to the browser.
-- **Naming**: To use long-lived caching modes, the hash is keyed by ETag (or chunk ID, depending on the mechanism). When content changes, the ETag/chunk ID changes. At the same time, all of the contained URLs can actually be the semantically relevant one, rather than a generated one. This means that unchanged files don't need a new revision just because one of their dependencies has a new version.
+- **Bundling**: The non-standard formats currently used by bundlers are opaque to browsers and require JavaScript execution to be loaded. The bundling format is native [Web bundles](https://github.com/wpack-wg/bundled-responses), which browsers will be able to understand and unpack directly.
+- **Naming**: To use long-lived caching modes, developers will be able to implement [revving](./glossary.md#revving) by appending a version number to the resource's name; when the content changes, this version number will be updated. Since bundle preloading provides a more fine-grained view of the resources contained in a bundle, unchanged files won't need a new revision just because one of their dependencies has been updated.
+
+<!-- TODO (felipeerias) but if we use revving, the link to the updated file will have to change, right? -->
 
 ## Input and output of bundlers
 
-In the basic model, the input of bundlers is as today (both in terms of developers' source code, as well as much of what goes into bundlers' configuration files), and the big difference is the output: Rather than outputting a directory of files to serve statically, bundlers would instead output two files:
-- A `loadbundle` manifest to include directly in HTML, inline.
-- A resource bundle to be served, with details depending on the subsetting mechanism selected:
-    - *ETags*: A resource bundle with the individual responses, each with an appropriate ETag as a response header.
-    - *Chunking*: A resource bundle, mapping chunk IDs to inner resource bundles, which contain the various resources. Servers are then expected to [serve subsets of this resource bundle](./subresource-loading-server.md) based on which chunk IDs the client requests.
-    - *Cuckoo hash*: Several resource bundles, corresponding to different routes <!-- TODO(yoavweiss): Elaborate -->
+In the basic model of bundled resource preloading, the input of bundlers remains the same as today (both in terms of developers' source code, as well as much of what goes into bundlers' configuration files), and the big difference is the output: Rather than outputting a directory of files to serve statically, bundlers would instead output two files:
 
-It is possible that tools could use resource bundles in [further ways](./other-uses.md) as well.
+- A `bundlepreload` manifest to include directly in HTML, inline.
+- A bundle file (in the [Web bundle format](https://github.com/wpack-wg/bundled-responses)) with the responses that correspond to the resources contained in the bundle.
+
+Optionally, the bundlers may create several versions of the same bundle of resources (e.g. for different languages). The selection of which one to use for each request will be made as a result of [content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation) on the server.
 
 *See the [tools FAQ](./faq.md#tools) for more information.*

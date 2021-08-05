@@ -107,4 +107,4 @@ Content blocking and bundle preloading must remain compatible; if bundle preload
 - Bundle preloading must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. ["Personalization"](#personalization))
 - When content is blocked, bundle preloading should not cause browsers to download the blocked content. (c.f. ["code splitting"](#for-web-developers))
 
-[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./examples.md)
+[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading.md)
