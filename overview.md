@@ -29,17 +29,17 @@ Since the Web page requires more styles, images, code, etc. to be properly displ
 
 The *client* examines its own cache and discovers that it already has one of those resources, but not the rest.
 
-![Overview diagram, step 2](img/overview_1.png)
+![Overview diagram, step 2](img/overview_2.png)
 
 The *client* sends a request to the *server* to retrieve a bundle with the resources required by the *document* and which could not be found in the cache.
 
 The *server* replies with a bundle containing the requested resources.
 
-![Overview diagram, step 3](img/overview_1.png)
+![Overview diagram, step 3](img/overview_3.png)
 
 Finally, the *client* has everything that it needs to display the Web page!
 
-![Overview diagram, step 4](img/overview_1.png)
+![Overview diagram, step 4](img/overview_4.png)
 
 
 ## HTML script tag
