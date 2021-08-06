@@ -284,3 +284,5 @@ There are many possible policies here, just as bundlers today have many possible
 **A**: Two options:
 - *Graceful degradation*: Because individual resources in a resource bundle must be served from the same URL with the same contents, sites will "just work" if resource bundles are simply turned off. However, performance will often not be good enough, for all the reasons developers use bundlers in the first place today.
 - *Feature detection*: Detect the lack of this feature and invoke a legacy-bundled fallback. The detection can be done by introspecting the DOM and checking how the `bundlepreload` manifest was parsed.
+
+[Previous section](./subresource-loading-tools.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-evolution.md)

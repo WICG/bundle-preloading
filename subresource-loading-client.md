@@ -93,3 +93,5 @@ Online enforcement through the second or third bullet point would be most practi
 ## Future evolution
 
 After this initial version of resource preloading, more flexible mechanisms could be added to fulfill additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](./subresource-loading-evolution.md).
+
+[Previous section](./overview.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-server.md)

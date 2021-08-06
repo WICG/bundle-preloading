@@ -37,7 +37,7 @@ The main goals of bundle preloading are:
   * each response can be cached individually.
 
 
-## Participation and Standards Venue
+## Participation and Standards Venues
 
 The Web Incubator Community Group is not a standards venue itself; documents developed here, such as this one, are not by themselves on a standards track. Instead, WICG serves to provide an open platform and safeguard the intellectual property developed to enable later standardization.
 
@@ -51,7 +51,7 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 This proposal seeks to address several audiences - bundler and tooling authors, client and server side web developers, and browser implementers - and as such has been split into several files.
 
-We recommend starting with the [motivation](./motivation.md) and [examples](./overview.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
+We recommend starting with the [motivation](./motivation.md) and [overview](./overview.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
 
 The remaining sections provide further details for specific audiences.
 
@@ -62,11 +62,11 @@ The remaining sections provide further details for specific audiences.
   - [Bundle preloading for servers](./subresource-loading-server.md)
   - [Suggestions for bundlers & tools](./subresource-loading-tools.md)
 - [FAQ](./faq.md)
-- [Ideas for the future evolution of the proposal](./subresource-loading-evolution.md)
+- [Ideas for the future evolution of this proposal](./subresource-loading-evolution.md)
 - [Glossary](./glossary.md)
 - [Prototyping and implementation](./implementation.md) 
 
-## Stakeholder feedback / opposition
+## Stakeholder feedback
 
 The [FAQ](./faq.md) contains some characterization of stakeholder feedback. This section will be updated as stakeholders offer feedback.
 

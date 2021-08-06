@@ -35,7 +35,6 @@ The core functionality of bundlers matches what would be needed to generate reso
 - **Bundling**: The non-standard formats currently used by bundlers are opaque to browsers and require JavaScript execution to be loaded. The bundling format is native [Web bundles](https://github.com/wpack-wg/bundled-responses), which browsers will be able to understand and unpack directly.
 - **Naming**: To use long-lived caching modes, developers will be able to implement [revving](./glossary.md#revving) by appending a version number to the resource's name; when the content changes, this version number will be updated. Since bundle preloading provides a more fine-grained view of the resources contained in a bundle, unchanged files won't need a new revision just because one of their dependencies has been updated.
 
-<!-- TODO (felipeerias) but if we use revving, the link to the updated file will have to change, right? -->
 
 ## Input and output of bundlers
 
@@ -47,3 +46,5 @@ In the basic model of bundled resource preloading, the input of bundlers remains
 Optionally, the bundlers may create several versions of the same bundle of resources (e.g. for different languages). The selection of which one to use for each request will be made as a result of [content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation) on the server.
 
 *See the [tools FAQ](./faq.md#tools) for more information.*
+
+[Previous section](./subresource-loading-server.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./faq.md)
