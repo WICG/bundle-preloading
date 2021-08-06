@@ -1,5 +1,7 @@
 # Subresource loading with resource bundles
 
+<!-- TODO focus this document on resource bundling from the point of view of the client: user, developer, browser -->
+
 This document presents the basic operation of bundled resource preloading, which constitutes our starting point in terms of specification and prototyping.
 
 Additional, more complex mechanisms could be added to this initial version later on. This document also discusses several possible directions to evolve it in the future. There are tricky performance tradeoffs that we expect to only be able to make based on more concrete prototyping.

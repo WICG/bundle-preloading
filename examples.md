@@ -1,15 +1,31 @@
 # Basic usage: bundle preloading examples
 
-We propose:
-* A static way to declare resources retrieved from a bundle in HTML
-* A JavaScript API for preloading bundled responses
-* Request headers and corresponding response behavior for preloading bundled resources
+The basic operation of resource preloading with bundled responses follows this outline:
 
-This page demonstrates common examples of using each of these features, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server support edge cases, are discussed in subsequent parts of this proposal.
+1. the Web document provides (declaratively or imperatively) a list of required resources;
+1. the client sends an HTTP request for those not in its cache;
+1. the server replies with a bundled response containing the requested resources.
+
+The API to implement this solution consists of these components:
+
+* a declarative way in HTML to list resources to be retrieved in a bundle;
+* an imperative JavaScript API for bundle preloading;
+* request headers and corresponding response behavior for delivering bundled resources.
+
+This page demonstrates common examples of using each of these features, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
+
+<!--TODO too long, some of this content needs to be moved to specific documents; also, pictures! -->
 
 ## HTML script tag
 
-Web developers can preload resources from a bundle without JavaScript by using a `<script>` tag with `type=bundlepreload`. The text of the tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in the resource list can be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
+Web developers can preload resources from a bundle by using a `<script>` tag with `type=bundlepreload`. The tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in the resource list can be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
+
+<!-- TODO I think that this is inconsistent with what is written elsewhere
+
+Basically, either you ignore additional resources that the server may include, or you process them.
+Ignoring them preserves URL integrity, because you dononly get exactly what you requested.
+Processing the resources may have better performance and also provides graceful degradation: a server that does not have the capability to create a subset of resources on the fly might just always send the whole bundle.
+ -->
 
 Consider the following resource list for the page `https://www.example.com/index.html`:
 
@@ -25,7 +41,10 @@ Consider the following resource list for the page `https://www.example.com/index
 }
 </script>
 ```
-This directs the browser that it _may_ serve any of the resources in `"resources"` by making a single request for `https://www.example.com/assets/resources.wbn`. That request *must* contain the [structured header](https://www.fastly.com/blog/improve-http-structured-headers) `Bundle-Preload`; the value for the `Bundle-Preload` header may only contain a non-empty subset of the `"resources"` list. To retrieve all the declared resources, the request may look like:
+
+Because of same origin and path restrictions, the resources referenced by the bundle must correspond to URLs with the `https://www.example.com/assets/` prefix. For easier portability, the list may use relative locations as in the example. All of the bundled responses may only be accessed at URLs with the same base path component as the bundle's source, where "base path component" refers to the URL truncated before the last path component.
+
+This directs the browser that it _may_ serve any of the resources in the `"resources"` list by making a single request for `https://www.example.com/assets/resources.wbn`. That request *must* contain the [structured header](https://www.fastly.com/blog/improve-http-structured-headers) `Bundle-Preload`; the value for the `Bundle-Preload` header may only contain a non-empty subset of the `"resources"` list. To retrieve all the declared resources, the request may look like:
 
 ```
 GET /assets/resources.wbn HTTP/1.1
@@ -48,17 +67,16 @@ For more details on the bundled response format, see the [IETF WEBPACK draft](ht
 Any references to these resources later in the document _may_ be loaded from the bundled response. For example, if the following elements are present later on the page, the comments indicate what the browser may do:
 
 ```html
-<img src="profile.png" />
-<!-- results in new request to https://example.com/profile.png -->
-
 <img src="assets/profile.png" />
 <!-- the image may be loaded from the bundle without an additional request -->
 
 <img src="https://example.com/assets/profile.png" />
 <!-- the image may be loaded from the bundle without an additional request -->
+
+<img src="more_assets/profile.png" />
+<!-- results in a new request to https://example.com/more_assets/profile.png -->
 ```
 
-Note that all of the bundled responses may only be accessed at URLs with the same base path component as the bundle's source, where "base path component" refers to the URL truncated before the last path component.
 
 ## JavaScript API
 

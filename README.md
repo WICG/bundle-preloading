@@ -9,27 +9,39 @@
 
 ## Introduction
 
-This document describes a mechanism and semantics for efficient preloading of multiple resources using bundled responses, which contain a collection of HTTP responses in [the Web Bundles format](https://github.com/wpack-wg/bundled-responses).
+This document describes a mechanism and semantics for the efficient preloading of multiple resources using bundled HTTP responses in [the Web Bundles format](https://github.com/wpack-wg/bundled-responses).
 
-Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why developers usually use *bundlers*, tools that combine and transform resources for efficient deployment.
+Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why Web developers rely on *bundlers*, tools that combine and transform resources for efficient deployment.
 
-However, bundlers currently face lots of hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. A bundling format alone does not address all of their issues. This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries in ways complementary to [HTTP3/QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC).
+However, bundlers currently face many hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. The non-standard formats used by bundlers are not interoperable and extracting resources from them tends to be costly; furthermore, their contents are mostly opaque to browsers, preventing fine-granied cache management.
 
-There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [previous](https://datatracker.ietf.org/doc/html/rfc7541) [attempts](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cache-digest-05) to implement aspects of efficient resource bundling on the web. Unfortunately, they failed to gain widespread adoption due to constraints imposed on bundlers, servers, and clients. This proposal attempts to avoid the failures of those previous attempts. It does so by:
+This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries in ways complementary to [HTTP3/QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC).
+
+There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [previous](https://datatracker.ietf.org/doc/html/rfc7541) [attempts](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cache-digest-05) to implement aspects of efficient resource bundling on the web. Unfortunately, they failed to gain widespread adoption due to constraints imposed on bundlers, servers, and clients. This proposal attempts to avoid the failures of those previous attempts by:
+
 - Offering imperative and declarative client-side control to web developers
 - Maintaining backwards compatibility for servers and intermediaries through polyfilling and existing cache-control mechanisms
 - Preserving the relationship between URLs and content (["resource identity"](./glossary.md#rsrcidentity) for graceful degradation and content blocking.
 
-Bundle preloading can be used to:
-- Load web content faster
-- Reduce bundler build time and logic
-- Represent simple web sites with fewer files
+<!-- TODO complete and sync with other docs-->
+
+The main goals of bundle preloading are:
+
+- Efficiently distribute web content in a standard and interoperable manner.
+- Allow developers to keep the benefits of today's bundler ecosystem:
+  * improved network performance and faster load times;
+  * optimization strategies like revving, code splitting, tree shaking, etc. remain possible;
+  * reduced bundler build time and logic.
+- At the same time, preserve the benefits of accessing individual resources:
+  * flexibility when loading and processing responses;
+  * each response can be cached individually.
+
 
 ## Participation and Standards Venue
 
 The Web Incubator Community Group is not a standards venue itself; documents developed here, such as this one, are not by themselves on a standards track. Instead, WICG serves to provide an open platform and safeguard the intellectual property developed to enable later standardization.
 
-The resource bundle format referenced in this proposal is an RFC from the IETF WPACK WG. It will be periodically published as an Internet-Draft. The bundle format is currently developed in the [wpack-wg/bundled-responses](https://github.com/wpack-wg/bundled-responses) repository.
+The resource bundle format referenced in this proposal is an RFC from the [IETF WPACK working group](https://datatracker.ietf.org/group/wpack/about/) which will be periodically published as an Internet-Draft. The bundle format is currently developed in the [wpack-wg/bundled-responses](https://github.com/wpack-wg/bundled-responses) repository.
 
 Discussion of this proposal is welcome in the [issues](https://github.com/WICG/resource-bundles/issues) section of this repository. Additional discussion occurs on our [Matrix](https://matrix.to/#/#bundle-preloading:igalia.com) channel, at [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/) meetings, and on the WPACK WG [mailing list](https://www.ietf.org/mailman/listinfo/wpack).
 
@@ -41,12 +53,12 @@ This proposal seeks to address several audiences - bundler and tooling authors, 
 
 We recommend starting with the [motivation](./motivation.md) and [examples](./examples.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
 
-The remaining sections go into more detail about the design tradeoffs and possible scenarios relating to gradual adoption, backwards compatibility, and graceful degradation for specific audiences.
+The remaining sections provide further details for specific audiences.
 
 - [Motivation, goals and constraints](./motivation.md)
 - [Basic usage: bundle preloading examples](./examples.md)
 - Considerations for bundlers, servers, and browsers
-  - [Bundle preloading for clients](./subresource-loading.md)
+  - [Bundle preloading for clients](./subresource-loading-client.md)
   - [Bundle preloading for servers](./subresource-loading-server.md)
   - [Suggestions for bundlers & tools](./subresource-loading-tools.md)
 - [FAQ](./faq.md)
@@ -56,7 +68,7 @@ The remaining sections go into more detail about the design tradeoffs and possib
 
 ## Stakeholder feedback / opposition
 
-🚧 The [FAQ](./faq.md) contains some characterization of stakeholder feedback; however, it is based on an outdated version of this proposal. This section will be updated as stakeholders offer feedback. 🚧
+The [FAQ](./faq.md) contains some characterization of stakeholder feedback. This section will be updated as stakeholders offer feedback.
 
 ## Acknowledgements
 

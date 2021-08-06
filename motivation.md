@@ -4,9 +4,9 @@
 
 Web sites are often composed of multiple resources, such as HTML, CSS, JavaScript and images. When a web application is loaded, the web browser fetches the resources referenced by the page and renders the web page.
 
-The historical way of building and deploying web sites was to use separate files for code organization purposes and allow the browser to fetch them separately. This model did not perform well in real-world applications as their source grew to consist of hundreds and thousands of files.
+The historical way of building and deploying web sites was to use separate files for code organization purposes and allow the browser to fetch them separately. This model did not perform well in real-world applications as their source grew to hundreds and thousands of files.
 
-In an attempt to address these performance issues without losing the ability to organize code in files, developers built tools that combine source files for deployment in various ad-hoc ways:
+In an attempt to address these performance issues without losing the ability to organize code in files, developers built tools that transform and combine source files for efficient deployment in various ad-hoc ways:
 
 - CSS concatenation
 - Image spriting
@@ -14,7 +14,9 @@ In an attempt to address these performance issues without losing the ability to 
 - JavaScript transpilers supporting module systems and polyfills
 - Imperative insertion of images and stylesheets from base64 encoding (see [virtualization](./glossary.md#virtualization)).
 
-Modern tools that automate these ad-hoc strategies are known as "bundlers". Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
+<!-- TODO complete and sync -->
+
+Modern tools that automate these ad-hoc strategies are known as *bundlers*. Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
 
 ## Why change the status quo?
 
@@ -38,13 +40,13 @@ This proposal aims to create a first-class API for preloading multiple resources
 
 ## Goals
 
-Bundle preloading seeks to enable users to:
-- Efficiently distribute web content without custom application logic.
+Bundle preloading seeks to enable developers to:
+- Efficiently distribute web content in a standard and interoperable manner, without custom application logic.
 - Remove overhead from resource ["virtualization"](./glossary.md#virtualization).
-- Write web code without changing development workflow or URL accesses.
-- Benefit from code splitting and incremental caching without solving the known hard problem of cache invalidation themselves.
+- Benefit from code splitting, incremental caching and related strategies, without needing to solve the hard problem of cache invalidation.
+- Write Web code without changing development workflow or URL accesses.
 
-Bundle preloading focuses on the standard, interoperable Web platform. Our primary goal is broad adoption of bundle preloading by all major web browsers. Discussion of how these technologies can be deployed outside of the Web are welcome for discussion and influencing the details of the features, but the following use cases are beyond the scope of this proposal:
+Bundle preloading focuses on the standard, interoperable Web platform. Our primary goal is the broad adoption of bundle preloading by all major web browsers. Discussion of how these technologies can be deployed outside of the Web are welcome for discussion and influencing the details of the features, but the following use cases are beyond the scope of this proposal:
 - Bundle preloading in non-Web environments
 - Preloading bundled responses from different origins
 - Offline preloading of bundled content
@@ -53,6 +55,10 @@ Bundle preloading focuses on the standard, interoperable Web platform. Our prima
 Bundle preloading must not weaken the security or user freedom of the open web. The following subsections elaborate on goals, non-goals, and constraints as they relate to web developers and users.
 
 ### HTTP/URL semantics
+
+#### Resource identity and URL consistency
+
+URLs form the identity for resources on the Web. Resource bundles *represent* the same resources as their individual URLs indicate. Servers must maintain this correspondence--serving the same result if a resource is fetched individually, outside of the bundle. Clients must be able to verify that servers are well-behaved in practice. This correspondence maintains the sense of identity of URLs. Enforcement of this property is described in ["Optionality and URL integrity"](./subresource-loading.md#optionality-and-url-integrity). In this proposal, maintaining resource identity is necessary for backwards compatibility and graceful degradation as much as it is for preserving user freedom on the web.
 
 #### Origin model
 
@@ -64,23 +70,19 @@ This proposal aims to preserve the Web's origin model. On the Web, resources, in
 
 For the same [reason as ServiceWorkers](https://w3c.github.io/ServiceWorker/#path-restriction), it is important to limit resource bundles to represent resources whose path begins with a particular prefix, to provide additional protection on sites which host multiple users' content in different directories in the same origin (e.g., university websites' home directories, or GitHub pages for large organizations with several repositories).
 
-#### Resource identity
-
-URLs form the identity for resources on the Web. Resource bundles *represent* the same resources as their individual URLs indicate. Servers must maintain this correspondence--serving the same result if a resource is fetched individually, outside of the bundle. Clients must be able to verify that servers are well-behaved in practice. This correspondence maintains the sense of identity of URLs. (Enforcement of this property is described in 🚧["Optionality and URL integrity"](./subresource-loading.md#optionality-and-url-integrity)🚧.) In this proposal, maintaining resource identity is necessary for backwards compatibility and graceful degradation as much as it is for preserving user freedom on the web.
-
 ### Usability
 
 #### For web developers
 
-Web development mechanisms and tools (other than bundlers) should not need to change as a result of using bundle preloading.
+- Web development mechanisms and tools (other than bundlers) should not need to change as a result of using bundle preloading.
 - Mechanisms like code splitting with `import()` and asset references with `new URL()` should be usable in the same way.
-- Rich customizations/transformations (e.g., JSX, SASS), not just built-in Web features, should remain usable when targeting resource bundles.
+- Rich transformations (e.g., JSX, SASS), not just built-in Web features, should remain usable when targeting resource bundles.
 - Bundle preloading should allow for [revving](./glossary.md#revving).
 
 #### For servers and intermediaries
 
-- Web servers, as well as optimizing/caching intermediaries such as CDNs, should be able to implement bundle preloadingwith low, reasonable overhead and without being required to hold the entire bundle in memory.
-- Web servers and intermediaries that do not understand bundle preloading should not suffer large time or space performance penalties, e.g. combinatorial explosion of caching content.
+- Web servers, as well as optimizing/caching intermediaries such as CDNs, should be able to implement bundle preloading with low, reasonable overhead and without being required to hold the entire bundle in memory.
+- Web servers and intermediaries that do not understand bundle preloading should not suffer large time or space performance penalties (e.g. combinatorial explosion of caching content).
 - The serving logic should be stateless and independent of the details of bundlers or applications (e.g. unlike HTTP/2 PUSH):
   - Protocols must be stateless, with the server not needing to track individual client cache contents or previously served bundles/files for the origin.
   - Deployment of static content using bundles to servers should be possible simply by copying files.
@@ -88,8 +90,8 @@ Web development mechanisms and tools (other than bundlers) should not need to ch
 #### For browsers
 
 - Graceful degradation should be possible in multiple ways when unsupported by the browser:
-    - Always: Sites which use bundle preloading will transparently fall back to fetching resources individually.
-    - Optionally: Feature detection can observe the lack of bundle preloading support and emulate bundle preloading when appropriate, e.g. using ServiceWorkers.
+  - Always: Sites which use bundle preloading will transparently fall back to fetching resources individually.
+  - Optionally: Feature detection can observe the lack of bundle preloading support and emulate bundle preloading when appropriate, e.g. using ServiceWorkers.
 - Bundle preloading should be reasonable to implement, fitting into browsers' existing fetching and caching architectures while providing performance benefits in practice.
 
 ### Privacy
@@ -107,4 +109,4 @@ Content blocking and bundle preloading must remain compatible; if bundle preload
 - Bundle preloading must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. ["Personalization"](#personalization))
 - When content is blocked, bundle preloading should not cause browsers to download the blocked content. (c.f. ["code splitting"](#for-web-developers))
 
-[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading.md)
+[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./examples.md)
