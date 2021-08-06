@@ -12,15 +12,34 @@ The API to implement bundle preloading consists of:
 * an imperative JavaScript API for bundle preloading;
 * request headers and corresponding response behavior for delivering bundled resources.
 
-This page demonstrates common examples of using each of these features, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
+This page shows common examples of using each of these features, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
 
 <!--TODO too long, some of this content needs to be moved to specific documents; also, pictures! -->
 
 
 ## Mechanism
 
-<!--TODO describe the general mechanism without implementation details -->
+Let's start with a simplified description of the general mechanism used in this proposal, before venturing into implementation details.
 
+When the user wants to visit a Web page, their *client* requests and receives a *document* from a remote *server*.
+
+![Overview diagram, step 1](img/overview_1.png)
+
+Since the Web page requires more styles, images, code, etc. to be properly displayed, the *document* provides a list of required resources that may be preloaded in a bundle.
+
+The *client* examines its own cache and discovers that it already has one of those resources, but not the rest.
+
+![Overview diagram, step 2](img/overview_1.png)
+
+The *client* sends a request to the *server* to retrieve a bundle with the resources required by the *document* and which could not be found in the cache.
+
+The *server* replies with a bundle containing the requested resources.
+
+![Overview diagram, step 3](img/overview_1.png)
+
+Finally, the *client* has everything that it needs to display the Web page!
+
+![Overview diagram, step 4](img/overview_1.png)
 
 
 ## HTML script tag
