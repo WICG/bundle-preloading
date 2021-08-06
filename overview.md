@@ -1,4 +1,4 @@
-# Basic usage: bundle preloading examples
+# Overview: bundle preloading
 
 The basic operation of resource preloading with bundled responses follows this outline:
 
@@ -6,7 +6,7 @@ The basic operation of resource preloading with bundled responses follows this o
 1. the client sends an HTTP request for those not in its cache;
 1. the server replies with a bundled response containing the requested resources.
 
-The API to implement this solution consists of these components:
+The API to implement bundle preloading consists of:
 
 * a declarative way in HTML to list resources to be retrieved in a bundle;
 * an imperative JavaScript API for bundle preloading;
@@ -15,6 +15,13 @@ The API to implement this solution consists of these components:
 This page demonstrates common examples of using each of these features, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
 
 <!--TODO too long, some of this content needs to be moved to specific documents; also, pictures! -->
+
+
+## Mechanism
+
+<!--TODO describe the general mechanism without implementation details -->
+
+
 
 ## HTML script tag
 
@@ -297,6 +304,7 @@ Bundle-Preload: "css/base2.css", "img/hot-new-logo-2021-rev2.png", "js/fancierWi
 
 Of course, this web developer's strategy for revving isn't ideal; it would help them to use a bundler that can perform revving for them, perhaps producing [merkled](https://en.wikipedia.org/wiki/Merkle_tree) URLs inside web bundles rather than manually renaming files. One suspects that `js/fanciestWidget.js` is just around the corner, but solving that problem is another topic well beyond the scope of this proposal.
 
+<!--
 ## "But what about..."
 
 Wait! We know, there are some complicated edge cases. We've probably missed a few of them, and would like to hear from you about where we could improve. But this page doesn't point a complete picture. So first, if you want to know more about:
@@ -309,17 +317,18 @@ Wait! We know, there are some complicated edge cases. We've probably missed a fe
 🚧 Note, 2021-05-13: Okay, we haven't answered your questions yet. This is our list of what's coming next! We appreciate any input you have in the meantime, too. 🚧
 
 We explain many of the design decisions and tradeoffs in the other pages of this proposal. There's also a page for [frequently asked questions](./faq.md). We've made a lot of changes to this proposal, so some of those sections may be marked as out-of-date with 🚧 warnings 🚧; stay tuned for more updates to those sections soon. For any other questions, the [README](./README.md) covers where discussion happens - in the issues on this repository and our open Matrix channel.
+-->
 
 ## Summary
 
-This is a quick overview of bundle preloading. In summary:
+This is an overview of bundle preloading. In summary:
 
 * Bundle preloading introduces a mechanism for browsers to preload and natively interpret multiple resources with a single request.
-* This mechanism simplifies code splitting for bundlers, allowing client side JavaScript to decide what and when it needs resources.
 * Browsers only serve bundled responses from the same scope as the bundle, helping to preserve resource identity.
 * If browsers have cached responses, they can request only a subset of what a bundle may contain.
 * Servers do not need to keep track of any per-client bundle or cache state.
+* This mechanism simplifies code splitting for bundlers, allowing client side JavaScript to decide what and when it needs resources.
 
-Continue to the 🚧[next page](#)🚧 for more detailed considerations.
+Continue to the [next page](./subresource-loading-client.md) for more detailed considerations.
 
-[Previous section](./motivation.md) - [Table of contents](./README.md#table-of-contents) - 🚧[Next section](#)🚧
+[Previous section](./motivation.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-client.md)

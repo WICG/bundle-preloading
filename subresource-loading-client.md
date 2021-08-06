@@ -71,7 +71,7 @@ These resources may be cached and references to them later on may be loaded from
 
 This initial version simply relies on the general HTTP cache. A further evolution could be to provide more fine-grained control to the developer by specifying a named cache using the [CacheStorage API](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
 
-See the [Examples](overview.md) document for a more detailed explanation.
+See the [Overview](./overview.md) document for a more detailed explanation.
 
 ## Optionality and URL integrity
 
@@ -92,4 +92,4 @@ Online enforcement through the second or third bullet point would be most practi
 
 ## Future evolution
 
-After this initial version of resource preloading, more flexible mechanisms could be added to fulfill additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](subresource-loading-evolution.md).
+After this initial version of resource preloading, more flexible mechanisms could be added to fulfill additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](./subresource-loading-evolution.md).

@@ -56,7 +56,7 @@ We recommend starting with the [motivation](./motivation.md) and [examples](./ov
 The remaining sections provide further details for specific audiences.
 
 - [Motivation, goals and constraints](./motivation.md)
-- [Overview: bundle preloading examples](./overview.md)
+- [Overview: bundle preloading](./overview.md)
 - Considerations for bundlers, servers, and browsers
   - [Bundle preloading for clients](./subresource-loading-client.md)
   - [Bundle preloading for servers](./subresource-loading-server.md)

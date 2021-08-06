@@ -1,6 +1,6 @@
 # Future evolution of bundle preloading
 
-After the [initial version of resource preloading](overview.md), more flexible mechanisms could be layered on top of it to fulfil additional goals and provide more control to developers.
+After the initial version of resource preloading [described in the overview](./overview.md), more flexible mechanisms could be layered on top of it to fulfil additional goals and provide more control to developers.
 
 This section describes multiple versions of possible native bundle loading mechanisms, based on resource bundles, combining the advantages of today's bundlers and fetches of individual resources. Multiple versions are under investigation because there are tricky performance tradeoffs that we expect to only be able to make based on more concrete prototyping.
 
