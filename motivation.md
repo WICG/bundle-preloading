@@ -58,7 +58,7 @@ Bundle preloading must not weaken the security or user freedom of the open web. 
 
 #### Resource identity and URL consistency
 
-URLs form the identity for resources on the Web. Resource bundles *represent* the same resources as their individual URLs indicate. Servers must maintain this correspondence--serving the same result if a resource is fetched individually, outside of the bundle. Clients must be able to verify that servers are well-behaved in practice. This correspondence maintains the sense of identity of URLs. Enforcement of this property is described in ["Optionality and URL integrity"](./subresource-loading.md#optionality-and-url-integrity). In this proposal, maintaining resource identity is necessary for backwards compatibility and graceful degradation as much as it is for preserving user freedom on the web.
+URLs form the identity for resources on the Web. Resource bundles *represent* the same resources as their individual URLs indicate. Servers must maintain this correspondence--serving the same result if a resource is fetched individually, outside of the bundle. Clients must be able to verify that servers are well-behaved in practice. This correspondence maintains the sense of identity of URLs. Enforcement of this property is described in ["Optionality and URL integrity"](./subresource-loading-client.md#optionality-and-url-integrity). In this proposal, maintaining resource identity is necessary for backwards compatibility and graceful degradation as much as it is for preserving user freedom on the web.
 
 #### Origin model
 
@@ -109,4 +109,4 @@ Content blocking and bundle preloading must remain compatible; if bundle preload
 - Bundle preloading must not enable the cheap rotation of URLs within the bundle, as this would make URL-based content blocking much more difficult. (c.f. ["Personalization"](#personalization))
 - When content is blocked, bundle preloading should not cause browsers to download the blocked content. (c.f. ["code splitting"](#for-web-developers))
 
-[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./examples.md)
+[Previous section](./README.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./overview.md)

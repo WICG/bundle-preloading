@@ -71,7 +71,7 @@ These resources may be cached and references to them later on may be loaded from
 
 This initial version simply relies on the general HTTP cache. A further evolution could be to provide more fine-grained control to the developer by specifying a named cache using the [CacheStorage API](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
 
-See the [Examples](examples.md) document for a more detailed explanation.
+See the [Examples](overview.md) document for a more detailed explanation.
 
 ## Optionality and URL integrity
 

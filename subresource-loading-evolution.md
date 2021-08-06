@@ -1,6 +1,6 @@
 # Future evolution of bundle preloading
 
-After the [initial version of resource preloading](subresource-loading.md), more flexible mechanisms could be layered on top of it to fulfil additional goals and provide more control to developers.
+After the [initial version of resource preloading](overview.md), more flexible mechanisms could be layered on top of it to fulfil additional goals and provide more control to developers.
 
 This section describes multiple versions of possible native bundle loading mechanisms, based on resource bundles, combining the advantages of today's bundlers and fetches of individual resources. Multiple versions are under investigation because there are tricky performance tradeoffs that we expect to only be able to make based on more concrete prototyping.
 
@@ -32,7 +32,7 @@ No version is currently spelled out which is known to meet all goals completely,
 
 ## Server support for each approach
 
-To allow [efficient resource bundle loading](./subresource-loading.md), additional support on the server is helpful: Clients may request just a subset of a resource bundle by indicating what they need in the request with a `Bundle-ETags:` or `Bundle-Chunk-IDs:` header (depending on the chosen alternative), and the server should provide a response with just those ETags or chunks.
+To allow [efficient resource bundle loading](./subresource-loading-client-client.md), additional support on the server is helpful: Clients may request just a subset of a resource bundle by indicating what they need in the request with a `Bundle-ETags:` or `Bundle-Chunk-IDs:` header (depending on the chosen alternative), and the server should provide a response with just those ETags or chunks.
 
 Clients may also request an individual resource in a bundle, and the server must provide the same response as it would provide as part of a bundle.
 

@@ -51,12 +51,12 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
 
 This proposal seeks to address several audiences - bundler and tooling authors, client and server side web developers, and browser implementers - and as such has been split into several files.
 
-We recommend starting with the [motivation](./motivation.md) and [examples](./examples.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
+We recommend starting with the [motivation](./motivation.md) and [examples](./overview.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
 
 The remaining sections provide further details for specific audiences.
 
 - [Motivation, goals and constraints](./motivation.md)
-- [Basic usage: bundle preloading examples](./examples.md)
+- [Overview: bundle preloading examples](./overview.md)
 - Considerations for bundlers, servers, and browsers
   - [Bundle preloading for clients](./subresource-loading-client.md)
   - [Bundle preloading for servers](./subresource-loading-server.md)
