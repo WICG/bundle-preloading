@@ -35,7 +35,7 @@ An analysis by Brave is [in this issue comment](https://github.com/littledan/res
 
 #### Q: How is this work funded? Are there any conflicts of interest?
 
-[Eye/O](https://eyeo.com/) is funding Daniel Ehrenberg's (Igalia) work on resource bundles, and [Bloomberg](https://www.techatbloomberg.com/) had funded it previously. Many others have been collaborating, especially Yehuda Katz (Tilde), Pete Snyder (Brave) and several Google employees (inside and outside of the Chrome team). Google and Brave are also a clients of Igalia, but not funding work on this project.
+[Eye/O](https://eyeo.com/) is funding Igalia's work on resource bundles, and [Bloomberg](https://www.techatbloomberg.com/) had funded it previously. Many others have been collaborating, especially Yehuda Katz (Tilde), Pete Snyder (Brave) and several Google employees (inside and outside of the Chrome team). Google and Brave are also customers of Igalia, but not funding work on this project.
 
 ## Bundle format
 
@@ -62,11 +62,7 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 #### Q: How will this format be standardized?
 
-**A**: The idea is to standardize the format in IETF, probably in the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/). IETF has good infrastructure for the use of CBOR in specifications, and many important stakeholders in this problem space are in IETF and specifically the WPACK WG, which was assembled to work on the bundling problem space. In this repository, we'll develop a draft of a specification, which can hopefully be adopted by an IETF WG and become an RFC. The draft here is based on [Jeffrey Yasskin's prior proposal](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html), which has been introduced as an Internet-Draft in IETF. The resource bundle section registry would be created within IANA.
-
-#### Q: How does bundle format proposal relate to Jeffrey Yasskin's [Web Bundle format](https://wicg.github.io/webpackage/draft-yasskin-wpack-bundled-exchanges.html)?
-
-**A**: Daniel Ehrenberg and Jeffrey Yasskin have been working together closely on this proposal. Our current drafts have some mismatches, but the idea is to talk this through with more stakeholders and come to common conclusions.
+**A**: The Web Bundles format used in this proposal is being standardized at the [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/).
 
 #### Q: How does error handling work, given that CBOR leaves that a bit open?
 
@@ -82,13 +78,13 @@ This question has been raised over the years in response to previous web packagi
 
 Sharing compression dictionaries across multiple HTTP responses is a particularly challenging part. Although HTTPWG has developed various draft proposals in this area, concerns have been raised about privacy, security, implementation complexity, and the ability to use high-quality compression techniques on-line.
 
-#### Q: Are web developers actually supposed to write out those `<script type=loadbundle>` manifests, and create the resource bundles, themselves?
+#### Q: Are web developers expected to write out those `<script type=bundlepreload>` manifests, and create the resource bundles, themselves?
 
-**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `loadbundle` manifest, which can be pasted into the HTML inline.
+**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `bundlepreload` manifest, which can be pasted into the HTML inline.
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
-**A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/littledan/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
+**A**: JavaScript-only bundling is explored in [JavaScript module fragments](https://github.com/tc39/proposal-module-fragments/), but the current bundler ecosystem shows strong demand for bundling CSS, images, WebAssembly etc., and new non-JS module types further encourage the use of many small non-JS resources. Today, we see widespread usage of CSS in JavaScript strings, and other datatypes in base64 in JS strings (!). A JS-only bundle format may encourage these patterns to continue.
 
 Among other problems, these approaches make the resources opaque to the browser, which limits how effectively browsers can apply optimizations to them. It is also impossible to target these individual resources using browser APIs such as CSP. It is also impossible for these bundled resources to have their own headers. A JS-only bundle format may encourage these patterns to continue.
 
@@ -98,13 +94,15 @@ The [import maps proposal](https://github.com/WICG/import-maps) can also be used
 
 #### Q: Will support for non-JS assets make resource bundle loading too heavy-weight/slow?
 
-**A**: Indeed, it may. This proposal works at the network fetch level, not the module map level. This means that, when executing a JavaScript module graph, some browser machinery needs to be engaged. Multiple browser maintainers have expressed concern about whether the fetch/network machinery can scale up to 10000+ JS modules. Although resource bundles will help save *some* of the overhead, they may not be enough. JavaScript-specific [module fragments](https://github.com/littledan/proposal-module-fragments/) may be implementable with less overhead, as they work at the module map level.
+**A**: Indeed, it may. This proposal works at the network fetch level, not the module map level. This means that, when executing a JavaScript module graph, some browser machinery needs to be engaged. Multiple browser maintainers have expressed concern about whether the fetch/network machinery can scale up to 10000+ JS modules. Although resource bundles will help save *some* of the overhead, they may not be enough. JavaScript-specific [module fragments](https://github.com/tc39/proposal-module-fragments/) may be implementable with less overhead, as they work at the module map level.
 
 It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, JS module fragments should be nested inside resource bundles. This way, the expressiveness of resource bundles can be combined with the low per-asset overhead of JS module fragments: most of the "blow-up" in terms of the number of assets today is JS modules, so it makes sense to have a specialized solution for that case, which can be contained inside the JS engine. The plan from here will be to develop prototype implementations (both in browsers and build tools) to validate this hypothesis before shipping.
 
+<!-- deprecated
 #### Q: Should we start with a simpler kind of bundle loading, without subsetting or versioning?
 
-**A**: This approach is sketched out [in this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md). This repository takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively.
+**A**: This approach is sketched out [in this explainer](./subresource-loading.md). This repository takes a broader approach, based on conversations with webapp and tooling developers, as these capabilities seem to be often needed for native resource bundles to be useful in practice -- without them, significant transformations/emulation would remain needed, and the browser's cache would not be usable as effectively. Ideas for the future evolution of this proposal are sketched [here](./subresource_loading_evolution.md).
+-->
 
 #### Q: Why address resources within a bundle with URLs that look like they come from outside of the bundle, instead of something which more explicitly notes their source, like `https://example.com/bundle.rbn#resource-within-bundle`?
 
@@ -117,17 +115,19 @@ It's my (Dan Ehrenberg's) hypothesis at this point that, for best performance, J
 
 A different [`package:` scheme](https://github.com/WICG/webpackage/blob/master/explainers/bundle-urls-and-origins.md) has also been proposed for this purpose, which avoids the use of fragments, but causes even more issues because introducing a new scheme is expensive, and the authority of such URLs is unclear due to the presence of multiple origins.
 
+<!-- deprecated
 #### Q: Why trigger bundle loading automatically when certain URLs are fetched, rather than exposing an imperative API?
 
 **A**: In this proposal, resource bundle loading serves fundamentally as a *hint* for how to get the same content faster--these semantics correspond to the privacy goals. It is ideal if this hint can be declared in just one place, rather than sprinkled throughout the code.
 
 If an imperative API were used to load a subset of the bundle, then it would have to be invoked explicitly in each case that a resource served from a bundle is going to be used. This would be quite awkward and redundant, requiring additional tooling to generate that code. It is more usable if the platform handles this logic. [This previous version](https://gist.github.com/littledan/e01801001c277b0be03b1ca54788505e) used an imperative API for loading bundles.
+-->
 
 #### Q: Why does the syntax for loading a resource bundle use a `<script>` tag?
 
 **A**: It is important for browsers' preload scanners to be able to fetch resource bundles as appropriate, so a declarative syntax (here, through a `<script>` tag) is required. `<script>` is used rather than `<link>` due to [concerns from WebKit](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html) about injection attacks. But more syntax, in addition to the `<script>` tag, may actually be needed.
 
-Several use cases for resource bundle loading take place without the presence of the DOM, e.g, from a Worker. Therefore, a non-DOM-based JavaScript API is necessary, possibly something like `navigator.loadbundle({"source": "example.rbn", /* ... */})`.
+Several use cases for resource bundle loading take place without the presence of the DOM, e.g, from a Worker. Therefore, a non-DOM-based JavaScript API is necessary, possibly something like `window.bundlepreload({"source": "example.rbn", /* ... */})`.
 
 The `Link:` header, and even further, [HTTP Early Hints](https://www.fastly.com/es/blog/beyond-server-push-experimenting-with-the-103-early-hints-status-code) has great potential to serve as a mechanism to initiate prefetching as soon as possible. It would be optimal for resource batch loading to *also* have a syntax to be usable in this form, even if it's unavailable as a `<link>` tag in HTML.
 
@@ -142,8 +142,8 @@ The approach above ships a manifest to the client, which ends up standing in for
 
 #### Q: Could the manifest be delivered to the client incrementally, instead of all at once?
 
-**A**: Such an approach makes sense if fetching some ETags/chunks exposes the possible need for even more ETags/chunks in the future, that couldn't have been triggered previously. For example, say there is a rarely loaded but very large "admin" pane, which has several tabs within it: when you first load the admin pane, you may have more manifest to load for those inner tabs, which isn't necessary on first page load. There are a couple ways that this could be implemented:
-- *Imperatively*: There should probably be a JavaScript API for imperatively adding additional paths, each corresponding to ETags/chunk IDs to be loaded. This API can be invoked explicitly after clicking on the admin pane, based on logic embedded in it.
+**A**: Such an approach makes sense if fetching some bundled resources exposes the possible need for even more bundled resources in the future, that couldn't have been triggered previously. For example, say there is a rarely loaded but very large "admin" pane, which has several tabs within it: when you first load the admin pane, you may have more manifest to load for those inner tabs, which isn't necessary on first page load. There are a couple ways that this could be implemented:
+- *Imperatively*: There should probably be a JavaScript API for imperatively adding additional paths, each corresponding to bundled resources to be loaded. This API can be invoked explicitly after clicking on the admin pane, based on logic embedded in it.
 - *Declaratively*: If we find that this is a common pattern/need, then resource bundles could contain an additional section in them which is the section of paths that needs to be added for it, so that this can occur without running JavaScript.
 
 Incremental manifest fetching is another advanced technique that could be included in a v2 proposal, or even initially if experimentation finds that it is needed for sufficient performance.
@@ -156,15 +156,15 @@ Incremental manifest fetching is another advanced technique that could be includ
 
 **A**: Not in this proposal. Such a limitation would make the most sense if it were document-wide, but this proposal is about loading a resource bundle *within* a document (so, the HTML had to come from somewhere else, for one). A separate proposal could create a kind of iframe which is limited to be loading contents out of a particular bundle, perhaps with the bundle loading mechanism based on this document. It will be important to evaluate the privacy implications of such a proposal.
 
-#### Q: What happens if the server sends the client more ETags or chunks than it asked for?
+#### Q: What happens if the server sends the client more resources than it asked for?
 
-**A**: Servers are permitted to do this, and all of the subresources will end up loading, though more slowly. For example, a server could simply always reply with all of the ETags/chunks. Intelligent middleware could be responsible for filtering just the requested parts, making it easier to deploy resource bundle loading.
+**A**: Servers are permitted to do this, and all of the subresources will end up loading, though more slowly. For example, a server could simply always reply with all of the resources. Intelligent middleware could be responsible for filtering just the requested parts, making it easier to deploy resource bundle loading.
 
 There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
 - The browser could discard all additional resources
 - The browser could cache everything and make it available to the application
 
-#### Q: Why are the requested ETags/chunks listed as a header parameter, rather than in the URL as a query parameter?
+#### Q: Why are the requested resources in the bundle listed as a header parameter, rather than in the URL as a query parameter?
 
 **A**: Both alternatives would be possible. In a way, this is a sort of bikeshed, which would be fine to iterate on. Layering-wise, it's a bit unusual for network protocols to add query parameters this way, but it may be helpful to deal with length limitations in headers (which may be higher for URLs) and intermediaries which don't handle `Vary:` properly (whereas everyone keys off of the full URL).
 
@@ -174,7 +174,7 @@ There are a number of different possible valid designs for how a browser behaves
 
 ```html
 <!-- https://site.example/index.html -->
-<script type=loadbundle>
+<script type=bundlepreload>
     {
         "source": "https://cdn.example/pack.rbn",
         "scope": "https://cdn.example/pack/",
@@ -198,7 +198,7 @@ It's possible that some kind of *other* ad loading proposal could reuse the reso
 
 #### Q: How would WebExtensions (e.g., for content blocking) interact with resource bundle loading?
 
-**A**: More design work is still needed here, but the general idea is: if the extension intercepts fetches today, it will be able to intercept fetches that will be served by the resource bundle, as well as the underlying fetches to the resource bundle itself. Resources which are explicitly included among the `"paths"` in the `<script type=loadbundle>` manifest, and resources which come along for the ride when a chunk is fetched, are treated identically: Both would be intercepted by extensions. The only difference is that blocking the former will block fetching the chunk at all, whereas the latter will be something which has already downloaded.
+**A**: More design work is still needed here, but the general idea is: if the extension intercepts fetches today, it will be able to intercept fetches that will be served by the resource bundle, as well as the underlying fetches to the resource bundle itself. Resources which are explicitly included among the `"paths"` in the `<script type=bundlepreload>` manifest, and resources which come along for the ride when a chunk is fetched, are treated identically: Both would be intercepted by extensions. The only difference is that blocking the former will block fetching the chunk at all, whereas the latter will be something which has already downloaded.
 
 However, this could be quite expensive for extensions which intercept fetches (e.g., content blockers), and it may be beneficial to introduce certain changes to the [`webRequest`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest) API to facilitate optimizations: For example, a new [`RequestFilter`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter) field could be added to distinguish requests served from bundles, to allow work to focus on the request for the bundle chunks, rather than the individual included requests. [Safari's declarative Content Blocker API](https://developer.apple.com/documentation/safariservices/creating_a_content_blocker) could be treated similarly.
 
@@ -209,9 +209,10 @@ However, this could be quite expensive for extensions which intercept fetches (e
 #### Q: Will the overhead of going to plugins and ServiceWorker make resource bundle loading too slow?
 
 **A**: It's possible that these factors could cause significant overhead, if the number of resources is too great. A couple ways to consider mitigating this overhead:
-- At the application level, greater use of [JS module fragments](https://github.com/littledan/proposal-module-fragments/) could reduce the number of resources, and therefore reduce the overhead.
+- At the application level, greater use of [JS module fragments](https://github.com/tc39/proposal-module-fragments/) could reduce the number of resources, and therefore reduce the overhead.
 - In extensions and ServiceWorker, a batch-based API could be added to handle fetches which are served from resource bundles.
 
+<!-- deprecated
 #### Q: Would this proposal work with readable ETags/chunk IDs instead of random numbers and letters?
 
 **A**: Yes. ETags and chunk IDs are allocated by the creator of the resource bundles--in practice, the bundler. A simple way to allocate such IDs is to base it on a hash of the contents of the response or chunk. This matches a common practice with cache busting URLs. An advantage is that it's "stateless": the bundler does not have to think about what IDs may have been used in the past and exist in cache, by betting that there will not be a collision. However, the IDs could also be allocated in any other way, including one that makes more sense to humans.
@@ -220,7 +221,7 @@ However, this could be quite expensive for extensions which intercept fetches (e
 
 #### Q: Why bother with chunking, rather than the simpler ETags approach of naming individual resources?
 
-**A**: Naming individual resources results in a larger `<script type=loadbundle>` manifest, as well as more lengthy headers. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/littledan/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
+**A**: Naming individual resources results in a larger `<script type=bundlepreload>` manifest, as well as more lengthy headers. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/tc39/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
 
 The larger amount of metadata with the ETags approach has the benefit of better cache granularity and more efficiency gains due to content blocking. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
 
@@ -237,6 +238,7 @@ Chunking comes at the significant cost of not exposing each URL to the client, t
 #### Q: Is there any way to keep around just *part* of a chunk ID in cache, if part of it changes and another part doesn't?
 
 **A**: In the above proposal, chunk IDs are the atomic unit of loading and caching. The browser either uses whole chunk or it does not. Chunk IDs are abstract units of loading, not necessarily corresponding to a library/package: there may be multiple packages in a chunk, or one package may be divided into multiple chunks. If you want to be able to keep around just part of a chunk ID when only part of it changes, divide it into two chunk IDs ahead of time. Bundlers are responsible for making this metadata volume vs caching tradeoff.
+-->
 
 ## Serving
 
@@ -258,10 +260,11 @@ One idea raised to reduce the cost of re-compression for dynamic subsetting: use
 
 #### Q: How would the server know which kind of loading mode the client is asking for (e.g., in personalized ads vs non-personalized subresource loading)?
 
-**A**: In general, the loading mode should be indicated by the HTML (here, the `<script type=loadbundle>` tag). If the client knows how to interpret that, then it will send the appropriate request to the server, indicating what it wants. There are further possibilities to let the server know if more optional sections are added to the bundle format, such as an `Accept-Bundle-Sections` header describing what the client knows how to interpret (where no such header would indicate that only the `index` and `responses` sections are interpreted).
+**A**: In general, the loading mode should be indicated by the HTML (here, the `<script type=bundlepreload>` tag). If the client knows how to interpret that, then it will send the appropriate request to the server, indicating what it wants. There are further possibilities to let the server know if more optional sections are added to the bundle format, such as an `Accept-Bundle-Sections` header describing what the client knows how to interpret (where no such header would indicate that only the `index` and `responses` sections are interpreted).
 
 ## Tools
 
+<!--
 #### Q: In the chunking approach, how should bundlers decide how big/small to make the chunks?
 
 **A**: (Note that, in the ETags approach, the bundler gives output at the individual resource granularity, and does not need to form chunks.)
@@ -270,6 +273,7 @@ There are many possible policies here, just as bundlers today have many possible
 - *Fetching exactly what's needed*: In one sense, code splitting is "optimal" when you send the client only the information they need to render a particular set of routes/components, and nothing additional. This becomes a bit complicated when certain dependencies are shared and others are not. The problem is thoroughly solved by current bundlers, but this "optimal" solution can lead to more chunks than one might expect.
 - *Cache reuse*: The smaller the chunks are, the greater chance there is that, when just one resource changes, the maximal amount of information can be reused from cache. At the limit, this would mean putting each resource in its own chunk, however this strategy has cost:
 - *Avoiding excessive numbers of chunks*: More chunks means more metadata, both in the information sent between the client and the server, as well as for the browser to process internally. At some point, it makes sense to stop dividing the chunks smaller and smaller to reduce this cost. However, chunks are likely cheaper than independent fetches, so the calculus is shifted a bit compared [existing tuning](https://web.dev/granular-chunking-nextjs/).
+-->
 
 #### Q: When should bundlers decide to break up different units into module fragments?
 
@@ -279,4 +283,6 @@ There are many possible policies here, just as bundlers today have many possible
 
 **A**: Two options:
 - *Graceful degradation*: Because individual resources in a resource bundle must be served from the same URL with the same contents, sites will "just work" if resource bundles are simply turned off. However, performance will often not be good enough, for all the reasons developers use bundlers in the first place today.
-- *Feature detection*: Detect the lack of this feature and invoke a legacy-bundled fallback. The detection can be done by introspecting the DOM and checking how the `loadbundle` manifest was parsed.
+- *Feature detection*: Detect the lack of this feature and invoke a legacy-bundled fallback. The detection can be done by introspecting the DOM and checking how the `bundlepreload` manifest was parsed.
+
+[Previous section](./subresource-loading-tools.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-evolution.md)
