@@ -42,14 +42,7 @@ Finally, the *client* has everything that it needs to display the Web page!
 
 ## HTML script tag
 
-Web developers can preload resources from a bundle by using a `<script>` tag with `type=bundlepreload`. The tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in the resource list can be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
-
-<!-- TODO I think that this is inconsistent with what is written elsewhere
-
-Basically, either you ignore additional resources that the server may include, or you process them.
-Ignoring them preserves URL integrity, because you dononly get exactly what you requested.
-Processing the resources may have better performance and also provides graceful degradation: a server that does not have the capability to create a subset of resources on the fly might just always send the whole bundle.
- -->
+Web developers can preload resources from a bundle by using a `<script>` tag with `type=bundlepreload`. The tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in a resource list may be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
 
 Consider the following resource list for the page `https://www.example.com/index.html`:
 

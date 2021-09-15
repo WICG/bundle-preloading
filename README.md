@@ -13,8 +13,6 @@ This document describes a mechanism and semantics for the efficient preloading o
 
 Modern websites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why Web developers rely on [bundlers](./glossary.md#bundler), tools that combine and transform resources for efficient deployment.
 
-**TODO link bundlers**
-
 However, bundlers currently face many hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. The non-standard formats used by bundlers are not interoperable and extracting resources from them tends to be costly; furthermore, their contents are mostly opaque to browsers, preventing fine-grained cache management.
 
 This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries.
@@ -25,7 +23,7 @@ There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [pre
 - Maintaining backwards compatibility for servers and intermediaries through polyfilling and existing cache-control mechanisms.
 - Preserving the relationship between URLs and content (["resource identity"](./glossary.md#rsrcidentity) for graceful degradation and content blocking.
 
-**TODO complete and sync with other docs**
+<!-- TODO complete and sync with other docs -->
 
 The main goals of bundle preloading are:
 

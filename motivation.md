@@ -2,21 +2,17 @@
 
 ## Background
 
-Websites are often composed of multiple resources, such as HTML, CSS, JavaScript and images. When a Web application is loaded, the Web browser fetches the resources referenced by the page and renders the Web page.
-
-**TODO weird writing**
+Websites are often composed of multiple resources, such as HTML, CSS, JavaScript and images. When a Web page is loaded, the browser fetches the resources referenced by it and renders the page.
 
 The historical way of building and deploying websites was to use separate files for code organization purposes and allow the browser to fetch them separately. This model did not perform well in real-world applications as their source grew to hundreds and thousands of files.
 
-In an attempt to address these performance issues without losing the ability to organize code in files, developers built tools that transform and combine source files for efficient deployment in various ad-hoc ways:
+In an attempt to address these performance issues without losing the ability to organize code in files, developers have built [bundler tools](./glossary.md#bundler) that transform and combine source files for efficient deployment in various ad-hoc ways:
 
-- CSS concatenation
-- Image spriting
-- Script concatenation
-- JavaScript transpilers supporting module systems and polyfills
-- Imperative insertion of images and stylesheets from base64 encoding (see [virtualization](./glossary.md#virtualization)).
-
-**TODO link**
+- [Code splitting](./glossary.md#codesplitting")
+- [CSS concatenation](./glossary.md#cssconcatenation")
+- [Image spritting](./glossary.md#imagespritting")
+- JavaScript transpilers supporting script concatenation, module systems and polyfills ([minification](./glossary.md#minification"), [tree shaking](./glossary.md#treeshaking"))
+- Insertion of images and stylesheets from JS code ([virtualization](./glossary.md#virtualization")).
 
 Modern tools that automate these ad-hoc strategies are known as *bundlers*. Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
 

@@ -55,9 +55,9 @@ Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https
 
 Many bundlers employ the following optimization techniques:
   - <a id="codesplitting"></a>[Code splitting](https://developer.mozilla.org/en-US/docs/Glossary/Code_splitting)
-  - CSS concatenation: By putting many CSS rulesets into a single file, per-file overhead is reduced.
-  - [Image spriting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Images/Implementing_image_sprites_in_CSS)
-  - [Minification](https://developer.mozilla.org/en-US/docs/Glossary/minification): Can be applied to both JS and CSS.
+  - <a id="cssconcatenation"></a>CSS concatenation: By putting many CSS rulesets into a single file, per-file overhead is reduced.
+  - <a id="imagespritting"></a>[Image spriting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Images/Implementing_image_sprites_in_CSS)
+  - <a id="minification"></a>[Minification](https://developer.mozilla.org/en-US/docs/Glossary/minification): Can be applied to both JS and CSS.
   - <a id="treeshaking"></a>[Tree shaking](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking)
   - <a id="virtualization"></a>Virtualization: CSS and images, among other resource types, can often be included in JavaScript files represented as base64 or other data. Though this makes resources loading slower for the browser because JavaScript must decode and insert those resources, it reduces the number of requests needed to deliver all of the resources.
 
