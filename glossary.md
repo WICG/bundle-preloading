@@ -6,7 +6,7 @@ This page gives working definitions for terms involved in bundle preloading and 
 
 ## What's a bundle?
 
-A <a id="bundle"></a>**bundle** is a collection of [resources](#resource) used by a web site. For each resource, it includes not only the data for the resource, such as a JavaScript file or image, but also the HTTP response context for the resource, e.g. response headers. In this proposal, 'bundle' often specifically refers to files in the [IETF WPACK WG format](https://datatracker.ietf.org/doc/draft-yasskin-wpack-bundled-exchanges/).
+A <a id="bundle"></a>**bundle** is a collection of [resources](#resource) used by a website. For each resource, it includes not only the data for the resource, such as a JavaScript file or image, but also the HTTP response context for the resource, e.g. response headers. In this proposal, 'bundle' often specifically refers to files in the [IETF WPACK WG format](https://datatracker.ietf.org/doc/draft-yasskin-wpack-bundled-exchanges/).
 
 <a id="loading"></a>**Bundle preloading** refers to the process of accessing [resources](#resource) from within [bundles](#bundle), in contrast to accessing resources by requests to their canonical URLs. This proposal focuses on the semantics of bundle preloading.
 
@@ -14,7 +14,7 @@ A <a id="bundle"></a>**bundle** is a collection of [resources](#resource) used b
 
 These terms are introduced or refined by this proposal. Many of these terms are used elsewhere on the web, but their meaning has subtleties that are context-dependent. This section defines them more precisely for how they are used throughout this proposal.
 
-- <a id="resource"></a>**Resource** (also often referred to as an _asset_): A piece of data needed by a web site. For example, JavaScript modules, CSS rulesets, and images are common resources (or parts of resources) used by web pages. A resource is [identified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web) by a URL.
+- <a id="resource"></a>**Resource** (also often referred to as an _asset_): A piece of data needed by a website. For example, JavaScript modules, CSS rulesets, and images are common resources (or parts of resources) used by web pages. A resource is [identified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web) by a URL.
 
 - <a id="intermediary"></a>**Intermediary**: An intermediary is any [proxy server](https://developer.mozilla.org/en-US/docs/Glossary/Proxy_server) serving a [browser](https://developer.mozilla.org/en-US/docs/Glossary/Browser) the contents of a [site](https://developer.mozilla.org/en-US/docs/Glossary/Site), including [transparent proxies](https://en.wikipedia.org/wiki/Proxy_server#Transparent_proxy) and [CDNs](https://developer.mozilla.org/en-US/docs/Glossary/CDN).
 

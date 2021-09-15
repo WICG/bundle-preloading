@@ -7,7 +7,7 @@ Due to their place in the ecosystem, if we want to give Web/JS developers a path
 
 ## Background: Bundling and the JS ecosystem
 
-Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one would have very poor performance, which is why developers have created *bundlers*: tools that transform and combine resources for efficient deployment.
+Modern websites are composed of hundreds or thousands of resources. Fetching them one by one would have very poor performance, which is why developers have created *bundlers*: tools that transform and combine resources for efficient deployment.
 
 Some examples of bundler tools are [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) or [esbuild](https://esbuild.github.io/)). In general, they all share a common set of core functionality:
 
