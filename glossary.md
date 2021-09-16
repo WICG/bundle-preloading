@@ -1,6 +1,6 @@
 # Glossary & references
 
-This page gives working definitions for terms involved in bundle preloading and links to definitions for other relevant web terms which are already well-defined.
+This page gives working definitions for terms involved in bundle preloading and links to definitions for other relevant Web terms which are already well-defined.
 
 🚧 This glossary is a work in progress. If you encounter a confusing term in this proposal, let us know and we'll add an entry! 🚧
 
@@ -12,25 +12,25 @@ A <a id="bundle"></a>**bundle** is a collection of [resources](#resource) used b
 
 ## Bundle preloading terms
 
-These terms are introduced or refined by this proposal. Many of these terms are used elsewhere on the web, but their meaning has subtleties that are context-dependent. This section defines them more precisely for how they are used throughout this proposal.
+These terms are introduced or refined by this proposal. Many of these terms are used elsewhere on the Web, but their meaning has subtleties that are context-dependent. This section defines them more precisely for how they are used throughout this proposal.
 
-- <a id="resource"></a>**Resource** (also often referred to as an _asset_): A piece of data needed by a website. For example, JavaScript modules, CSS rulesets, and images are common resources (or parts of resources) used by web pages. A resource is [identified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web) by a URL.
+- <a id="resource"></a>**Resource** (also often referred to as an _asset_): A piece of data needed by a website. For example, JavaScript modules, CSS rulesets, and images are common resources (or parts of resources) used by Web pages. A resource is [identified](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web) by a URL.
 
 - <a id="intermediary"></a>**Intermediary**: An intermediary is any [proxy server](https://developer.mozilla.org/en-US/docs/Glossary/Proxy_server) serving a [browser](https://developer.mozilla.org/en-US/docs/Glossary/Browser) the contents of a [site](https://developer.mozilla.org/en-US/docs/Glossary/Site), including [transparent proxies](https://en.wikipedia.org/wiki/Proxy_server#Transparent_proxy) and [CDNs](https://developer.mozilla.org/en-US/docs/Glossary/CDN).
 
 - <a id="canonical"></a>**Canonical URL**: [Resources](#resource) can be accessed in multiple ways. When a resource is contained within a bundle, the path representing that resource is a [URL]. Responses to requests made with the same headers to that URL must have the same [payload](https://developer.mozilla.org/en-US/docs/Glossary/Payload_body) and headers as the bundled resource to be considered compliant with bundle preloading, and in order to enable [progressive enhancement](#enhancement) and [graceful degradation](#degradation)
 
-- <a id="prefetch"></a>**Preloading**: Previously referred to as 'batch prefetching' and 'batch preloading', this proposal focuses on "preloading" of bundled content because content can be requested before the browser is aware of a reference to it. This mechanism allows browsers to avoid downloading parts of a bundle [before they are needed](#lazyloading) to offer a faster web experience, as well as to avoid downlading resources they already have cached.
+- <a id="prefetch"></a>**Preloading**: Previously referred to as 'batch prefetching' and 'batch preloading', this proposal focuses on "preloading" of bundled content because content can be requested before the browser is aware of a reference to it. This mechanism allows browsers to avoid downloading parts of a bundle [before they are needed](#lazyloading) to offer a faster Web experience, as well as to avoid downlading resources they already have cached.
 
-- <a id="subsetting"></a>**Bundle subsetting**: Bundle preloading involves dynamically serving bundled responses based upon a `Bundle-Preload` header. A bundler might produce a bundle with many responses, subsets of which are requested by different web pages or at different times. The process of producing and serving subsets of responses is referred to as 'bundle subsetting'.
+- <a id="subsetting"></a>**Bundle subsetting**: Bundle preloading involves dynamically serving bundled responses based upon a `Bundle-Preload` header. A bundler might produce a bundle with many responses, subsets of which are requested by different Web pages or at different times. The process of producing and serving subsets of responses is referred to as 'bundle subsetting'.
 
-- <a id="signedexchg"></a>[**Signed exchange**](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html): A proposal from the Google Chrome team to allow one "distributor" to serve web content from another "publisher". In its basic form ([shipping in Chrome, Edge, and Opera](https://caniuse.com/sxg), but explicitly opposed by other engines), Signed exchange does not use bundling, but instead signs an individual HTTP response.
+- <a id="signedexchg"></a>[**Signed exchange**](https://wicg.github.io/webpackage/draft-yasskin-http-origin-signed-responses.html): A proposal from the Google Chrome team to allow one "distributor" to serve Web content from another "publisher". In its basic form ([shipping in Chrome, Edge, and Opera](https://caniuse.com/sxg), but explicitly opposed by other engines), Signed exchange does not use bundling, but instead signs an individual HTTP response.
 
 - <a id="rsrcidentity"></a>**Resource identity**: URLs form the identity for resources on the Web. Resource bundles *represent* the same resources as their individual (canonical) URLs indicate. A page depending on a resource should behave identically whether that resource is preloaded from a bundle or fetched on its own; the identity of the resource at that URL does not depend on whether it is loaded from a bundle.
 
 ## Other helpful terms and references
 
-This is a short index of web terms referenced in this proposal. Most of these terms are already well-defined, in which case we link to their definitions elsewhere. We provide short definitions or clarifications for a few as they relate to bundle preloading.
+This is a short index of Web terms referenced in this proposal. Most of these terms are already well-defined, in which case we link to their definitions elsewhere. We provide short definitions or clarifications for a few as they relate to bundle preloading.
 
 ### HTTP
 

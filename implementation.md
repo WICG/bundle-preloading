@@ -6,22 +6,22 @@ We intend for bundle preloading to be suitable for gradual adoption. Even if imp
 
 - Application developers can adopt the bundled response format as a simple one-file deployment payload, and use a polyfill in production.
 - Applications can use native support instead of the polyfill as browsers add support.
-- Static web servers can serve entire bundled response files without understanding bundle subresource requests.
+- Static Web servers can serve entire bundled response files without understanding bundle subresource requests.
 - Proxies can be used to support bundle subresource requests for existing servers. 
 - Intermediaries can cache or ignore bundle subresource requests by interpreting new and existing `Cache-Control` header values.
 
-Each of these use-cases stands on its own, and can provide motivation for adoption of the resource bundle format and protocol while implementation in browsers is still ongoing. We believe that gradual adoption is important, because it will help us collect real-world feedback during the design phase and build confidence in the design as it progresses towards becoming an interoperable web standard.
+Each of these use-cases stands on its own, and can provide motivation for adoption of the resource bundle format and protocol while implementation in browsers is still ongoing. We believe that gradual adoption is important, because it will help us collect real-world feedback during the design phase and build confidence in the design as it progresses towards becoming an interoperable Web standard.
 
 ## Implementation Areas
 
-The champions of this proposal, who maintain this repository, want to promote software development that would help the web ecosystem successfully adopt and migrate to preloading resources from bundled responses.
+The champions of this proposal, who maintain this repository, want to promote software development that would help the Web ecosystem successfully adopt and migrate to preloading resources from bundled responses.
 
 We forsee the need for the following implementation efforts (and expect to support efforts along these lines):
 
 - **Browsers**: Implementations of bundle preloading APIs
 - **Bundlers and frameworks**: Support for loading subresources using the bundle preload API.
-- **Proxies and web servers** (such as Apache and nginx): support for bundle preloading requests
-- **Dynamic web server standards** (such as WSGI, Rack, Java Servlets and Express.js): middleware for bundle preloading requests
+- **Proxies and Web servers** (such as Apache and nginx): support for bundle preloading requests
+- **Dynamic Web server standards** (such as WSGI, Rack, Java Servlets and Express.js): middleware for bundle preloading requests
 
 We also expect to need polyfills for using/emulating bundles loading in browsers without native support.
 
@@ -42,11 +42,11 @@ The prototype polyfill will be hosted at 🚧 location TBD 🚧.
 
 ### Browsers
 
-Google Chrome is currently running an [origin trial](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/content/browser/web_package/subresource_loading_origin_trial.md) for "subresource loading with web bundles". Though it's an exciting effort, it currently differs from the this proposal in several ways.
+Google Chrome is currently running an [origin trial](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/content/browser/web_package/subresource_loading_origin_trial.md) for "subresource loading with Web bundles". Though it's an exciting effort, it currently differs from the this proposal in several ways.
 
 - Most importantly, the origin trial does not yet support the `'Bundle-Preload'` request header. The client has no way of informing servers what it wants to receive in a bundle. This means that servers may send more than needed. This shares cache invalidation and cache digest problems with existing strategies like HTTP/2 Server Push.
 - The origin trial uses a `<link>` tag instead of a `<script>` tag, which raises [concerns about injection attacks](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html).
-- In that version, multiple scopes may be specified for the destination of a web bundle. This proposal suggests a narrower [path restriction](./motivation.md#path-restriction).
+- In that version, multiple scopes may be specified for the destination of a Web bundle. This proposal suggests a narrower [path restriction](./motivation.md#path-restriction).
 - They also implement a mechanism for [opaque-origin iframes](https://github.com/WICG/webpackage/blob/main/explainers/subresource-loading-opaque-origin-iframes.md/). Though the authors support the protection goals of opaque-origin iframes, it is beyond the scope of this proposal, and the `"urn:uuid"` syntax runs counter to the goal of preserving [resource identity](./motivation.md#resource-identity).
 
 We hope to work with the Google Chrome developers to combine the two efforts, as we believe we have lots of common ground.
@@ -55,11 +55,11 @@ We hope to work with the Google Chrome developers to combine the two efforts, as
 
 🚧 The authors are currently soliciting community feedback to find an appropriate bundler to work with for early prototyping.
 
-### Proxies and web servers
+### Proxies and Web servers
 
 The authors plan to develop a prototype proxy that enables bundle preloading, to be hosted at 🚧 location TBD 🚧.
 
-### Dynamic web server standards
+### Dynamic Web server standards
 
 🚧 The authors are currently soliciting community feedback to find an appropriate server standard to work with for early prototyping.
 

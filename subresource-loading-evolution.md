@@ -95,7 +95,7 @@ When a request is made to a URL which is listed in `resources`, the client colle
 
 ### Example
 
-This example, and the following examples in the page, are based on a small web page:
+This example, and the following examples in the page, are based on a small Web page:
 
 ```html
 <script type=bundlepreload>
