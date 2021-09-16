@@ -365,4 +365,4 @@ The scheme is outlined in [this document](https://docs.google.com/document/d/11t
 
 <!-- TODO(yoavweiss): Write this section, including an explanation of how code splitting and versioning works. Note: maybe the ETags approach above could be combined with cuckoo hashing to make the message to the server more terse. -->
 
-[Previous section](./faq.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./glossary.md)
+[Previous section](./implementation.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./glossary.md)

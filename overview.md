@@ -59,9 +59,11 @@ Consider the following resource list for the page `https://www.example.com/index
 </script>
 ```
 
-Because of same origin and path restrictions, the resources referenced by the bundle *must* correspond to URLs with the same base path component, where "base path component" refers to the URL truncated before the last path component (`https://www.example.com/assets/` in our example).
-
 For easier portability, the list may use relative locations as in the example.
+
+Because of same origin and path restrictions, the resources referenced by the bundle *must* correspond to URLs with the same base URL as the bundle itself. If they use relative locations, those are resolved taking the location of the bundle as the base URL (see [RFC7230 section 2.7](https://datatracker.ietf.org/doc/html/rfc7230#section-2.7) and [RFC3986 section 5.1](https://datatracker.ietf.org/doc/html/rfc3986#section-5.1.2)).
+
+In our example, relative locations referenced by the bundle at `https://www.example.com/assets/resources.wbn` would be resolved using `https://www.example.com/assets/` as their base URL.
 
 This directs the browser that it _may_ serve any of the resources in the `"resources"` list by making a single request for `https://www.example.com/assets/resources.wbn`. That request *must* contain the [structured header](https://www.fastly.com/blog/improve-http-structured-headers) `Bundle-Preload`; the value for the `Bundle-Preload` header may only contain a non-empty subset of the `"resources"` list. To retrieve all the declared resources, the request may look like:
 
@@ -149,7 +151,9 @@ The `Bundle-Preload` header may not always contain all of the values listed in e
 Bundle-Preload: "render.js", "sidebar.js"
 ```
 
-The server response to any bundle preloading request _must_ be a [bundled response](https://datatracker.ietf.org/doc/draft-ietf-wpack-bundled-responses/) file. Additionally, it _must_ include the `Vary: Bundle-Preload` directive. For example, for the request for three resources used in these examples, some of the response headers would have these values:
+The server response to any bundle preloading request _must_ be a [bundled response](https://datatracker.ietf.org/doc/draft-ietf-wpack-bundled-responses/) file. Additionally, it _must_ include the `Vary: Bundle-Preload` directive.
+
+For example, for the request for three resources used in these examples, some of the response headers would have these values:
 
 ```
 Content-Type: application/webbundle
@@ -189,7 +193,7 @@ Let's consider a Web application with the following layout:
 
 `site.wbn` is a bundle containing all of the other files under `assets/`.
 
-Note that from the point of view of this protocol, it is not strictly necessary that the content of the bundle is duplicated in the server's filesystem. In theory, it would be possible for the server to store just the bundle file and use it to serve single (not bundled) requests to individual resources. Detailed prototyping will be necessary to evaluate the performance implications of that alternative approach.
+Note that from the point of view of this protocol, it is not strictly necessary that the content of the bundle is actually duplicated in the server's filesystem. It would be possible for the server to store just the bundle file and use it to serve single (not bundled) requests to individual resources. See the section on [Bundle preloading for servers](./subresource-loading-server.md) for more details.
 
 ### Code splitting
 
@@ -239,9 +243,9 @@ Bundle-Preload: "css/base.css", "css/index.css", "img/logo.png", "js/analytics.j
 ...
 ```
 
-Let's assume that the responses for each of those resources in the bundle has the response header `Cache-Control: immutable` , directing to the browser that it may keep those resources cached.
+Let's assume that the responses for each of those resources in the bundle has the response header `Cache-Control: immutable`, indicating to the browser that it may keep those resources cached.
 
-When the user then navigates to `profile.html`, the browser can then issue the following request:
+When the user navigates to `profile.html` later on, the browser can then issue a request only for those elements not yet in its cache:
 
 ```
 GET /assets/site.wbn HTTP/1.1

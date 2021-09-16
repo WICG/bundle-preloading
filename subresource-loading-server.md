@@ -16,7 +16,7 @@ The server response will include the header `Vary: Bundle-Preload`, to signify t
 
 `Cache-Control: private` may be used to indicate that the response may be stored only by a browser's cache. This directive is intended as a hint to intermediate servers that they should not try to store many variants of the same bundle. `Cache-Control: private bundled` (note the new value) may be used to let bundling-aware intermediate servers understand that the data it is not private and may be cached, but probably with a bundling-specific strategy.
 
-<!-- Removed mentions of Bundle-Preload in the response. -->
+<!-- Removed mentions of Bundle-Preload in the response. Add them again if there is a need for it. -->
 
 ## Backwards compatibility
 

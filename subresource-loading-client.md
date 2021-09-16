@@ -92,6 +92,9 @@ Online enforcement through the second or third bullet point would be most practi
 
 A request without a `Bundle-Preload` header, or to a server that does not support it, will result in the download of the whole bundle file.
 
+<!-- 
+TODO: Browser behavior and cache semantics
+-->
 
 
 [Previous section](./overview.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-server.md)

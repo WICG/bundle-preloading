@@ -44,10 +44,10 @@ The prototype polyfill will be hosted at 🚧 location TBD 🚧.
 
 Google Chrome is currently running an [origin trial](https://chromium.googlesource.com/chromium/src.git/+/refs/heads/main/content/browser/web_package/subresource_loading_origin_trial.md) for "subresource loading with web bundles". Though it's an exciting effort, it currently differs from the this proposal in several ways.
 
-- Most importantly, the origin trial does not yet support the `'Bundle-Preload'` request header. The client has no way of informing servers what it wants to receive in a bundle. This means that servers mapy send more than needed. This shares cache invalidation and cache digest problems with existing strategies like HTTP/2 Server Push.
-- The origin trial uses a `<link>` tag instead of a `<script>` tag, which raises [some concerns](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html) about injection attacks.
+- Most importantly, the origin trial does not yet support the `'Bundle-Preload'` request header. The client has no way of informing servers what it wants to receive in a bundle. This means that servers may send more than needed. This shares cache invalidation and cache digest problems with existing strategies like HTTP/2 Server Push.
+- The origin trial uses a `<link>` tag instead of a `<script>` tag, which raises [concerns about injection attacks](https://lists.w3.org/Archives/Public/public-web-perf/2020Aug/0028.html).
 - In that version, multiple scopes may be specified for the destination of a web bundle. This proposal suggests a narrower [path restriction](./motivation.md#path-restriction).
-- They also implement a mechanism for [opaque-origin iframes](https://github.com/WICG/webpackage/blob/main/explainers/subresource-loading-opaque-origin-iframes.md/). Though the authors support the protection goals of opaque-origin iframes, it is beyond the scope of this proposal, and the `"urn:uuid"` syntax runs counter to the goal of preserving [./motivation.md#resource-identity].
+- They also implement a mechanism for [opaque-origin iframes](https://github.com/WICG/webpackage/blob/main/explainers/subresource-loading-opaque-origin-iframes.md/). Though the authors support the protection goals of opaque-origin iframes, it is beyond the scope of this proposal, and the `"urn:uuid"` syntax runs counter to the goal of preserving [resource identity](./motivation.md#resource-identity).
 
 We hope to work with the Google Chrome developers to combine the two efforts, as we believe we have lots of common ground.
 
@@ -63,4 +63,4 @@ The authors plan to develop a prototype proxy that enables bundle preloading, to
 
 🚧 The authors are currently soliciting community feedback to find an appropriate server standard to work with for early prototyping.
 
-[Previous section](./glossary.md) - [Table of contents](./README.md#table-of-contents) - Next section
+[Previous section](./faq.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-evolution.md)

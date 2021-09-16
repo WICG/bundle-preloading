@@ -56,9 +56,9 @@ Resource and module loading on the Web is generally defined by [WHATWG](https://
   - [Bundle preloading for servers](./subresource-loading-server.md)
   - [Suggestions for bundlers & tools](./subresource-loading-tools.md)
 - [FAQ](./faq.md)
+- [Prototyping and implementation](./implementation.md) 
 - [Ideas for the future evolution of this proposal](./subresource-loading-evolution.md)
 - [Glossary](./glossary.md)
-- [Prototyping and implementation](./implementation.md) 
 
 This proposal seeks to address several audiences—bundler and tooling authors, client and server side Web developers, and browser implementers—and as such has been split into several sections.
 
