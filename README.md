@@ -30,12 +30,11 @@ The main goals of bundle preloading are:
 - Efficiently distribute Web content in a standard and interoperable manner.
 - Allow developers to keep the benefits of today's bundler ecosystem:
   * improved network performance and faster load times;
-  * optimization strategies like [revving](./glossary.md#revving), [code splitting](./glossary.md#codesplitting), [tree shaking](./glossary.md#treeshaking), etc. remain possible; **TODO link**
+  * optimization strategies like [revving](./glossary.md#revving), [code splitting](./glossary.md#codesplitting), [tree shaking](./glossary.md#treeshaking), etc. remain possible;
   * reduced bundler build time and simplified internal logic.
 - At the same time, preserve the benefits of accessing individual resources:
   * flexibility when loading and processing responses;
   * each response can be cached individually.
-
 
 ## Participation and Standards Venues
 
@@ -47,7 +46,7 @@ Discussion of this proposal is welcome in the [issues](https://github.com/WICG/r
 
 Resource and module loading on the Web is generally defined by [WHATWG](https://whatwg.org/) standards like [HTML](https://html.spec.whatwg.org/) and [Fetch](https://fetch.spec.whatwg.org/) and [W3C](https://www.w3.org/) standards like [Resource Hints](https://w3c.github.io/resource-hints/). When the proposals in this repository reach a state of [multi-implementer support and no strong implementer objections](https://whatwg.org/working-mode), with [Web-platform-tests](https://github.com/web-platform-tests/wpt/) tests developed, they will be proposed as pull requests to those standards.
 
-# Table of contents
+## Table of contents
 
 - [Motivation, goals and constraints](./motivation.md)
 - [Overview: bundle preloading](./overview.md)
