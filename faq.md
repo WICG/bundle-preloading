@@ -10,7 +10,7 @@ _Please note_: This page's content is in an inconsistent state relative to the r
 
 ## General
 
-#### Q: How does this proposal relate to the Web Package/Web Packaging/Web Bundles/Bundled Exchange effort ([repo](https://github.com/wicg/webpackage))?
+#### Q: How does this proposal relate to Web Packages ([WICG/webpackage](https://github.com/wicg/webpackage)) and Bundled Responses ([WPACK Working Group](https://datatracker.ietf.org/wg/wpack/documents/), [wpack-wg/bundled-responses]https://github.com/wpack-wg/bundled-responses)?
 
 **A**: This is the same effort, really, with a particular scope. In particular, this repository has a focus on same-origin static subresource loading, while preserving the semantics and integrity of URLs. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project. There are different concrete alternatives under discussion (especially in the details of subresource loading, and less so for the bundle format itself), but the idea is to gather more feedback (possibly including prototyping) to draw a shared conclusion.
 
@@ -36,6 +36,8 @@ An analysis by Brave is [in this issue comment](https://github.com/littledan/res
 #### Q: How is this work funded? Are there any conflicts of interest?
 
 [Eye/O](https://eyeo.com/) is funding Igalia's work on resource bundles, and [Bloomberg](https://www.techatbloomberg.com/) had funded it previously. Many others have been collaborating, especially Yehuda Katz (Tilde), Pete Snyder (Brave) and several Google employees (inside and outside of the Chrome team). Google and Brave are also customers of Igalia, but not funding work on this project.
+
+<!-- Comented out, as we are using the Bundled Responses format.
 
 ## Bundle format
 
@@ -67,6 +69,7 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 #### Q: How does error handling work, given that CBOR leaves that a bit open?
 
 **A**: Web specifications for subresource loading in browsers will describe how parsing and error reporting work operationally, including error reporting. In general, the idea is to be strict about reporting errors when they are encountered (not trying to silently correct them), but also to permit errors to be detected somewhat "lazily", to permit resource bundles to be used even without the whole thing having been parsed (e.g., in a streaming or random-access way).
+-->
 
 ## Subresource loading
 
@@ -80,7 +83,7 @@ Sharing compression dictionaries across multiple HTTP responses is a particularl
 
 #### Q: Are web developers expected to write out those `<script type=bundlepreload>` manifests, and create the resource bundles, themselves?
 
-**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `bundlepreload` manifest, which can be pasted into the HTML inline.
+**A**: Not necessarily. This is mainly a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `bundlepreload` manifest, which can be pasted into the HTML inline.
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
@@ -163,6 +166,7 @@ Incremental manifest fetching is another advanced technique that could be includ
 There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
 - The browser could discard all additional resources
 - The browser could cache everything and make it available to the application
+- The browser cold cache everything, but only make each resource available after it has been referenced by the bundling API.
 
 #### Q: Why are the requested resources in the bundle listed as a header parameter, rather than in the URL as a query parameter?
 
@@ -222,6 +226,7 @@ However, this could be quite expensive for extensions which intercept fetches (e
 #### Q: Why bother with chunking, rather than the simpler ETags approach of naming individual resources?
 
 **A**: Naming individual resources results in a larger `<script type=bundlepreload>` manifest, as well as more lengthy headers. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/tc39/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
+
 
 The larger amount of metadata with the ETags approach has the benefit of better cache granularity and more efficiency gains due to content blocking. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
 

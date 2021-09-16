@@ -37,12 +37,14 @@ This is a short index of web terms referenced in this proposal. Most of these te
 - It's very important to know what a [URL](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL) is to evaluate this proposal.
 
 Relevant HTTP [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers):
-  - [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) - this proposal introduces a new value for `Cache-Control`
-  - [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103)
-  - [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag): `ETag`s and [cache digests](#digest) are important to understand in the context of [bundle subsetting](#subsetting).
-  - [Vary](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary): `Vary` is also used for [bundle subsetting](#subsetting).
+
+- [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) - this proposal introduces a new value for `Cache-Control`
+- [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103)
+- [ETag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag): `ETag`s and [cache digests](#digest) are important to understand in the context of [bundle subsetting](#subsetting).
+- [Vary](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary): `Vary` is also used for [bundle subsetting](#subsetting).
 
 Other attempts have been made at improving the performance of serving many resources over HTTP.
+
 - [HTTP/2](https://developer.mozilla.org/en-US/docs/Glossary/HTTP_2): This reduced much of the overhead of HTTP 1.
   - [HTTP/2 Server Push](https://en.wikipedia.org/wiki/HTTP/2_Server_Push): Allowed servers to send multiple responses together, similar to a bundle, but was [difficult to get right](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/) and to interface with bundlers.
 - [QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC) (a.k.a. HTTP/3): Improves upon HTTP/2, without server push.
@@ -54,12 +56,13 @@ A <a id="bundler"></a>**bundler** is a piece of software that packages resources
 Some popular bundlers include [webpack](https://webpack.js.org/), [rollup](https://rollupjs.org/guide/en/), [Parcel](https://parceljs.org/) and [esbuild](https://esbuild.github.io/).
 
 Many bundlers employ the following optimization techniques:
-  - <a id="codesplitting"></a>[Code splitting](https://developer.mozilla.org/en-US/docs/Glossary/Code_splitting)
-  - <a id="cssconcatenation"></a>CSS concatenation: By putting many CSS rulesets into a single file, per-file overhead is reduced.
-  - <a id="imagespritting"></a>[Image spriting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Images/Implementing_image_sprites_in_CSS)
-  - <a id="minification"></a>[Minification](https://developer.mozilla.org/en-US/docs/Glossary/minification): Can be applied to both JS and CSS.
-  - <a id="treeshaking"></a>[Tree shaking](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking)
-  - <a id="virtualization"></a>Virtualization: CSS and images, among other resource types, can often be included in JavaScript files represented as base64 or other data. Though this makes resources loading slower for the browser because JavaScript must decode and insert those resources, it reduces the number of requests needed to deliver all of the resources.
+
+- <a id="codesplitting"></a>[Code splitting](https://developer.mozilla.org/en-US/docs/Glossary/Code_splitting)
+- <a id="cssconcatenation"></a>CSS concatenation: By putting many CSS rulesets into a single file, per-file overhead is reduced.
+- <a id="imagespritting"></a>[Image spriting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Images/Implementing_image_sprites_in_CSS)
+- <a id="minification"></a>[Minification](https://developer.mozilla.org/en-US/docs/Glossary/minification): Can be applied to both JS and CSS.
+- <a id="treeshaking"></a>[Tree shaking](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking)
+- <a id="virtualization"></a>Virtualization: CSS and images, among other resource types, can often be included in JavaScript files represented as base64 or other data. Though this makes resources loading slower for the browser because JavaScript must decode and insert those resources, it reduces the number of requests needed to deliver all of the resources.
 
 - Build time: The amount of time it takes a bundler to produce bundled files from its input. Many bundlers focus on offering a fast build time so developers can rapidly reload their changes.
 
