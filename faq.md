@@ -166,7 +166,7 @@ Incremental manifest fetching is another advanced technique that could be includ
 There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
 - The browser could discard all additional resources
 - The browser could cache everything and make it available to the application
-- The browser cold cache everything, but only make each resource available after it has been referenced by the bundling API.
+- The browser could cache everything, but only make each resource available after it has been referenced by the bundling API.
 
 #### Q: Why are the requested resources in the bundle listed as a header parameter, rather than in the URL as a query parameter?
 
