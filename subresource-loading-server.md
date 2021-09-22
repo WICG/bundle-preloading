@@ -16,17 +16,19 @@ The server response will include the header `Vary: Bundle-Preload`, to signify t
 
 `Cache-Control: private` may be used to indicate that the response may be stored only by a browser's cache. This directive is intended as a hint to intermediate servers that they should not try to store many variants of the same bundle.
 
-`Cache-Control: private,bundled` (note the new directive) may be used to let bundling-aware intermediate servers understand that the data it is not private and may be cached, but probably with a bundling-specific strategy.
+`Cache-Control: private, bundled` (note the new directive) may be used to let bundling-aware intermediate servers understand that the data it is not private and may be cached, but probably with a bundling-specific strategy.
 
 <!-- Removed mentions of Bundle-Preload in the response. Add them again if there is a need for it. -->
 
 ## Backwards compatibility
 
-By default, the original bundle file stored in the server contains all of the resources that may be requested from it. It is up to the browser and the server to negotiate the eventual transmission of only a subset of those resources.
+Our recommendation is that the original bundle file stored in the server contains all of the resources that may be requested from it though bundle preloading. It would be up to the browser and the server to negotiate the eventual transmission of only a subset of those resources.
 
-This provides backwards compatibility: a request without a `Bundle-Preload` header, or to a server that does not support subsetting, will simply result in the download of the whole bundle file. All of the desired resources will be available in that bundle, although this might be more inefficient because it could also cause the transmission of resources that are already in the browser's cache.
+This would provide backwards compatibility, as a request without a `Bundle-Preload` header (or to a server that does not support it) will simply result in the download of the whole bundle file containing all of the desired resources.
 
-However, this performance hit does not need to happen more than once: assuming that the bundle is immutable (see [revving](./glossary.md#revving)), when the browser visits other pages that request a different subset of resources, those additional resources will already be available in the browser's cache as they were already received as part of the initial bundle.
+However, this scenario would probably be more inefficient, since it might also cause the transmission of unused resources and/or of resources already found in the browser's cache.
+
+Nevertheless, this performance hit does not need to happen more than once: assuming that the bundle is immutable (see [revving](./glossary.md#revving)), when the user visits other pages that request a different subset of resources, those additional resources will already be available in the browser's cache (as they were already received as part of the initial bundle) and therefore no additional downloads would be necessary.
 
 Conversely, if the client is not able to carry out bundle preloading requests, there are two options. The resources can be made available from the server through individual requests. Or, the client may use a [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to polyfill the functionality.
 
