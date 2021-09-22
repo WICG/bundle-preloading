@@ -8,7 +8,7 @@ Additional, more complex mechanisms could be added to this initial version later
 
 To load a very large number of JavaScript modules, these ideas may be best used in conjunction with the [Module Fragments proposal](https://github.com/tc39/proposal-module-fragments), as [described in the FAQ](https://github.com/WICG/resource-bundles/blob/main/faq.md#q-will-support-for-non-js-assets-make-resource-bundle-loading-too-heavy-weightslow).
 
-## Base solution
+## Basic operation
 
 The process of bundled resource preloading begins with the Web document specifying a list of resources to be preloaded.
 
@@ -49,7 +49,6 @@ Note that the list of resources may use relative (to the bundle file) URLs. If a
 
 Regardless of the API used, this results in an HTTP request being sent to the server pointing at the bundle file and indicating in the `Bundle-Preload` header the resources to request.
 
-
 ```HTTP
 GET /assets/resources.wbn HTTP/1.1
 ...
@@ -58,16 +57,16 @@ Bundle-Preload: "render.js", "profile.png"
 ...
 ```
 
-<!-- TODO doesn't this mean that if the server does not understand this header, it will send the whole bundle??? -->
-
 The client may only request a subset of the resources in the list, if it will be able to retrieve the rest from its cache.
 
-The response from the server must be a [bundled response](https://github.com/wpack-wg/bundled-responses) containing HTTP responses for each of the requested URLs. In our example:
+The response from the server will be a [bundled response](https://github.com/wpack-wg/bundled-responses) containing HTTP responses for each of the requested URLs. In our example:
 
 * `https://www.example.com/assets/render.js`
 * `https://www.example.com/assets/profile.png`
 
 These resources may be cached and references to them later on may be loaded from the cache.
+
+The server may return more resources than those originally requested (for example, if it doesn't support subsetting and just sends the whole bundle file).
 
 This initial version simply relies on the general HTTP cache. A further evolution could be to provide more fine-grained control to the developer by specifying a named cache using the [CacheStorage API](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
 
@@ -89,9 +88,13 @@ For online enforcement: Whenever a fetch is made to something which is within th
 
 Online enforcement through the second or third bullet point would be most practical when it is done only rarely, for a small percentage of fetches, so that the overhead is low.
 
+## Backwards compatibility
 
-## Future evolution
+A request without a `Bundle-Preload` header, or to a server that does not support it, will result in the download of the whole bundle file.
 
-After this initial version of resource preloading, more flexible mechanisms could be added to fulfill additional goals and provide more control to developers. These alternatives are explained at [Future evolution of bundle preloading](./subresource-loading-evolution.md).
+<!-- 
+TODO: Browser behavior and cache semantics
+-->
+
 
 [Previous section](./overview.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-server.md)

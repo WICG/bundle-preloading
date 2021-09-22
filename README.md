@@ -11,31 +11,30 @@
 
 This document describes a mechanism and semantics for the efficient preloading of multiple resources using bundled HTTP responses in [the Web Bundles format](https://github.com/wpack-wg/bundled-responses).
 
-Modern Web sites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why Web developers rely on *bundlers*, tools that combine and transform resources for efficient deployment.
+Modern websites are composed of hundreds or thousands of resources. Fetching them one by one has poor performance, which is why Web developers rely on [bundlers](./glossary.md#bundler), tools that combine and transform resources for efficient deployment.
 
-However, bundlers currently face many hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. The non-standard formats used by bundlers are not interoperable and extracting resources from them tends to be costly; furthermore, their contents are mostly opaque to browsers, preventing fine-granied cache management.
+However, bundlers currently face many hurdles to provide a good developer experience, fast site loading, and efficient cache and network usage. The non-standard formats used by bundlers are not interoperable and extracting resources from them tends to be costly; furthermore, their contents are mostly opaque to browsers, preventing fine-grained cache management.
 
-This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries in ways complementary to [HTTP3/QUIC](https://developer.mozilla.org/en-US/docs/Glossary/QUIC).
+This proposal focuses on a mechanism that allows a large number of resources to be preloaded efficiently and incrementally cached by browsers, CDNs, and other intermediaries.
 
-There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [previous](https://datatracker.ietf.org/doc/html/rfc7541) [attempts](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cache-digest-05) to implement aspects of efficient resource bundling on the web. Unfortunately, they failed to gain widespread adoption due to constraints imposed on bundlers, servers, and clients. This proposal attempts to avoid the failures of those previous attempts by:
+There have been [several](https://en.wikipedia.org/wiki/HTTP/2_Server_Push) [previous](https://datatracker.ietf.org/doc/html/rfc7541) [attempts](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-cache-digest-05) to implement aspects of efficient resource bundling on the Web. Unfortunately, they failed to gain widespread adoption due to constraints imposed on bundlers, servers, and clients. This proposal attempts to avoid the shortcomings of those previous attempts by:
 
-- Offering imperative and declarative client-side control to web developers
-- Maintaining backwards compatibility for servers and intermediaries through polyfilling and existing cache-control mechanisms
+- Offering imperative and declarative client-side control to Web developers.
+- Maintaining backwards compatibility for servers and intermediaries through polyfilling and existing cache-control mechanisms.
 - Preserving the relationship between URLs and content (["resource identity"](./glossary.md#rsrcidentity) for graceful degradation and content blocking.
 
-<!-- TODO complete and sync with other docs-->
+<!-- TODO complete and sync with other docs -->
 
 The main goals of bundle preloading are:
 
-- Efficiently distribute web content in a standard and interoperable manner.
+- Efficiently distribute Web content in a standard and interoperable manner.
 - Allow developers to keep the benefits of today's bundler ecosystem:
   * improved network performance and faster load times;
-  * optimization strategies like revving, code splitting, tree shaking, etc. remain possible;
-  * reduced bundler build time and logic.
+  * optimization strategies like [revving](./glossary.md#revving), [code splitting](./glossary.md#codesplitting), [tree shaking](./glossary.md#treeshaking), etc. remain possible;
+  * reduced bundler build time and simplified internal logic.
 - At the same time, preserve the benefits of accessing individual resources:
   * flexibility when loading and processing responses;
   * each response can be cached individually.
-
 
 ## Participation and Standards Venues
 
@@ -45,15 +44,9 @@ The resource bundle format referenced in this proposal is an RFC from the [IETF 
 
 Discussion of this proposal is welcome in the [issues](https://github.com/WICG/resource-bundles/issues) section of this repository. Additional discussion occurs on our [Matrix](https://matrix.to/#/#bundle-preloading:igalia.com) channel, at [IETF WPACK WG](https://datatracker.ietf.org/wg/wpack/about/) meetings, and on the WPACK WG [mailing list](https://www.ietf.org/mailman/listinfo/wpack).
 
-Resource and module loading on the Web is generally defined by [WHATWG](https://whatwg.org/) standards like [HTML](https://html.spec.whatwg.org/) and [Fetch](https://fetch.spec.whatwg.org/) and [W3C](https://www.w3.org/) standards like [Resource Hints](https://w3c.github.io/resource-hints/). When the proposals in this repository reach a state of [multi-implementer support and no strong implementer objections](https://whatwg.org/working-mode), with [web-platform-tests](https://github.com/web-platform-tests/wpt/) tests developed, they will be proposed as pull requests to those standards.
+Resource and module loading on the Web is generally defined by [WHATWG](https://whatwg.org/) standards like [HTML](https://html.spec.whatwg.org/) and [Fetch](https://fetch.spec.whatwg.org/) and [W3C](https://www.w3.org/) standards like [Resource Hints](https://w3c.github.io/resource-hints/). When the proposals in this repository reach a state of [multi-implementer support and no strong implementer objections](https://whatwg.org/working-mode), with [Web-platform-tests](https://github.com/web-platform-tests/wpt/) tests developed, they will be proposed as pull requests to those standards.
 
-# Table of contents
-
-This proposal seeks to address several audiences - bundler and tooling authors, client and server side web developers, and browser implementers - and as such has been split into several files.
-
-We recommend starting with the [motivation](./motivation.md) and [overview](./overview.md), which together with this introduction are a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences.
-
-The remaining sections provide further details for specific audiences.
+## Table of contents
 
 - [Motivation, goals and constraints](./motivation.md)
 - [Overview: bundle preloading](./overview.md)
@@ -62,9 +55,13 @@ The remaining sections provide further details for specific audiences.
   - [Bundle preloading for servers](./subresource-loading-server.md)
   - [Suggestions for bundlers & tools](./subresource-loading-tools.md)
 - [FAQ](./faq.md)
+- [Prototyping and implementation](./implementation.md) 
 - [Ideas for the future evolution of this proposal](./subresource-loading-evolution.md)
 - [Glossary](./glossary.md)
-- [Prototyping and implementation](./implementation.md) 
+
+This proposal seeks to address several audiences—bundler and tooling authors, client and server side Web developers, and browser implementers—and as such has been split into several sections.
+
+We recommend starting with the [motivation](./motivation.md) and [overview](./overview.md), which together with this introduction form a general-purpose [explainer](https://w3ctag.github.io/explainers) for most audiences. The remaining sections provide further details for specific audiences.
 
 ## Stakeholder feedback
 

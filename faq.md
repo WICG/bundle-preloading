@@ -10,7 +10,7 @@ _Please note_: This page's content is in an inconsistent state relative to the r
 
 ## General
 
-#### Q: How does this proposal relate to the Web Package/Web Packaging/Web Bundles/Bundled Exchange effort ([repo](https://github.com/wicg/webpackage))?
+#### Q: How does this proposal relate to Web Packages ([WICG/webpackage](https://github.com/wicg/webpackage)) and Bundled Responses ([WPACK Working Group](https://datatracker.ietf.org/wg/wpack/documents/), [wpack-wg/bundled-responses]https://github.com/wpack-wg/bundled-responses)?
 
 **A**: This is the same effort, really, with a particular scope. In particular, this repository has a focus on same-origin static subresource loading, while preserving the semantics and integrity of URLs. The Google Chrome team (including Jeffrey Yasskin and Yoav Weiss) have been collaborating closely on this project. There are different concrete alternatives under discussion (especially in the details of subresource loading, and less so for the bundle format itself), but the idea is to gather more feedback (possibly including prototyping) to draw a shared conclusion.
 
@@ -31,11 +31,13 @@ An analysis by Brave is [in this issue comment](https://github.com/littledan/res
 
 #### Q: How far along is this proposal? Is it about to ship?
 
-**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, web developers and other web stakeholders before this proposal is ready to ship.
+**A**: This proposal is very early. Although [Chrome has a flagged experiment for unsigned Web Bundles](https://web.dev/web-bundles/) based on [this explainer](https://github.com/WICG/webpackage/blob/master/explainers/subresource-loading.md), there is no specification or tests, and there are ongoing efforts to iterate on design and communicate with browser vendors, Web developers and other Web stakeholders before this proposal is ready to ship.
 
 #### Q: How is this work funded? Are there any conflicts of interest?
 
 [Eye/O](https://eyeo.com/) is funding Igalia's work on resource bundles, and [Bloomberg](https://www.techatbloomberg.com/) had funded it previously. Many others have been collaborating, especially Yehuda Katz (Tilde), Pete Snyder (Brave) and several Google employees (inside and outside of the Chrome team). Google and Brave are also customers of Igalia, but not funding work on this project.
+
+<!-- Comented out, as we are using the Bundled Responses format.
 
 ## Bundle format
 
@@ -43,7 +45,7 @@ An analysis by Brave is [in this issue comment](https://github.com/littledan/res
 
 **A**: These both have significant problems. zip stores its index at the end, so it's not suitable for streaming. tar doesn't permit random access, and can only be used in a streaming mode. Increasing the amount of metadata (e.g., for HTTP headers) is awkward in both formats and would require new tooling anyway.
 
-Interestingly, an effort to bring packages to the web by the W3C TAG (Technical Architecture Group) in 2015 [identified many of these same issues](https://www.w3.org/TR/web-packaging/#intro). That effort was ultimately unsuccessful, but the fact that the champions of a related proposal independently identified the same issues makes us more confident about them.
+Interestingly, an effort to bring packages to the Web by the W3C TAG (Technical Architecture Group) in 2015 [identified many of these same issues](https://www.w3.org/TR/web-packaging/#intro). That effort was ultimately unsuccessful, but the fact that the champions of a related proposal independently identified the same issues makes us more confident about them.
 
 #### Q: Should [W3C MiniApp packaging](https://w3c.github.io/miniapp/specs/packaging/) use this bundle format instead of .zip?
 
@@ -56,9 +58,9 @@ Interestingly, an effort to bring packages to the web by the W3C TAG (Technical 
 
 Once resource bundles are an established standard, one could imagine MiniApp being extended to permit resource bundles as an alternative format alongside .zip.
 
-#### Q: Should this format include more fields for offline web pages?
+#### Q: Should this format include more fields for offline Web pages?
 
-**A**: It's not really clear which fields are needed or what their semantics should be, but in general, this format would permit someone who is designing an offline web page format to design custom sections for the data they need.
+**A**: It's not really clear which fields are needed or what their semantics should be, but in general, this format would permit someone who is designing an offline Web page format to design custom sections for the data they need.
 
 #### Q: How will this format be standardized?
 
@@ -67,6 +69,7 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 #### Q: How does error handling work, given that CBOR leaves that a bit open?
 
 **A**: Web specifications for subresource loading in browsers will describe how parsing and error reporting work operationally, including error reporting. In general, the idea is to be strict about reporting errors when they are encountered (not trying to silently correct them), but also to permit errors to be detected somewhat "lazily", to permit resource bundles to be used even without the whole thing having been parsed (e.g., in a streaming or random-access way).
+-->
 
 ## Subresource loading
 
@@ -74,13 +77,13 @@ Once resource bundles are an established standard, one could imagine MiniApp bei
 
 **A**: If we can figure out a way to do that which would obsolete bundlers, then that would be perfect! However, it's unclear how to reduce browsers' per-fetch overhead within HTTP (which has to do with security-driven process architecture), even if we developed a nicer way to share compression dictionaries among HTTP responses and encourage more widespread prefetching. Please file an issue if you have concrete ideas.
 
-This question has been raised over the years in response to previous web packaging proposals. During those prior discussions, folks who were actively working on HTTP/2 felt optimistic that HTTP/2 would ultimately obviate the need for a web packaging standard. Since then, many of those folks have become more pessimistic about solving the problem of packaging entirely through HTTP. Jake Archibald wrote a post explaining some of the unexpected subtleties of HTTP/2 called [HTTP/2 push is tougher than I thought](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/).
+This question has been raised over the years in response to previous Web packaging proposals. During those prior discussions, folks who were actively working on HTTP/2 felt optimistic that HTTP/2 would ultimately obviate the need for a Web packaging standard. Since then, many of those folks have become more pessimistic about solving the problem of packaging entirely through HTTP. Jake Archibald wrote a post explaining some of the unexpected subtleties of HTTP/2 called [HTTP/2 push is tougher than I thought](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/).
 
 Sharing compression dictionaries across multiple HTTP responses is a particularly challenging part. Although HTTPWG has developed various draft proposals in this area, concerns have been raised about privacy, security, implementation complexity, and the ability to use high-quality compression techniques on-line.
 
-#### Q: Are web developers expected to write out those `<script type=bundlepreload>` manifests, and create the resource bundles, themselves?
+#### Q: Are Web developers expected to write out those `<script type=bundlepreload>` manifests, and create the resource bundles, themselves?
 
-**A**: No. This is a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `bundlepreload` manifest, which can be pasted into the HTML inline.
+**A**: Not necessarily. This is mainly a job for bundlers to do ([explainer](./subresource-loading-tools.md)). Hopefully, bundlers will take an application and output an appropriate resource bundle, to be [interpreted by the server](./subresource-loading-server.md) to send just the requested resources to the client. The bundler will also create a `bundlepreload` manifest, which can be pasted into the HTML inline.
 
 #### Q: Should bundling be restricted to JavaScript, which is the case with the largest amount of resource blow-up?
 
@@ -163,6 +166,7 @@ Incremental manifest fetching is another advanced technique that could be includ
 There are a number of different possible valid designs for how a browser behaves when a response contains additional resources that were not requested:
 - The browser could discard all additional resources
 - The browser could cache everything and make it available to the application
+- The browser could cache everything, but only make each resource available after it has been referenced by the bundling API.
 
 #### Q: Why are the requested resources in the bundle listed as a header parameter, rather than in the URL as a query parameter?
 
@@ -223,6 +227,7 @@ However, this could be quite expensive for extensions which intercept fetches (e
 
 **A**: Naming individual resources results in a larger `<script type=bundlepreload>` manifest, as well as more lengthy headers. Depending on how many resources are loaded, this may or may not be too many. If JavaScript is bundled into fewer resources using the [module fragments](https://github.com/tc39/proposal-module-fragments/) proposal, then the pressure may be reduced a bit.
 
+
 The larger amount of metadata with the ETags approach has the benefit of better cache granularity and more efficiency gains due to content blocking. Whether chunking makes sense in general depends on whether resources have a consistent grouping to build off of, or whether, in practice, they are fairly independent in their distribution.
 
 Chunking comes at the significant cost of not exposing each URL to the client, to decide whether to fetch it individually. Instead, responses are returned from the server in chunks of bundles, with new URLs in responses coming as a potential "surprise". This violates the requirement that content blockers can avoid such overhead, making the chunking approach potentially not viable.
@@ -246,11 +251,11 @@ Chunking comes at the significant cost of not exposing each URL to the client, t
 
 **A**: Fundamentally, the set of resources that a browser has in its cache is based on the path that the user took through the application. This means that there is a combinatorial explosion of possibilities for the optimal bundle to send to the client, and dynamic subsetting could provide the best loading performance.
 
-This strategy is used in custom bundlers for some major sites. This proposal aims to bring these advanced loading techniques to a broader section of web developers.
+This strategy is used in custom bundlers for some major sites. This proposal aims to bring these advanced loading techniques to a broader section of Web developers.
 
 The strategy implemented today in bundles like webpack and rollup is, instead, statically generated chunks which can be served from a static file server. With static chunking, there is a tradeoff between, on one hand, better cache usage and avoiding sending duplicate/unneeded resources (where smaller chunks are better), and on the other hand, compressability and reduction of per-fetch overhead (where bigger chunks are better). [Recent work](https://web.dev/granular-chunking-nextjs/) has focused on finding an optimal middle point, but the ideal would be to cache at a small granularity but fetch/compress at a bigger granularity, as is possible with dynamic chunking in the context of native resource bundle loading.
 
-If dynamic bundle generation is too expensive/difficult to deploy in practice in many cases (whether due to usability issues for web developers or servers), resource bundle loading could be based on (either in a separate mode, or always) static chunking with each chunk served from a different URLs: the cost in terms of runtime performance is a tradeoff with easier deployability. It may be that static chunking is enough in practice, if it only results in a reasonably small number of HTTP/2 fetches, and compression works relatively well with Brotli default compression dictionaries, for example.
+If dynamic bundle generation is too expensive/difficult to deploy in practice in many cases (whether due to usability issues for Web developers or servers), resource bundle loading could be based on (either in a separate mode, or always) static chunking with each chunk served from a different URLs: the cost in terms of runtime performance is a tradeoff with easier deployability. It may be that static chunking is enough in practice, if it only results in a reasonably small number of HTTP/2 fetches, and compression works relatively well with Brotli default compression dictionaries, for example.
 
 #### Q: Will it be efficient to dynamically, optimally re-compress just the requested parts of the bundle?
 
@@ -285,4 +290,4 @@ There are many possible policies here, just as bundlers today have many possible
 - *Graceful degradation*: Because individual resources in a resource bundle must be served from the same URL with the same contents, sites will "just work" if resource bundles are simply turned off. However, performance will often not be good enough, for all the reasons developers use bundlers in the first place today.
 - *Feature detection*: Detect the lack of this feature and invoke a legacy-bundled fallback. The detection can be done by introspecting the DOM and checking how the `bundlepreload` manifest was parsed.
 
-[Previous section](./subresource-loading-tools.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-evolution.md)
+[Previous section](./subresource-loading-tools.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./implementation.md)

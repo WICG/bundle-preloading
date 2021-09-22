@@ -12,14 +12,12 @@ The API to implement bundle preloading consists of:
 * an imperative JavaScript API for bundle preloading;
 * request headers and corresponding response behavior for delivering bundled resources.
 
-This page explains the general mechanism of bundle preloading and shows examples of each of these features in use, walking through their basic interaction with web sites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
-
-<!--TODO maybe some of this content would fit better in more specific documents -->
+This page explains the general mechanism of bundle preloading and shows examples of each of these features in use, walking through their basic interaction with websites and caches. More complex situations and details, such as CDN behavior and different server edge cases, are discussed in subsequent parts of this proposal.
 
 
 ## Mechanism
 
-Let's start with a simplified description of the general mechanism used in this proposal, before venturing into implementation details.
+Let's start with a simplified description of the general mechanism used in this proposal:
 
 When the user wants to visit a Web page, their *client* requests and receives a *document* from a remote *server*.
 
@@ -44,14 +42,7 @@ Finally, the *client* has everything that it needs to display the Web page!
 
 ## HTML script tag
 
-Web developers can preload resources from a bundle by using a `<script>` tag with `type=bundlepreload`. The tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in the resource list can be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
-
-<!-- TODO I think that this is inconsistent with what is written elsewhere
-
-Basically, either you ignore additional resources that the server may include, or you process them.
-Ignoring them preserves URL integrity, because you dononly get exactly what you requested.
-Processing the resources may have better performance and also provides graceful degradation: a server that does not have the capability to create a subset of resources on the fly might just always send the whole bundle.
- -->
+Web developers can preload resources from a bundle by using a `<script>` tag with `type=bundlepreload`. The tag contains a static resource list in JSON format declaring the responses expected to be included in the bundle. Only resources declared in a resource list may be accessed from the bundle; this ensures [URL integrity](./glossary.md#rsrc-integrity) is preserved.
 
 Consider the following resource list for the page `https://www.example.com/index.html`:
 
@@ -68,7 +59,11 @@ Consider the following resource list for the page `https://www.example.com/index
 </script>
 ```
 
-Because of same origin and path restrictions, the resources referenced by the bundle must correspond to URLs with the `https://www.example.com/assets/` prefix. For easier portability, the list may use relative locations as in the example. All of the bundled responses may only be accessed at URLs with the same base path component as the bundle's source, where "base path component" refers to the URL truncated before the last path component.
+For easier portability, the list may use relative locations as in the example.
+
+Because of same origin and path restrictions, the resources referenced by the bundle *must* correspond to URLs with the same base URL as the bundle itself. If they use relative locations, those are resolved taking the location of the bundle as the base URL (see [RFC7230 section 2.7](https://datatracker.ietf.org/doc/html/rfc7230#section-2.7) and [RFC3986 section 5.1](https://datatracker.ietf.org/doc/html/rfc3986#section-5.1.2)).
+
+In our example, relative locations referenced by the bundle at `https://www.example.com/assets/resources.wbn` would be resolved using `https://www.example.com/assets/` as their base URL.
 
 This directs the browser that it _may_ serve any of the resources in the `"resources"` list by making a single request for `https://www.example.com/assets/resources.wbn`. That request *must* contain the [structured header](https://www.fastly.com/blog/improve-http-structured-headers) `Bundle-Preload`; the value for the `Bundle-Preload` header may only contain a non-empty subset of the `"resources"` list. To retrieve all the declared resources, the request may look like:
 
@@ -93,14 +88,16 @@ For more details on the bundled response format, see the [IETF WEBPACK draft](ht
 Any references to these resources later in the document _may_ be loaded from the bundled response. For example, if the following elements are present later on the page, the comments indicate what the browser may do:
 
 ```html
-<img src="assets/profile.png" />
-<!-- the image may be loaded from the bundle without an additional request -->
-
 <img src="https://example.com/assets/profile.png" />
 <!-- the image may be loaded from the bundle without an additional request -->
 
+<img src="assets/profile.png" />
+<!-- if this relative location corresponds to one of the URLs in the bundle, 
+     the image may be loaded from the bundle without an additional request -->
+
 <img src="more_assets/profile.png" />
-<!-- results in a new request to https://example.com/more_assets/profile.png -->
+<!-- this URL was not part of the bundle (note the different path), so this
+     results in a new request to https://example.com/more_assets/profile.png -->
 ```
 
 
@@ -154,24 +151,27 @@ The `Bundle-Preload` header may not always contain all of the values listed in e
 Bundle-Preload: "render.js", "sidebar.js"
 ```
 
-The server response to any bundle preloading request _must_ be a [bundled response](https://datatracker.ietf.org/doc/draft-ietf-wpack-bundled-responses/) file. Additionally, it _must_ have both the `Bundle-Preload` and `Vary` response headers present and set to corresponding values. For example, for the request for three resources used in these examples, some of the response headers would have these values:
+The server response to any bundle preloading request _must_ be a [bundled response](https://datatracker.ietf.org/doc/draft-ietf-wpack-bundled-responses/) file. Additionally, it _must_ include the `Vary: Bundle-Preload` directive.
+
+For example, for the request for three resources used in these examples, some of the response headers would have these values:
 
 ```
 Content-Type: application/webbundle
-Bundle-Preload: "render.js", "sidebar.js", "profile.png"
 Vary: Bundle-Preload
+...
+*** data for the resources "render.js", "sidebar.js", and "profile.png" ***
 ```
 
-The `Bundle-Preload` header isn't the only HTTP change introduced by this proposal, but it is the most important one. For a more detailed description of how bundle preloading works with other HTTP headers such as `Vary` and `Cache-Control`, see the other pages in this proposal. (NB 2021-05-13: Will update link, currently in flux).
+The `Bundle-Preload` header isn't the only HTTP change introduced by this proposal, but it is the most important one. For a more detailed description of how bundle preloading works with other HTTP headers such as `Vary` and `Cache-Control`, see the section on [bundle preloading for servers](./subresource_loading_server.md).
 
 ## Putting it all together
 
-Let's consider how bundle preloading usage might look for a large web application. We'll demonstrate how:
+Let's consider how bundle preloading usage might look for a large Web application. We'll demonstrate how:
 * Bundle preloading enables effective [code splitting](./glossary.md#codesplitting)
 * Bundlers can use bundle preloading to prioritize [responsiveness](./glossary.md#tti)
 * Updates to individual resources do not cause [cachebusting](./glossary.md#cachebusting)
 
-Let's consider a web application with the following layout:
+Let's consider a Web application with the following layout:
 
 ```
 ├── assets
@@ -193,7 +193,7 @@ Let's consider a web application with the following layout:
 
 `site.wbn` is a bundle containing all of the other files under `assets/`.
 
-Note that from the point of view of this protocol, it is not strictly necessary that the content of the bundle is duplicated in the server's filesystem. In theory, it would be possible for the server to store just the bundle file and use it to serve single (not bundled) requests to individual resources. Detailed prototyping will be necessary to evaluate the performance implications of that alternative approach.
+Note that from the point of view of this protocol, it is not strictly necessary that the content of the bundle is actually duplicated in the server's filesystem. It would be possible for the server to store just the bundle file and use it to serve single (not bundled) requests to individual resources. See the section on [Bundle preloading for servers](./subresource-loading-server.md) for more details.
 
 ### Code splitting
 
@@ -243,9 +243,9 @@ Bundle-Preload: "css/base.css", "css/index.css", "img/logo.png", "js/analytics.j
 ...
 ```
 
-Let's assume that the responses for each of those resources in the bundle has the response header `Cache-Control: immutable` , directing to the browser that it may keep those resources cached.
+Let's assume that the responses for each of those resources in the bundle has the response header `Cache-Control: immutable`, indicating to the browser that it may keep those resources cached.
 
-When the user then navigates to `profile.html`, the browser can then issue the following request:
+When the user navigates to `profile.html` later on, the browser can then issue a request only for those elements not yet in its cache:
 
 ```
 GET /assets/site.wbn HTTP/1.1
@@ -260,7 +260,7 @@ Because the browser _may_ issue requests for a subset of the listed resources, i
 
 An important metric for many websites with lots of static resources to load is the [TTI](./glossary.md#tti), or the time until the page is ready for user interaction. Before that time, the user is waiting for the browser to load and process the resources needed to render the page.
 
-In this example, we've omitted `css/sidebar.css` and `js/sidebar.js` from the static resource lists embedded in the page with `<script type=bundlepreload>` tags. A bundler or web developer might defer loading of these resources until the page has rendered and is ready for user interaction, in order to improve TTI. A simple way to then preload these resources so that the sidebar will respond quickly without delays caused by needing to fetch resources would be:
+In this example, we've omitted `css/sidebar.css` and `js/sidebar.js` from the static resource lists embedded in the page with `<script type=bundlepreload>` tags. A bundler or Web developer might defer loading of these resources until the page has rendered and is ready for user interaction, in order to improve TTI. A simple way to then preload these resources so that the sidebar will respond quickly without delays caused by needing to fetch resources would be:
 
 ```js
 document.body.onload = function() {
@@ -275,9 +275,9 @@ This makes it easy to dynamically load parts of bundles together, whenever clien
 
 ### Cachebusting
 
-Many people using the web have metered internet data, lower bandwidth connections, and infrequent internet access. For such users it can be especially important to avoid causing them to unnecessarily download extra data to access a site. Even as websites change, some avoid changing their bundling configurations ("cachebusting") so that users can use already cached resources for a website; this spares users from needing to download a whole bundle when only some of the resources it contains have changed. It does so at the expense of needing to track historical bundling configurations on the server side, to model and estimate user cache contents, and to balance complicated performance heuristics.
+Many people using the Web have metered internet data, lower bandwidth connections, and infrequent internet access. For such users it can be especially important to avoid causing them to unnecessarily download extra data to access a site. Even as websites change, some avoid changing their bundling configurations ("cachebusting") so that users can use already cached resources for a website; this spares users from needing to download a whole bundle when only some of the resources it contains have changed. It does so at the expense of needing to track historical bundling configurations on the server side, to model and estimate user cache contents, and to balance complicated performance heuristics.
 
-Bundle preloading helps sites to avoid cachebusting. Let's consider what happens to a user who has already visited our entire example site. Because the responses contained in the bundle all have the `Cache-Control: Immutable` response header, their browser has likely retained these resources in its cache. But what if a web developer wants to change the base stylesheet and logo for a site, as well as improve the fanciness of `fancyWidget.js`?
+Bundle preloading helps sites to avoid cachebusting. Let's consider what happens to a user who has already visited our entire example site. Because the responses contained in the bundle all have the `Cache-Control: Immutable` response header, their browser has likely retained these resources in its cache. But what if a Web developer wants to change the base stylesheet and logo for a site, as well as improve the fanciness of `fancyWidget.js`?
 
 All the developer needs to do is [rev](./glossary.md#revving) those resources' URLs and update the resource list. For example, in `index.html`:
 
@@ -321,7 +321,7 @@ Bundle-Preload: "css/base2.css", "img/hot-new-logo-2021-rev2.png", "js/fancierWi
 ...
 ```
 
-Of course, this web developer's strategy for revving isn't ideal; it would help them to use a bundler that can perform revving for them, perhaps producing [merkled](https://en.wikipedia.org/wiki/Merkle_tree) URLs inside web bundles rather than manually renaming files. One suspects that `js/fanciestWidget.js` is just around the corner, but solving that problem is another topic well beyond the scope of this proposal.
+Of course, this Web developer's strategy for revving isn't ideal; it would help them to use a bundler that can perform revving for them, perhaps producing [merkled](https://en.wikipedia.org/wiki/Merkle_tree) URLs inside Web bundles rather than manually renaming files. One suspects that `js/fanciestWidget.js` is just around the corner, but solving that problem is another topic well beyond the scope of this proposal.
 
 <!--
 ## "But what about..."
