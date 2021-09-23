@@ -77,4 +77,4 @@ Many bundlers employ the following optimization techniques:
 - <a id="revving"></a>[Revved resources](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#revved_resources) (revving): Unlike the authors' [previous approach](https://github.com/littledan/resource-bundles), revving is left as a choice to bundlers. Bundle preloading supports revving but does not contain any explicit restrictions that enforce or prevent it.
 - <a id="tti"></a>[Time to interactive](https://developer.mozilla.org/en-US/docs/Glossary/Time_to_interactive) (TTI): An important metric for website performance. A website does not necessarily need to load a whole bundle to have a good TTI.
 
-[Previous section](./subresource-loading-evolution.md) - [Table of contents](./README.md#table-of-contents) - Next section
+[Previous section](./implementation.md) - [Table of contents](./README.md#table-of-contents) - Next section
