@@ -1,0 +1,1 @@
+var UniformsUtils={merge:function(a){for(var b,c={},d=0;d<a.length;d++)for(var e in b=this.clone(a[d]),b)c[e]=b[e];return c},clone:function(a){var b={};for(var c in a)for(var d in b[c]={},a[c]){var e=a[c][d];b[c][d]=e&&(e.isColor||e.isMatrix3||e.isMatrix4||e.isVector2||e.isVector3||e.isVector4||e.isTexture)?e.clone():Array.isArray(e)?e.slice():e}return b}};export{UniformsUtils};

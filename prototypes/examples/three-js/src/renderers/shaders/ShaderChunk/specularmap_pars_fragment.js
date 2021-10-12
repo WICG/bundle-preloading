@@ -1,0 +1,1 @@
+var specularmap_pars_fragment="#ifdef USE_SPECULARMAP\n\tuniform sampler2D specularMap;\n#endif";export default specularmap_pars_fragment;

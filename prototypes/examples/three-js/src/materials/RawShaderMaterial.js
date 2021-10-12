@@ -1,0 +1,1 @@
+import{ShaderMaterial}from'./ShaderMaterial.js';function RawShaderMaterial(a){ShaderMaterial.call(this,a),this.type='RawShaderMaterial'}RawShaderMaterial.prototype=Object.create(ShaderMaterial.prototype),RawShaderMaterial.prototype.constructor=RawShaderMaterial,RawShaderMaterial.prototype.isRawShaderMaterial=!0;export{RawShaderMaterial};

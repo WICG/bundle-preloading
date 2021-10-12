@@ -1,0 +1,1 @@
+import{PathPrototype}from'./PathPrototype.js';import{Vector2}from'../../math/Vector2.js';import{CurvePath}from'./CurvePath.js';function Path(a){CurvePath.call(this),this.currentPoint=new Vector2,a&&this.fromPoints(a)}Path.prototype=PathPrototype,PathPrototype.constructor=Path;export{Path};

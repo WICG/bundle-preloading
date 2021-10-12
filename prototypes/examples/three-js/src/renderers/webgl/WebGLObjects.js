@@ -1,0 +1,1 @@
+function WebGLObjects(a,b,c){var d={};return{update:function(a){var e=c.frame,f=a.geometry,g=b.get(a,f);return d[g.id]!==e&&(f.isGeometry&&g.updateFromObject(a),b.update(g),d[g.id]=e),g},clear:function(){d={}}}}export{WebGLObjects};

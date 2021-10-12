@@ -1,0 +1,1 @@
+var premultiplied_alpha_fragment="#ifdef PREMULTIPLIED_ALPHA\n\tgl_FragColor.rgb *= gl_FragColor.a;\n#endif\n";export default premultiplied_alpha_fragment;

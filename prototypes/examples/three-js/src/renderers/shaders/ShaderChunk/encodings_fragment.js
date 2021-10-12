@@ -1,0 +1,1 @@
+var encodings_fragment="  gl_FragColor = linearToOutputTexel( gl_FragColor );\n";export default encodings_fragment;

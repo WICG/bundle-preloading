@@ -1,0 +1,1 @@
+var alphamap_fragment="#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, vUv ).g;\n#endif\n";export default alphamap_fragment;

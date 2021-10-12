@@ -1,0 +1,1 @@
+function arrayMin(a){if(0===a.length)return Infinity;for(var b=a[0],c=1,d=a.length;c<d;++c)a[c]<b&&(b=a[c]);return b}function arrayMax(a){if(0===a.length)return-Infinity;for(var b=a[0],c=1,d=a.length;c<d;++c)a[c]>b&&(b=a[c]);return b}export{arrayMin,arrayMax};

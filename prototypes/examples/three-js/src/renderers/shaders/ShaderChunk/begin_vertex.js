@@ -1,0 +1,1 @@
+var begin_vertex="\nvec3 transformed = vec3( position );\n";export default begin_vertex;

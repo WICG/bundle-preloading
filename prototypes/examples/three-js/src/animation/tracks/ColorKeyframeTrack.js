@@ -1,0 +1,1 @@
+import{KeyframeTrackPrototype}from'../KeyframeTrackPrototype.js';import{KeyframeTrackConstructor}from'../KeyframeTrackConstructor.js';function ColorKeyframeTrack(a,b,c,d){KeyframeTrackConstructor.call(this,a,b,c,d)}ColorKeyframeTrack.prototype=Object.assign(Object.create(KeyframeTrackPrototype),{constructor:ColorKeyframeTrack,ValueTypeName:'color'});export{ColorKeyframeTrack};

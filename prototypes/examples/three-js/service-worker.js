@@ -1,0 +1,1 @@
+../../client/service-worker.js

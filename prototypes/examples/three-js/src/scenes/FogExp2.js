@@ -1,0 +1,1 @@
+import{Color}from'../math/Color.js';function FogExp2(a,b){this.name='',this.color=new Color(a),this.density=b===void 0?2.5e-4:b}FogExp2.prototype.isFogExp2=!0,FogExp2.prototype.clone=function(){return new FogExp2(this.color.getHex(),this.density)},FogExp2.prototype.toJSON=function(){return{type:'FogExp2',color:this.color.getHex(),density:this.density}};export{FogExp2};

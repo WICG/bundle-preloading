@@ -1,0 +1,1 @@
+import{Interpolant}from'../Interpolant.js';function DiscreteInterpolant(a,b,c,d){Interpolant.call(this,a,b,c,d)}DiscreteInterpolant.prototype=Object.assign(Object.create(Interpolant.prototype),{constructor:DiscreteInterpolant,interpolate_:function(a){return this.copySampleValue_(a-1)}});export{DiscreteInterpolant};

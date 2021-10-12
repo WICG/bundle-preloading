@@ -1,0 +1,1 @@
+function Uniform(a){'string'==typeof a&&(console.warn('THREE.Uniform: Type parameter is no longer needed.'),a=arguments[1]),this.value=a}Uniform.prototype.clone=function(){return new Uniform(this.value.clone===void 0?this.value:this.value.clone())};export{Uniform};
