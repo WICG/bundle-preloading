@@ -9,16 +9,17 @@ See also:
 
 ## create-react-app
 
-Create React App using bundle preloading.
+Create React App using bundle preloading. Initial code comes from running `create-react-app`, with some modifications added afterward.
 
 ```shell
-create-react-app
+npm install
 npm run-script build
 ```
 
 Test it by running the [web-bundles-prototype-server](https://gitlab.igalia.com/femorandeira/web-bundles-prototype-server) and pointing it to this subfolder:
 
 ```shell
-node server.js http://localhost 8080 <LOCATION OF THIS PROJECT>/create-react-app/build static
+cd ../../server
+node server.js http://localhost 8080 ../examples/create-react-app/build static
 ```
 

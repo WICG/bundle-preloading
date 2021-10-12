@@ -2,6 +2,7 @@
 
 Steps:
 
+* run `npm install`
 * run `npm run-script build` to prepare the service worker script
 * run the server in `web-bundles-prototype-server` pointing at this folder
 
