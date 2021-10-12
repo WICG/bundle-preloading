@@ -23,14 +23,15 @@ if (process.argv.length > 5) {
         const subfolder = path.resolve(path.join(baseDir, dir));
         const bundleLocation = `${subfolder}.wbn`;
         // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
-        const primaryURL = `${baseUrl}/${dir}/not-used.html`;
+        const bundleRootURL = `${baseUrl}/${dir}/`;
+        const primaryURL = `${bundleRootURL}not-used.html`;
         const builder = new wbn.BundleBuilder(primaryURL);
         const files = glob.sync(`${subfolder}/**/*.*`);
 
         builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
         files.map(file => {
             builder.addExchange(
-                primaryURL + file.slice(process.argv[2].length + 1),
+                bundleRootURL + file.slice(subfolder.length + 1),
                 200,
                 { 'Content-Type': 'application/javascript' },
                 fs.readFileSync(file)
