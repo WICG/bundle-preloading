@@ -1,0 +1,1 @@
+import{Texture}from'./Texture.js';function CanvasTexture(a,b,c,d,e,f,g,h,i){Texture.call(this,a,b,c,d,e,f,g,h,i),this.needsUpdate=!0}CanvasTexture.prototype=Object.create(Texture.prototype),CanvasTexture.prototype.constructor=CanvasTexture;export{CanvasTexture};

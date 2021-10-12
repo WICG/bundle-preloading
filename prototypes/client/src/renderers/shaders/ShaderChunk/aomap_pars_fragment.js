@@ -1,0 +1,1 @@
+var aomap_pars_fragment="#ifdef USE_AOMAP\n\tuniform sampler2D aoMap;\n\tuniform float aoMapIntensity;\n#endif";export default aomap_pars_fragment;

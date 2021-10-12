@@ -1,0 +1,39 @@
+{
+  "name": "web-bundles-prototype-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bundlepreload.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node ./node_modules/browserify/bin/cmd.js service-worker.js -o service-worker-browserified.js -g aliasify --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.igalia.com/femorandeira/web-bundles-prototype-client.git"
+  },
+  "keywords": [
+    "web",
+    "bundle",
+    "preload",
+    "client"
+  ],
+  "author": "Felipe Erias",
+  "license": "ISC",
+  "dependencies": {
+    "aliasify": "^2.1.0",
+    "borc": "^3.0.0",
+    "browserify": "^17.0.0",
+    "glob": "^7.2.0",
+    "wbn": "0.0.5"
+  },
+  "browserify": {
+    "transform": [
+      "aliasify"
+    ]
+  },
+  "aliasify": {
+    "aliases": {
+      "cbor": "borc"
+    }
+  }
+}

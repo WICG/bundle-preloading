@@ -1,0 +1,1 @@
+var color_fragment="#ifdef USE_COLOR\n\tdiffuseColor.rgb *= vColor;\n#endif";export default color_fragment;

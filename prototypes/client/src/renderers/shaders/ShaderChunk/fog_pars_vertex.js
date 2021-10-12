@@ -1,0 +1,1 @@
+var fog_pars_vertex="#ifdef USE_FOG\n  varying float fogDepth;\n#endif\n";export default fog_pars_vertex;

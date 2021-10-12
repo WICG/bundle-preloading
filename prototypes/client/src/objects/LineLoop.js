@@ -1,0 +1,1 @@
+import{Line}from'./Line.js';function LineLoop(a,b){Line.call(this,a,b),this.type='LineLoop'}LineLoop.prototype=Object.assign(Object.create(Line.prototype),{constructor:LineLoop,isLineLoop:!0});export{LineLoop};

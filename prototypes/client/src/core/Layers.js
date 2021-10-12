@@ -1,0 +1,1 @@
+function Layers(){this.mask=1}Object.assign(Layers.prototype,{set:function(a){this.mask=0|1<<a},enable:function(a){this.mask|=0|1<<a},toggle:function(a){this.mask^=0|1<<a},disable:function(a){this.mask&=~(0|1<<a)},test:function(a){return 0!=(this.mask&a.mask)}});export{Layers};

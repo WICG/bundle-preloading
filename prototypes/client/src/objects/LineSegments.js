@@ -1,0 +1,1 @@
+import{Line}from'./Line.js';function LineSegments(a,b){Line.call(this,a,b),this.type='LineSegments'}LineSegments.prototype=Object.assign(Object.create(Line.prototype),{constructor:LineSegments,isLineSegments:!0});export{LineSegments};

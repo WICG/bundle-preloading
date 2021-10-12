@@ -1,0 +1,1 @@
+var alphatest_fragment="#ifdef ALPHATEST\n\tif ( diffuseColor.a < ALPHATEST ) discard;\n#endif\n";export default alphatest_fragment;

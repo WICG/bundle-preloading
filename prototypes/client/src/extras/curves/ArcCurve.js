@@ -1,0 +1,1 @@
+import{EllipseCurve}from'./EllipseCurve.js';function ArcCurve(a,b,c,d,e,f){EllipseCurve.call(this,a,b,c,c,d,e,f)}ArcCurve.prototype=Object.create(EllipseCurve.prototype),ArcCurve.prototype.constructor=ArcCurve;export{ArcCurve};

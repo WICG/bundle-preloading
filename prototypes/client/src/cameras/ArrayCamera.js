@@ -1,0 +1,1 @@
+import{PerspectiveCamera}from'./PerspectiveCamera.js';function ArrayCamera(a){PerspectiveCamera.call(this),this.enabled=!1,this.cameras=a||[]}ArrayCamera.prototype=Object.assign(Object.create(PerspectiveCamera.prototype),{constructor:ArrayCamera,isArrayCamera:!0});export{ArrayCamera};
