@@ -1,1 +1,0 @@
-var dithering_fragment="#if defined( DITHERING )\n  gl_FragColor.rgb = dithering( gl_FragColor.rgb );\n#endif\n";export default dithering_fragment;

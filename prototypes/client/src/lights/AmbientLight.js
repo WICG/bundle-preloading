@@ -1,1 +1,0 @@
-import{Light}from'./Light.js';function AmbientLight(a,b){Light.call(this,a,b),this.type='AmbientLight',this.castShadow=void 0}AmbientLight.prototype=Object.assign(Object.create(Light.prototype),{constructor:AmbientLight,isAmbientLight:!0});export{AmbientLight};

@@ -1,1 +1,0 @@
-var lightmap_pars_fragment="#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n#endif";export default lightmap_pars_fragment;

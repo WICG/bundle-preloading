@@ -1,1 +1,0 @@
-var Cache={enabled:!1,files:{},add:function(a,b){!1===this.enabled||(this.files[a]=b)},get:function(a){return!1===this.enabled?void 0:this.files[a]},remove:function(a){delete this.files[a]},clear:function(){this.files={}}};export{Cache};

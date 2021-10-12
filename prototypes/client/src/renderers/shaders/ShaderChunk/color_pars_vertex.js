@@ -1,1 +1,0 @@
-var color_pars_vertex="#ifdef USE_COLOR\n\tvarying vec3 vColor;\n#endif";export default color_pars_vertex;

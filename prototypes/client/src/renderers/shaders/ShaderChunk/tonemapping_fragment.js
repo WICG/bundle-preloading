@@ -1,1 +1,0 @@
-var tonemapping_fragment="#if defined( TONE_MAPPING )\n  gl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\n";export default tonemapping_fragment;

@@ -1,1 +1,0 @@
-var color_vertex="#ifdef USE_COLOR\n\tvColor.xyz = color.xyz;\n#endif";export default color_vertex;

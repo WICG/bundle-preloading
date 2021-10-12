@@ -1,1 +1,0 @@
-var metalnessmap_pars_fragment="#ifdef USE_METALNESSMAP\n\tuniform sampler2D metalnessMap;\n#endif";export default metalnessmap_pars_fragment;

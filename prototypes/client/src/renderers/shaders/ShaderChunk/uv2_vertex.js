@@ -1,1 +1,0 @@
-var uv2_vertex="#if defined( USE_LIGHTMAP ) || defined( USE_AOMAP )\n\tvUv2 = uv2;\n#endif";export default uv2_vertex;

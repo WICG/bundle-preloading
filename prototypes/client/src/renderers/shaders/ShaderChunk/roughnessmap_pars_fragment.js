@@ -1,1 +1,0 @@
-var roughnessmap_pars_fragment="#ifdef USE_ROUGHNESSMAP\n\tuniform sampler2D roughnessMap;\n#endif";export default roughnessmap_pars_fragment;

@@ -1,1 +1,0 @@
-var context,AudioContext={getContext:function(){return void 0==context&&(context=new(window.AudioContext||window.webkitAudioContext)),context},setContext:function(a){context=a}};export{AudioContext};
