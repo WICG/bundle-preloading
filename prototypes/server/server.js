@@ -6,7 +6,7 @@ const path = require('path');
 const glob = require('glob');
 const {performance} = require('perf_hooks');
 
-// Parameters:  node server.js http://localhost 8080 ../web-bundles-prototype-client src img
+// Parameters:  node server.js http://localhost 8080 ../client src img
 const urlPrefix = process.argv[2] || 'http://localhost';
 const port = process.argv[3] || 8080;
 const baseUrl = `${urlPrefix}:${port}`;
