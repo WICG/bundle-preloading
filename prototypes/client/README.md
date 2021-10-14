@@ -9,7 +9,7 @@ Build instructions:
 To try out a small demo, simply launch a server pointing to this folder:
 
 ```
-cd ../../server/
+cd ../server/
 node server.js http://localhost 8080 ../client img
 ```
 
