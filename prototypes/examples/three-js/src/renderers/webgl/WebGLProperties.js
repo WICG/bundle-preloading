@@ -1,1 +1,0 @@
-function WebGLProperties(){var a={};return{get:function(b){var c=b.uuid,d=a[c];return void 0===d&&(d={},a[c]=d),d},remove:function(b){delete a[b.uuid]},clear:function(){a={}}}}export{WebGLProperties};

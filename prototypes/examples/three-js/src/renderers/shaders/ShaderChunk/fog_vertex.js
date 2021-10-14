@@ -1,1 +1,0 @@
-var fog_vertex="\n#ifdef USE_FOG\nfogDepth = -mvPosition.z;\n#endif";export default fog_vertex;

@@ -1,1 +1,0 @@
-var map_pars_fragment="#ifdef USE_MAP\n\tuniform sampler2D map;\n#endif\n";export default map_pars_fragment;

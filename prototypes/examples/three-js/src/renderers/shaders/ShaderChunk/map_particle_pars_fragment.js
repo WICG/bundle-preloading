@@ -1,1 +1,0 @@
-var map_particle_pars_fragment="#ifdef USE_MAP\n\tuniform vec4 offsetRepeat;\n\tuniform sampler2D map;\n#endif\n";export default map_particle_pars_fragment;
