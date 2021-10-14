@@ -1,21 +1,19 @@
-# Create React App (bundled)
+# Create React App with bundle preloading
 
-This example depends on [the client libraries](../../client/) being available and compiled, so start with those.
+A version of [Create React App](https://github.com/facebook/create-react-app) using bundle preloading. It depends on [the server](../../server) and [the client libraries](../../client/).
 
-Then, come back to this folder and build the app with:
+Compile this webapp with:
 
-```
+```shell
 npm install
 npm run-script build
 ```
 
-Finally, start a server pointing to this folder:
+Test it by running the [Bundle Preloading prototype server](../../server) and pointing it to this subfolder:
 
-```
-cd ../../server/
+```shell
+cd ../../server
 node server.js http://localhost 8080 ../examples/create-react-app/build static
 ```
 
-This example depends on several manual changes to [public/index.html](public/index.html) to replace the sources linked by webpack with the necessary code to start a service worker, load the bundled resources, and then finally load the specific React code that implement the app. We are looking into ways to make this more convenient for developers.
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This example depends on several manual changes to [public/index.html](public/index.html) to replace the sources linked by webpack with the necessary code to start a service worker, load the bundled resources, and then finally load the JS React code that implements the app. We are looking into ways to automate these changes.
