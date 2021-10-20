@@ -80,52 +80,50 @@ http.createServer(function (request, response) {
     response.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,bundle-preload,Vary');
     response.setHeader('X-Content-Type-Options', 'nosniff');
 
-    if (ext === '.wbn') {
-        // let's create a web bundle!
+    // Bundle Preloading with subsetting
+    if (request.headers['bundle-preload'] != undefined) {
         let resources = request.headers['bundle-preload'];
 
-        if (resources != undefined) {
-            // if the Resources header is empty, do not send a bundle
-            if(resources.trim().length == 0) {
-                response.statusCode = 204;
-                response.end('Request for empty bundle.');
-                return;
-            }
+        // if the Resources header is empty, reply with 204 No Content
+        if (resources.trim().length == 0) {
+            response.statusCode = 204;
+            response.end('Request for empty bundle.');
+            return;
+        }
 
-            let resourcesArray = resources.split(/\s+/);
+        let resourcesArray = resources.split(/\s+/);
 
-            if (resourcesArray != undefined && resourcesArray.length > 0) {
-                // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
-                const primaryURL = `${baseUrl}/${name}/not-used.html`;
-                const builder = new wbn.BundleBuilder(primaryURL);
-                builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
-                for (resource of resourcesArray) {
-                    try {
-                        // TODO support relative paths
-                        const resourceUrl = new URL(resource);
-                        let resourcePath = path.resolve(path.join(baseDir, resourceUrl.pathname));
-                        let resourceExtension = path.parse(resourcePath).ext;
-                        const headers = {
-                            'Access-Control-Allow-Headers': 'X-Requested-With,content-type,bundle-preload,Vary',
-                            'Content-Type': map[resourceExtension] || 'application/octet-stream',
-                        };
-                        builder.addExchange(resource, 200, headers, fs.readFileSync(resourcePath));
-                    } catch (error) {
-                        console.log(`Bundled request failed when getting the file: ${error}`);
-                        response.statusCode = (error.code === 'ENOENT' ? 404 : 500);
-                        response.end(`Error getting the file: ${error}`);
-                        return;
-                    }
+        if (resourcesArray != undefined && resourcesArray.length > 0) {
+            // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
+            const primaryURL = `${baseUrl}/${name}/not-used.html`;
+            const builder = new wbn.BundleBuilder(primaryURL);
+            builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
+            for (resource of resourcesArray) {
+                try {
+                    // TODO support relative paths
+                    const resourceUrl = new URL(resource);
+                    let resourcePath = path.resolve(path.join(baseDir, resourceUrl.pathname));
+                    let resourceExtension = path.parse(resourcePath).ext;
+                    const headers = {
+                        'Access-Control-Allow-Headers': 'X-Requested-With,content-type,bundle-preload,Vary',
+                        'Content-Type': map[resourceExtension] || 'application/octet-stream',
+                    };
+                    builder.addExchange(resource, 200, headers, fs.readFileSync(resourcePath));
+                } catch (error) {
+                    console.log(`Bundled request failed when getting the file: ${error}`);
+                    response.statusCode = (error.code === 'ENOENT' ? 404 : 500);
+                    response.end(`Error getting the file: ${error}`);
+                    return;
                 }
-                response.setHeader('Content-type', 'application/webbundle;v=b1');
-                response.setHeader('Vary', 'bundle-preload');
-                response.end(builder.createBundle());
-
-                var t1 = performance.now();
-                console.log(`Requested ${resources}`);
-                console.log(`Serving a custom bundle took ${(t1 - t0).toFixed(1)} ms.`);
-                return;
             }
+            response.setHeader('Content-type', 'application/webbundle;v=b1');
+            response.setHeader('Vary', 'bundle-preload');
+            response.end(builder.createBundle());
+
+            var t1 = performance.now();
+            console.log(`Requested ${resources}`);
+            console.log(`Serving a custom bundle took ${(t1 - t0).toFixed(1)} ms.`);
+            return;
         }
     }
     // if no subsetting is done, we will return the whole bundle file
