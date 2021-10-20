@@ -13,6 +13,8 @@ For simplicity, the server will create one bundle file for each of the subfolder
 
 This 1 to 1 correspondence between a bundle and the folder containing the same resources is not a requirement but here it simplifies prototyping and quick testing. It means that, for example, `https://example.com/media.wbn` would contain the same resources as the folder `https://example.com/media.wbn`.
 
-A request for bundled resources should include the `"bundle-preload"` header, containing a list of space-separated URLs to preload.  Note that the current implementation does not support relative file paths yet, although we are working on it.
+A request for bundled resources should include the `"bundle-preload"` header, containing a list of space-separated URLs to preload. Note that the current implementation does not support relative file paths yet, although we are working on it.
 
 If the `"bundle-preload"` header is missing, the server will simply return the whole bundle file.
+
+Note that this server prototype is not strictly compliant: because it generates bundles both statically (on startup) and dynamically (when a request uses subsetting), there is the possibility that the dynamic responses can differ from the static bundles if individual contents are changed at runtime.
