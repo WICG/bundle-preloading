@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Resource bundling prototype using a service worker</title>
+
+    <script src='./bundlepreload.js'></script>
+    
+    <script type="bundlepreload">
+        {
+            "source": "http://localhost:8080/img.wbn",
+            "resources": [
+                "http://localhost:8080/img/01.png",
+                "http://localhost:8080/img/02.png",
+                "http://localhost:8080/img/03.png",
+                "http://localhost:8080/img/04.png",
+                "http://localhost:8080/img/05.png"
+            ]
+        }
+    </script>
+
+    <style>
+        input {
+            margin: 0.25rem;
+        }
+        div {
+            margin: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        function add_image(element) {
+            let img = document.createElement('img');
+            img.src = `http://localhost:8080/img/${element.value}.png`;
+            document.body.appendChild(img);
+        }
+    </script>
+
+    <div>
+        <input type="button" onclick="add_image(this)" value="01">
+        <input type="button" onclick="add_image(this)" value="02">
+        <input type="button" onclick="add_image(this)" value="03">
+        <input type="button" onclick="add_image(this)" value="04">
+        <input type="button" onclick="add_image(this)" value="05">
+        <input type="button" onclick="add_image(this)" value="06">
+        <input type="button" onclick="add_image(this)" value="07">
+        <input type="button" onclick="add_image(this)" value="08">
+        <input type="button" onclick="add_image(this)" value="09">
+        <input type="button" onclick="add_image(this)" value="10">
+    </div>
+
+</body>
+
+</html>

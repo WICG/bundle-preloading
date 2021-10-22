@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <metaname="description" content="Web site created using create-react-app" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>React App</title>
+    
+    <!-- List of resources to preload in a bundle -->
+    <!-- TODO fill in the name of each chunk automatically via the webpack configuration -->
+    <script type="bundlepreload">
+              {
+                  "source": "%PUBLIC_URL%/static.wbn",
+                  "resources": [
+                      "%PUBLIC_URL%/static/js/2.f2a9fc33.chunk.js",
+                      "%PUBLIC_URL%/static/js/3.b6022136.chunk.js",
+                      "%PUBLIC_URL%/static/js/runtime-main.2f0e8e04.js",
+                      "%PUBLIC_URL%/static/js/main.4b569d21.chunk.js",
+                      "%PUBLIC_URL%/static/css/main.a617e044.chunk.css",
+                      "%PUBLIC_URL%/static/media/logo.6ce24c58.svg"
+                  ]
+              }
+            </script>
+
+    <script>
+      // inline bundlepreload.js
+
+      // Service workers require HTTPS (http://goo.gl/lq4gCo). If we're running on a real web server
+      // (as opposed to localhost on a custom port, which is allowed), then change the protocol to HTTPS.
+      if ((!location.port || location.port == "80") && location.protocol != 'https:') {
+        location.protocol = 'https:';
+      }
+
+      function waitUntilInstalled(registration) {
+        return new Promise(function (resolve, reject) {
+          if (registration.installing) {
+            registration.installing.addEventListener('statechange', function (e) {
+              if (e.target.state == 'installed') {
+                resolve();
+              } else if (e.target.state == 'redundant') {
+                reject();
+              }
+            });
+          } else {
+            resolve();
+          }
+        });
+      }
+
+      function onInstalled() {
+        console.log("Service worker installed.");
+
+        // Preload the resources listed in <script type="bundlepreload">.
+        let scripts = document.getElementsByTagName("script");
+        for (let script of scripts) {
+          if (script.type === 'bundlepreload') {
+            console.log(`Bundle preload: ${script.textContent}`);
+            var data = JSON.parse(script.textContent);
+            navigator.serviceWorker.controller.postMessage({
+              command: 'bundlepreload',
+              source: data.source,
+              resources: data.resources
+            });
+          }
+        }
+      }
+
+      if ('serviceWorker' in navigator) {
+        // Callback to receive messages from the service worker.
+        navigator.serviceWorker.addEventListener('message', function (event) {
+          console.log(event);
+          if (event.data.type === 'bundlepreload-finished') {
+            console.log(`Bundle received: ${event.data.url}`);
+
+            // the bundle was downloaded, we can add the tags that will load CSS and React
+
+            document.querySelector('head').innerHTML +=
+              '<link href="%PUBLIC_URL%/static/css/main.a617e044.chunk.css" rel="stylesheet" type="text/css"/>';
+
+            let script1 = document.createElement('script');
+            script1.setAttribute('src', "%PUBLIC_URL%/static/js/2.f2a9fc33.chunk.js");
+            document.body.appendChild(script1);
+
+            let script2 = document.createElement('script');
+            script2.setAttribute('src', "%PUBLIC_URL%/static/js/main.4b569d21.chunk.js");
+            document.body.appendChild(script2);
+          }
+        });
+
+        // Register up the service worker that will carry out bundle preloading.
+        navigator.serviceWorker.register('./service-worker-browserified.js', { scope: './' })
+          .then(waitUntilInstalled)
+          .then(onInstalled)
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        console.log("The current browser doesn't support service workers.");
+      }
+    </script>
+
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <!-- webpack runtime script -->
+    <script>!function (e) { function r(r) { for (var n, u, i = r[0], c = r[1], l = r[2], f = 0, s = []; f < i.length; f++)u = i[f], Object.prototype.hasOwnProperty.call(o, u) && o[u] && s.push(o[u][0]), o[u] = 0; for (n in c) Object.prototype.hasOwnProperty.call(c, n) && (e[n] = c[n]); for (p && p(r); s.length;)s.shift()(); return a.push.apply(a, l || []), t() } function t() { for (var e, r = 0; r < a.length; r++) { for (var t = a[r], n = !0, i = 1; i < t.length; i++) { var c = t[i]; 0 !== o[c] && (n = !1) } n && (a.splice(r--, 1), e = u(u.s = t[0])) } return e } var n = {}, o = { 1: 0 }, a = []; function u(r) { if (n[r]) return n[r].exports; var t = n[r] = { i: r, l: !1, exports: {} }; return e[r].call(t.exports, t, t.exports, u), t.l = !0, t.exports } u.e = function (e) { var r = [], t = o[e]; if (0 !== t) if (t) r.push(t[2]); else { var n = new Promise((function (r, n) { t = o[e] = [r, n] })); r.push(t[2] = n); var a, i = document.createElement("script"); i.charset = "utf-8", i.timeout = 120, u.nc && i.setAttribute("nonce", u.nc), i.src = function (e) { return u.p + "static/js/" + ({}[e] || e) + "." + { 3: "b6022136" }[e] + ".chunk.js" }(e); var c = new Error; a = function (r) { i.onerror = i.onload = null, clearTimeout(l); var t = o[e]; if (0 !== t) { if (t) { var n = r && ("load" === r.type ? "missing" : r.type), a = r && r.target && r.target.src; c.message = "Loading chunk " + e + " failed.\n(" + n + ": " + a + ")", c.name = "ChunkLoadError", c.type = n, c.request = a, t[1](c) } o[e] = void 0 } }; var l = setTimeout((function () { a({ type: "timeout", target: i }) }), 12e4); i.onerror = i.onload = a, document.head.appendChild(i) } return Promise.all(r) }, u.m = e, u.c = n, u.d = function (e, r, t) { u.o(e, r) || Object.defineProperty(e, r, { enumerable: !0, get: t }) }, u.r = function (e) { "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e, Symbol.toStringTag, { value: "Module" }), Object.defineProperty(e, "__esModule", { value: !0 }) }, u.t = function (e, r) { if (1 & r && (e = u(e)), 8 & r) return e; if (4 & r && "object" == typeof e && e && e.__esModule) return e; var t = Object.create(null); if (u.r(t), Object.defineProperty(t, "default", { enumerable: !0, value: e }), 2 & r && "string" != typeof e) for (var n in e) u.d(t, n, function (r) { return e[r] }.bind(null, n)); return t }, u.n = function (e) { var r = e && e.__esModule ? function () { return e.default } : function () { return e }; return u.d(r, "a", r), r }, u.o = function (e, r) { return Object.prototype.hasOwnProperty.call(e, r) }, u.p = "/", u.oe = function (e) { throw console.error(e), e }; var i = this["webpackJsonpcreate-react-app"] = this["webpackJsonpcreate-react-app"] || [], c = i.push.bind(i); i.push = r, i = i.slice(); for (var l = 0; l < i.length; l++)r(i[l]); var p = c; t() }([])</script>
+  </body>
+</html>

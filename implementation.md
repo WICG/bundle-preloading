@@ -63,4 +63,4 @@ The authors plan to develop a prototype proxy that enables bundle preloading, to
 
 🚧 The authors are currently soliciting community feedback to find an appropriate server standard to work with for early prototyping.
 
-[Previous section](./faq.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./subresource-loading-evolution.md)
+[Previous section](./faq.md) - [Table of contents](./README.md#table-of-contents) - [Next section](./glossary.md)
