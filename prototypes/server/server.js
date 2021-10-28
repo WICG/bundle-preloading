@@ -59,16 +59,15 @@ http.createServer(function (request, response) {
     console.log(`${request.method} ${request.url}`);
     var t0 = performance.now();
 
-    // TODO support both absolute and relative URLs in individual and bundled requests
-
-    let pathname = path.resolve(path.join(baseDir, request.url));
-    let name = path.parse(pathname).name;
-    let ext = path.parse(pathname).ext;
+    let requestUrl = new URL(request.url, baseUrl);
+    let pathname = path.resolve(path.join(baseDir, requestUrl.toString().replace(baseUrl, "")));
+    let requestName = path.parse(pathname).name;
+    let requestExt = path.parse(pathname).ext;
 
     try {
         if (fs.statSync(pathname).isDirectory()) {
             pathname = path.join(pathname, 'index.html');
-            ext = '.html';
+            requestExt = '.html';
         }
     } catch (error) {
         console.log(`${error}`);
@@ -91,24 +90,35 @@ http.createServer(function (request, response) {
             return;
         }
 
+        // return an error if the file does not exist
+        // TODO also if it is not a WBN file?
+        if (!fs.existsSync(pathname)) {
+            response.statusCode = 404;
+            response.end(`Error getting the file: ${error}`);
+            return;
+        }
+
         let resourcesArray = resources.split(/\s+/);
 
         if (resourcesArray != undefined && resourcesArray.length > 0) {
+            // base URL for resolving relative requests
+            // TODO there has to be a more elegant way to get the (path - 1) portion of a URL
+            let urlText = requestUrl.toString();
+            const baseResourceUrl = new URL(urlText.substring(0, urlText.lastIndexOf(requestName)), baseUrl);
             // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
-            const primaryURL = `${baseUrl}/${name}/not-used.html`;
+            const primaryURL = `${baseUrl}/${requestName}/not-used.html`;
             const builder = new wbn.BundleBuilder(primaryURL);
             builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
             for (resource of resourcesArray) {
                 try {
-                    // TODO support relative paths
-                    const resourceUrl = new URL(resource);
+                    const resourceUrl = new URL(resource, baseResourceUrl);
                     let resourcePath = path.resolve(path.join(baseDir, resourceUrl.pathname));
                     let resourceExtension = path.parse(resourcePath).ext;
                     const headers = {
                         'Access-Control-Allow-Headers': 'X-Requested-With,content-type,bundle-preload,Vary',
                         'Content-Type': map[resourceExtension] || 'application/octet-stream',
                     };
-                    builder.addExchange(resource, 200, headers, fs.readFileSync(resourcePath));
+                    builder.addExchange(resourceUrl.toString(), 200, headers, fs.readFileSync(resourcePath));
                 } catch (error) {
                     console.log(`Bundled request failed when getting the file: ${error}`);
                     response.statusCode = (error.code === 'ENOENT' ? 404 : 500);
@@ -135,7 +145,7 @@ http.createServer(function (request, response) {
             response.end(`Error getting the file: ${error}`);
         } else {
             // if the file is found, set Content-type and send data
-            response.setHeader('Content-type', map[ext] || 'text/plain' );
+            response.setHeader('Content-type', map[requestExt] || 'text/plain');
             response.end(data);
 
             var t1 = performance.now();
