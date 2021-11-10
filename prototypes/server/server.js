@@ -22,13 +22,10 @@ if (process.argv.length > 5) {
 
         const subfolder = path.resolve(path.join(baseDir, dir));
         const bundleLocation = `${subfolder}.wbn`;
-        // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
         const bundleRootURL = `${baseUrl}/${dir}/`;
-        const primaryURL = `${bundleRootURL}not-used.html`;
-        const builder = new wbn.BundleBuilder(primaryURL);
+        const builder = new wbn.BundleBuilder();
         const files = glob.sync(`${subfolder}/**/*.*`);
 
-        builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
         files.map(file => {
             builder.addExchange(
                 bundleRootURL + file.slice(subfolder.length + 1),
@@ -94,10 +91,7 @@ http.createServer(function (request, response) {
         let resourcesArray = resources.split(/\s+/);
 
         if (resourcesArray != undefined && resourcesArray.length > 0) {
-            // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
-            const primaryURL = `${baseUrl}/${name}/not-used.html`;
-            const builder = new wbn.BundleBuilder(primaryURL);
-            builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
+            const builder = new wbn.BundleBuilder();
             for (resource of resourcesArray) {
                 try {
                     // TODO support relative paths
