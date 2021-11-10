@@ -22,13 +22,10 @@ if (process.argv.length > 5) {
 
         const subfolder = path.resolve(path.join(baseDir, dir));
         const bundleLocation = `${subfolder}.wbn`;
-        // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
         const bundleRootURL = `${baseUrl}/${dir}/`;
-        const primaryURL = `${bundleRootURL}not-used.html`;
-        const builder = new wbn.BundleBuilder(primaryURL);
+        const builder = new wbn.BundleBuilder();
         const files = glob.sync(`${subfolder}/**/*.*`);
 
-        builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
         files.map(file => {
             builder.addExchange(
                 bundleRootURL + file.slice(subfolder.length + 1),
@@ -94,7 +91,7 @@ http.createServer(function (request, response) {
         // TODO also if it is not a WBN file?
         if (!fs.existsSync(pathname)) {
             response.statusCode = 404;
-            response.end(`Error getting the file: ${error}`);
+            response.end(`Error getting the file: ${pathname}`);
             return;
         }
 
@@ -105,10 +102,7 @@ http.createServer(function (request, response) {
             // TODO there has to be a more elegant way to get the (path - 1) portion of a URL
             let urlText = requestUrl.toString();
             const baseResourceUrl = new URL(urlText.substring(0, urlText.lastIndexOf(requestName)), baseUrl);
-            // TODO a mandatory primaryURL will not longer be needed in the latest version of the spec
-            const primaryURL = `${baseUrl}/${requestName}/not-used.html`;
-            const builder = new wbn.BundleBuilder(primaryURL);
-            builder.addExchange(primaryURL, 200, { 'Content-Type': 'text/html' }, "not used");
+            const builder = new wbn.BundleBuilder();
             for (resource of resourcesArray) {
                 try {
                     const resourceUrl = new URL(resource, baseResourceUrl);
