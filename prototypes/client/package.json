@@ -5,7 +5,8 @@
   "main": "bundlepreload.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node ./node_modules/browserify/bin/cmd.js service-worker.js -o service-worker-browserified.js -g aliasify --debug"
+    "build": "node ./node_modules/browserify/bin/cmd.js service-worker.js -o service-worker-browserified.js -g aliasify  -p tinyify",
+    "debug": "node ./node_modules/browserify/bin/cmd.js service-worker.js -o service-worker-browserified.js -g aliasify --debug"
   },
   "repository": {
     "type": "git",
@@ -35,5 +36,8 @@
     "aliases": {
       "cbor": "borc"
     }
+  },
+  "devDependencies": {
+    "tinyify": "^3.0.0"
   }
 }
