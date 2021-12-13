@@ -1,8 +1,9 @@
-function waitUntilInstalled(registration) {
+// Waits until the service worker has been activated.
+function waitUntilActivated(registration) {
     return new Promise(function (resolve, reject) {
         if (registration.installing) {
             registration.installing.addEventListener('statechange', function (e) {
-                if (e.target.state == 'installed') {
+                if (e.target.state == 'activated') {
                     resolve();
                 } else if (e.target.state == 'redundant') {
                     reject();
@@ -14,10 +15,9 @@ function waitUntilInstalled(registration) {
     });
 }
 
-function onInstalled() {
-    console.log("Service worker installed.");
-
-    // Preload the resources listed in <script type="bundlepreload">.
+// Once the service worker has been activated,
+// preload the resources listed in <script type="bundlepreload"> tags.
+function onActivated() {
     let scripts = document.getElementsByTagName("script");
     for (let script of scripts) {
         if (script.type === 'bundlepreload') {
@@ -49,8 +49,8 @@ if ('serviceWorker' in navigator) {
 
     // Register up the service worker that will carry out bundle preloading.
     navigator.serviceWorker.register('./service-worker-browserified.js', { scope: './' })
-        .then(waitUntilInstalled)
-        .then(onInstalled)
+        .then(waitUntilActivated)
+        .then(onActivated)
         .catch(function (error) {
             console.log(error);
         });
