@@ -7,15 +7,24 @@
 
     <script src='./bundlepreload.js'></script>
     
+    <!-- The resources can use absolute or relative (to the bundle's location) URLs. -->
+    <script type="bundlepreload">
+        {
+            "source": "img.wbn",
+            "resources": [
+                "img/01.png",
+                "img/02.png",
+                "img/03.png"
+            ]
+        }
+        </script>
     <script type="bundlepreload">
         {
             "source": "http://localhost:8080/img.wbn",
             "resources": [
-                "http://localhost:8080/img/01.png",
-                "http://localhost:8080/img/02.png",
-                "http://localhost:8080/img/03.png",
                 "http://localhost:8080/img/04.png",
-                "http://localhost:8080/img/05.png"
+                "http://localhost:8080/img/05.png",
+                "http://localhost:8080/img/06.png"
             ]
         }
     </script>
@@ -40,16 +49,37 @@
     </script>
 
     <div>
-        <input type="button" onclick="add_image(this)" value="01">
-        <input type="button" onclick="add_image(this)" value="02">
-        <input type="button" onclick="add_image(this)" value="03">
-        <input type="button" onclick="add_image(this)" value="04">
-        <input type="button" onclick="add_image(this)" value="05">
-        <input type="button" onclick="add_image(this)" value="06">
-        <input type="button" onclick="add_image(this)" value="07">
-        <input type="button" onclick="add_image(this)" value="08">
-        <input type="button" onclick="add_image(this)" value="09">
-        <input type="button" onclick="add_image(this)" value="10">
+        <table>
+            <tr>
+                <td>
+                    First bundle preload
+                </td>
+                <td>
+                    <input type="button" onclick="add_image(this)" value="01">
+                    <input type="button" onclick="add_image(this)" value="02">
+                    <input type="button" onclick="add_image(this)" value="03">
+                </td>
+                </tr>
+                <td>
+                    Second bundle preload
+                </td>
+                <td>
+                    <input type="button" onclick="add_image(this)" value="04">
+                    <input type="button" onclick="add_image(this)" value="05">
+                    <input type="button" onclick="add_image(this)" value="06">
+                </td>
+                </tr>
+                <td>
+                    Not preloaded
+                </td>
+                <td>
+                    <input type="button" onclick="add_image(this)" value="07">
+                    <input type="button" onclick="add_image(this)" value="08">
+                    <input type="button" onclick="add_image(this)" value="09">
+                    <input type="button" onclick="add_image(this)" value="10">
+                </td>
+                </tr>
+                </table>
     </div>
 
 </body>
