@@ -79,7 +79,14 @@ self.addEventListener('message', function (event) {
                             headers['bundle-preload'] = resources.join(' ');
                         } else {
                             console.log('all the resources were already in cache, we are done');
-                            return;
+                            return self.clients.matchAll().then((clients) => {
+                                clients.forEach((client) => {
+                                    client.postMessage({
+                                        type: "bundlepreload-finished",
+                                        url: event.data.source
+                                    });
+                                });
+                            });
                         }
                     }
                     // else we will fetch the whole bundle
@@ -120,7 +127,7 @@ self.addEventListener('message', function (event) {
             break;
         // do nothing
         default:
-            console.log('message: unknown command');
+            console.log(`message: unknown command ${event.data.command}`);
     }
 });
 
