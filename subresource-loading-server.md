@@ -8,7 +8,7 @@ As explained in the [overview](./overview.md), the server receives a request for
 
 The response from the server will be in the [bundled response](https://github.com/wpack-wg/bundled-responses) format, containing HTTP responses for each of the requested URLs.
 
-The server may return more resources than those originally requested. The browser may choose to cache those resources; it it does so, it should not make those additional resources available to the page until they are themselves included in a `bundlepreload` declaration.
+The server may return more resources than those originally requested. The browser may choose to cache those resources; if it does so, it should not make those additional resources available to the page until they are themselves included in a `bundlepreload` declaration.
 
 ### Response headers
 
