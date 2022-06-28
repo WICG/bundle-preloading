@@ -14,7 +14,7 @@ The process of bundled resource preloading begins with the Web document specifyi
 
 Because of [origin model](./motivation.d#origin-model) and [path restriction](./motivation.md#path-restriction), those resources can only correspond to URLs with the same origin and `path - 1` as the bundle file itself.
 
-There are two APIs available for expressing the lkist of resources to be preloaded:
+There are two APIs available for expressing the list of resources to be preloaded:
 
 * A declarative API in HTML:
 
@@ -45,7 +45,7 @@ image.src = "assets/profile.png";
 ...
 ```
 
-Note that the list of resources may use relative (to the bundle file) URLs. If absolute URLs are used, they mush abide by the same origin and path restrictions mentioned above.
+Note that the list of resources may use relative (to the bundle file) URLs. If absolute URLs are used, they must abide by the same origin and path restrictions mentioned above.
 
 Regardless of the API used, this results in an HTTP request being sent to the server pointing at the bundle file and indicating in the `Bundle-Preload` header the resources to request.
 
