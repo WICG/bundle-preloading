@@ -6,6 +6,7 @@
       "type": "block"
     },
     "condition": {
+      "urlFilter": "blocked_bundle",
       "resourceTypes": [
         "webbundle"
       ]

@@ -13,6 +13,6 @@ node server.js http://localhost 8080 ../examples/chromium-web-bundles-test/ by_r
 
 ## Content blocking
 
-The folder `extension-block-web-bundles-test` contains a Chromium extension that is able to block content in the Web bundles in this example. The blocking can affect individual content inside the bundle or the Web bundle as a whole.
+The folder [`extension-block-web-bundles-test`](./extension-block-web-bundles-test) contains a Chromium extension that is able to block content in the Web bundles in this example. The blocking can affect individual content inside the bundle or the Web bundle as a whole.
 
 To try it out, open `chrome://extensions/` in Chromium, click on `Load unpacked` and select the folder `extension-block-web-bundles-test`. Then try to load the page again.
