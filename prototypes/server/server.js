@@ -1,3 +1,4 @@
+const mustache = require('mustache');
 const http = require('http');
 const { URL } = require('url');
 const wbn = require('wbn');
@@ -15,32 +16,7 @@ const baseDir = path.resolve(process.argv[4] || '.');
 console.log(`Base URL: ${baseUrl}`);
 console.log(`Base folder: ${baseDir}`);
 
-if (process.argv.length > 5) {
-    // bundle the indicated folders
-    for (let dir of process.argv.slice(5)) {
-        var t0 = performance.now();
-
-        const subfolder = path.resolve(path.join(baseDir, dir));
-        const bundleLocation = `${subfolder}.wbn`;
-        const bundleRootURL = `${baseUrl}/${dir}/`;
-        const builder = new wbn.BundleBuilder();
-        const files = glob.sync(`${subfolder}/**/*.*`);
-
-        files.map(file => {
-            builder.addExchange(
-                bundleRootURL + file.slice(subfolder.length + 1),
-                200,
-                { 'Content-Type': 'application/javascript' },
-                fs.readFileSync(file)
-            );
-        });
-        fs.writeFileSync(`${subfolder}.wbn`, builder.createBundle());
-
-        console.log(`Created ${bundleLocation} with ${files.length} resources in ${(performance.now() - t0).toFixed(1)} ms`);
-    }
-}
-
-const map = {
+const content_type_map = {
     '.ico': 'image/x-icon',
     '.html': 'text/html',
     '.js': 'text/javascript',
@@ -49,8 +25,65 @@ const map = {
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.svg': 'image/svg+xml',
-    '.wbn': 'application/webbundle;v=b1'
+    '.wbn': 'application/webbundle'
 };
+
+function createWbn(template) {
+    var t0 = performance.now();
+    let directory = template['directory'];
+    let resource_uuid_map = template['resource_uuid_map'] || {};
+    let mustache_view = {
+        "base_url": baseUrl
+    };
+
+    const subfolder = path.resolve(path.join(baseDir, directory));
+    const bundle_location = `${subfolder}.wbn`;
+    const bundle_root_url = `${baseUrl}/${directory}/`;
+
+    const mustache_files = glob.sync(`${subfolder}/**/*.mustache`);
+    mustache_files.map(mustache_file => {
+        let output_data = mustache.render(fs.readFileSync(mustache_file).toString(),
+                                          mustache_view);
+        let output_path = mustache_file.replace('.mustache', '');
+        fs.writeFileSync(output_path, output_data);
+    });
+
+    const files = glob.sync(`${subfolder}/**/*.*`);
+    const builder = new wbn.BundleBuilder();
+    files.map(file => {
+        let relative_path = file.slice(subfolder.length + 1);
+        let file_ext = path.parse(file).ext;
+        let resource_url = bundle_root_url + relative_path;
+        let uuid = resource_uuid_map[relative_path];
+        if (uuid)
+          resource_url = `uuid-in-package:${uuid}`;
+        let content_type = content_type_map[file_ext] ||
+                           'application/javascript';
+        let file_data = fs.readFileSync(file);
+        builder.addExchange(resource_url,
+                            200,
+                            { 'Content-Type': content_type },
+                            file_data);
+    });
+    fs.writeFileSync(`${subfolder}.wbn`, builder.createBundle());
+
+    console.log(`Created ${bundle_location} with ${files.length} resources in ${(performance.now() - t0).toFixed(1)} ms`);
+}
+
+let templates = [];
+if (process.argv.length > 5) {
+    if (process.argv.length == 6 &&
+        process.argv[5] == "wbn_creation_templates.json") {
+        let templates_path = path.join(baseDir, process.argv[5]);
+        if (fs.existsSync(templates_path))
+            templates = JSON.parse(fs.readFileSync(templates_path));
+    } else {
+        for (let dir of process.argv.slice(5))
+            templates.push({"directory": dir})
+    }
+    // bundle the indicated folders
+    templates.forEach(template => { createWbn(template); });
+}
 
 http.createServer(function (request, response) {
     console.log(`${request.method} ${request.url}`);
@@ -106,7 +139,8 @@ http.createServer(function (request, response) {
                     let resourceExtension = path.parse(resourcePath).ext;
                     const headers = {
                         'Access-Control-Allow-Headers': 'X-Requested-With,content-type,bundle-preload,Vary',
-                        'Content-Type': map[resourceExtension] || 'application/octet-stream',
+                        'Content-Type': content_type_map[resourceExtension] ||
+                                        'application/octet-stream',
                     };
                     builder.addExchange(resourceUrl.toString(), 200, headers, fs.readFileSync(resourcePath));
                 } catch (error) {
@@ -135,7 +169,8 @@ http.createServer(function (request, response) {
             response.end(`Error getting the file: ${error}`);
         } else {
             // if the file is found, set Content-type and send data
-            response.setHeader('Content-type', map[requestExt] || 'text/plain');
+            response.setHeader('Content-type',
+                               content_type_map[requestExt] || 'text/plain');
             response.end(data);
 
             var t1 = performance.now();
