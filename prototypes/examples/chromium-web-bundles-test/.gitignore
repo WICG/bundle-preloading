@@ -1,4 +1,6 @@
 *.wbn
 extension-block-web-bundles-test/_metadata/
-uuid_in_package_by_resource/index.html
-uuid_in_package_by_scope/index.html
+online_bundle/uuid_in_package_by_resource/index.html
+online_bundle/uuid_in_package_by_scope/index.html
+offline_bundle/index.html
+online_bundle/index.html

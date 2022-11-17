@@ -5,19 +5,33 @@ Build instructions:
 * run `npm install`
 * build [the client library](../client) as well
 * run the server with `npm start` to use the default settings
-  - equivalent to `node server.js http://localhost 8080 ../client src img`
+  - equivalent to `node server.js simple -H localhost -p 8080 -b ../client -w src -w img`
   - this will open a server at `http://localhost:8080`, serve files from `../client`, and bundle the folders `src` and `img`
-* otherwise, use `node server.js <BASE URL> <PORT> <BASE DIR> <SUBFOLDERS TO BUNDLE>`
-* if you have `wbn_creation_templates.json` in `<BASE DIR>`, you can use `node server.js <BASE URL> <PORT> <BASE DIR> wbn_creation_templates.json`. You can specify the uuid of a file in the directory so that the `url` field can be replaced to `uuid-in-package:<uuid>`
+* otherwise, use `node server.js simple [-H HOST] [-p PORT] [-b BASEDIR] [-w WBNRESOURCEDIR]`. Please refer the help (`node server.js simple -h`)
+* if you have server configs json file, you can use `node server.js full [-h] [-H HOST] [-p PORT] -c CONFIGS`. Please refer the help (`node server.js full -h`)
+* You can specify server configurations and wbn creation information in the server configs json file. You can set the uuid of a resource file so that the `url` field for the resource can be replaced to `uuid-in-package:<uuid>`. Also you can specify the primary resource so that the resource can be loaded when we load the bundle file from the file system.
   * This is the json format:
-    ```json
+    ```javascript
     [
       {
-        "directory": "<directory-name>",
-        "resource_uuid_map": {
-          "<resource-relative-path>": "<uuid>",
+        "host": "<host-name>",  // optional. (default: localhost)
+        "port": <port-number>,  // optional. (default: 8080 ~)
+        "baseDir": "<server-base-directory>",
+        "wbnCreationInfoList": [
+          {
+            "output": "<wbn-file-name>",
+            "resources": [
+              {
+                "source": "<source-file-path>",
+                "uuid": "<uuid>",  // optional. (default: null)
+                "url": "<bundled-resource-url>",  // optional. (default: http://<host>:<port>/<source)
+                "primary": <whether-this-is-primary-resource>  // optional. (default: false)
+              },
+              ...
+            ]
+          },
           ...
-        }
+        ]
       },
       ...
     ]

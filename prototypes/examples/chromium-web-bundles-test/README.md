@@ -8,7 +8,7 @@ Try it out it by running the [Bundle Preloading prototype server](../../server) 
 
 ```shell
 cd ../../server
-node server.js http://localhost 8080 ../examples/chromium-web-bundles-test/ wbn_creation_templates.json
+node server.js full -H localhost -p 8080 -c ../examples/chromium-web-bundles-test/server_configs.json
 ```
 
 ## Content blocking
