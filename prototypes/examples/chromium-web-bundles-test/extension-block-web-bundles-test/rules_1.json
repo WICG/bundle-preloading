@@ -137,5 +137,19 @@
         "stylesheet"
       ]
     }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "purple.css",
+      "domains": ["localhost"],
+      "resourceTypes": [
+        "stylesheet"
+      ]
+    }
   }
 ]
