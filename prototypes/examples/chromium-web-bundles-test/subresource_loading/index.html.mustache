@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="by_resource/blue_subresource_loading.css">
+<link rel="stylesheet" href="by_resource/red_subresource_loading.css">
+<link rel="stylesheet" href="by_bundle_file/green_subresource_loading.css">
+<link rel="stylesheet" href="by_bundle_file/purple_subresource_loading.css">
+<link rel="stylesheet" href="by_scope/orange_subresource_loading.css">
+<link rel="stylesheet" href="by_scope/pink_subresource_loading.css">
+<style>
+div {
+  background-color: grey;
+  width: 30px;
+  height: 30px;
+}
+img {
+  width: 30px;
+  height: 30px;
+}
+</style>
+
+<script type="webbundle">
+{
+    "source": "by_resource.wbn",
+    "resources": [ 
+        "by_resource/blue_subresource_loading.css",
+        "by_resource/blue_subresource_loading.png",
+        "by_resource/red_subresource_loading.css",
+        "by_resource/red_subresource_loading.png"
+    ]
+}
+</script>
+
+<script type="webbundle">
+    {
+        "source": "by_bundle_file.wbn",
+        "resources": [ 
+            "by_bundle_file/green_subresource_loading.css",
+            "by_bundle_file/green_subresource_loading.png",
+            "by_bundle_file/purple_subresource_loading.css",
+            "by_bundle_file/purple_subresource_loading.png"
+        ]
+    }
+</script>
+
+<script type="webbundle">
+    {
+        "source": "by_scope.wbn",
+        "scopes": [ 
+            "by_scope"
+        ]
+    }
+</script>
+
+<script type="webbundle">
+    {
+        "source": "uuid_in_package_by_resource.wbn",
+        "resources": [
+            "uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ae"
+        ]
+    }
+</script>
+
+<script type="webbundle">
+    {
+        "source": "uuid_in_package_by_scope.wbn",
+        "resources": [
+            "uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ad"
+        ]
+    }
+</script>
+
+<h3>Chromium Web bundles test</h3>
+
+<h4>Identified by resource</h4>
+
+<ul>
+  <li> Resources in by_resource.wbn
+       <ul>
+         <li>Shows blue box with by_resource/blue_subresource_loading.css, grey box after the css blocked:
+             <div class="blue"></div></li>
+         <li>Shows by_resource/blue_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_resource/blue_subresource_loading.png" /></li>
+         <li>Shows red box with by_resource/red_subresource_loading.css, grey box after the css blocked:
+             <div class="red"></div></li>
+         <li>Shows by_resource/red_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_resource/red_subresource_loading.png" /></li>
+       </ul>
+  </li>
+</ul>
+
+<h4>Identified by bundle file</h4>
+
+<ul>
+  <li> Resources in by_bundle_file.wbn
+       <ul>
+         <li>Shows green box with by_bundle_file/green_subresource_loading.css, grey box after the css blocked:
+             <div class="green"></div></li>
+         <li>Shows by_bundle_file/green_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_bundle_file/green_subresource_loading.png" /></li>
+         <li>Shows purple box with by_bundle_file/purple_subresource_loading.css, grey box after the css blocked:
+             <div class="purple"></div></li>
+         <li>Shows by_bundle_file/purple_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_bundle_file/purple_subresource_loading.png" /></li>
+       </ul>
+  </li>
+</ul>
+
+<h4>Identified by scope</h4>
+
+<ul>
+  <li> Resources in by_scope.wbn
+       <ul>
+         <li>Shows orange box with by_scope/orange_subresource_loading.css, grey box after the css blocked:
+             <div class="orange"></div></li>
+         <li>Shows by_scope/orange_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_scope/orange_subresource_loading.png" /></li>
+         <li>Shows pink box with by_scope/pink_subresource_loading.css, grey box after the css blocked:
+             <div class="pink"></div></li>
+         <li>Shows by_scope/pink_subresource_loading.png, nothing after the png blocked:
+             <br><img src="by_scope/pink_subresource_loading.png" /></li>
+       </ul>
+  </li>
+</ul>
+
+<br>
+
+<iframe src="uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ae" width="100%" height="300px"></iframe>
+
+<br>
+
+<iframe src="uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ad" width="100%" height="300px"></iframe>
+
+<p>
+To navigate to <a href="{{{navigation_to_unsigned_bundles_baseUrl}}}">{{{navigation_to_unsigned_bundles_baseUrl}}}</a> within a bundle file, download the bundle file by <a href="{{{navigation_to_unsigned_bundles_baseUrl}}}/navigation_to_unsigned_bundles.wbn">clicking here</a>.
+</p>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+ <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.css">
+ <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.css">
+ <style>
+   div {
+     background-color: grey;
+     width: 30px;
+     height: 30px;
+   }
+   img {
+     width: 30px;
+     height: 30px;
+   }
+ </style>
+
+ <script type="webbundle">
+     {
+         "source": "{{{baseUrl}}}/uuid_in_package_by_resource.wbn",
+         "resources": [
+             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.css",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.png",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.css",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.png"
+         ]
+     }
+ </script>
+
+ <h4>Identified by resource inside opaque origin iframe</h4>
+
+ <ul>
+   <li> Resources in uuid_in_package_by_resource.wbn
+        <ul>
+          <li>Shows skyblue box with uuid_in_package_by_resource/skyblue_subresource_loading.css, grey box after the css blocked:
+              <div class="skyblue"></div></li>
+          <li>Shows uuid_in_package_by_resource/skyblue_subresource_loading.png, nothing after the png blocked:
+             <br><img src="{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.png" /></li>
+          <li>Shows yellowgreen box with uuid_in_package_by_resource/yellowgreen_subresource_loading.css, grey box after the css blocked:
+              <div class="yellowgreen"></div></li>
+          <li>Shows uuid_in_package_by_resource/yellowgreen_subresource_loading.png, nothing after the png blocked:
+             <br><img src="{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.png" /></li>
+        </ul>
+   </li>
+ </ul>
+</html>

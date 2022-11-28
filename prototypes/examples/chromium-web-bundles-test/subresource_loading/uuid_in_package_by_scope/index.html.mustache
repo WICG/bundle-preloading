@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+ <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_scope/navy_subresource_loading.css">
+ <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_scope/orangered_subresource_loading.css">
+ <style>
+   div {
+     background-color: grey;
+     width: 30px;
+     height: 30px;
+   }
+   img {
+     width: 30px;
+     height: 30px;
+   }
+ </style>
+
+ <script type="webbundle">
+     {
+         "source": "{{{baseUrl}}}/uuid_in_package_by_scope.wbn",
+         "scopes": [
+             "{{{baseUrl}}}/uuid_in_package_by_scope"
+         ]
+     }
+ </script>
+
+ <h4>Identified by scope inside opaque origin iframe</h4>
+
+ <ul>
+   <li> Resources in uuid_in_package_by_scope.wbn
+        <ul>
+          <li>Shows navy box with uuid_in_package_by_scope/navy_subresource_loading.css, grey box after the css blocked:
+              <div class="navy"></div></li>
+          <li>Shows uuid_in_package_by_scope/navy_subresource_loading.png, nothing after the png blocked:
+             <br><img src="{{{baseUrl}}}/uuid_in_package_by_scope/navy_subresource_loading.png" /></li>
+          <li>Shows orangered box with uuid_in_package_by_scope/orangered_subresource_loading.css, grey box after the css blocked:
+              <div class="orangered"></div></li>
+          <li>Shows uuid_in_package_by_scope/orangered_subresource_loading.png, nothing after the png blocked:
+             <br><img src="{{{baseUrl}}}/uuid_in_package_by_scope/orangered_subresource_loading.png" /></li>
+        </ul>
+   </li>
+ </ul>
+</html>
