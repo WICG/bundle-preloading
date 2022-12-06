@@ -1,6 +1,6 @@
 *.wbn
 extension-block-web-bundles-test/_metadata/
-online_bundle/uuid_in_package_by_resource/index.html
-online_bundle/uuid_in_package_by_scope/index.html
-offline_bundle/index.html
-online_bundle/index.html
+subresource_loading/uuid_in_package_by_resource/index.html
+subresource_loading/uuid_in_package_by_scope/index.html
+subresource_loading/index.html
+navigation_to_unsigned_bundles/index.html

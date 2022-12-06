@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="red_unsigned_bundle.css">
+<link rel="stylesheet" href="green_unsigned_bundle.css">
+<link rel="stylesheet" href="blue_unsigned_bundle.css">
+<link rel="stylesheet" href="purple_unsigned_bundle.css">
+<style>
+div {
+  background-color: grey;
+  width: 30px;
+  height: 30px;
+}
+img {
+  width: 30px;
+  height: 30px;
+}
+</style>
+
+<p>
+  Navigate to unsigned bundles: main page
+</p>
+
+<ul>
+  <li> Resources in navigation_to_unsigned_bundles.wbn
+    <ul>
+      <li>Shows red box with red_unsigned_bundle.css, grey box after the css blocked:
+          <div class="red"></div></li>
+      <li>Shows red_unsigned_bundle.png, nothing after the png blocked:
+          <br><img src="red_unsigned_bundle.png" /></li>
+      <li>Shows green box with green_unsigned_bundle.css, grey box after the css blocked:
+          <div class="green"></div></li>
+      <li>Shows green_unsigned_bundle.png, nothing after the png blocked:
+          <br><img src="green_unsigned_bundle.png" /></li>
+      <li>Shows blue box with blue_unsigned_bundle.css. The css will not be blocked in main page:
+          <div class="blue"></div></li>
+      <li>Shows blue_unsigned_bundle.png. The png will not be blocked in main page:
+          <br><img src="blue_unsigned_bundle.png" /></li>
+    </ul>
+  </li>
+  <li> Resources over network
+    <ul>
+      <li>Shows purple box with purple_unsigned_bundle.css, grey box after the css blocked:
+          <div class="purple"></div></li>
+      <li>Shows purple_unsigned_bundle.png, nothing after the png blocked:
+          <br><img src="purple_unsigned_bundle.png" /></li>
+    </ul>
+  </li> 
+</ul> 
+
+<iframe src="{{{navigation_within_unsigned_bundle_baseUrl}}}" width="100%" height="500px"></iframe>
+
+<p>
+  Please <a href="{{{navigation_within_unsigned_bundle_baseUrl}}}">click here</a> to navigate within this unsigned bundle.
+</p>

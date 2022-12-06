@@ -2,27 +2,33 @@
   {
     "host": "localhost",
     "port": 8080,
-    "baseDir": "online_bundle",
+    "baseDir": "subresource_loading",
     "wbnCreationInfoList": [
       {
         "output": "by_resource.wbn",
         "resources": [
-          {"source": "by_resource/blue.png"},
-          {"source": "by_resource/red.png"}
+          {"source": "by_resource/blue_subresource_loading.css"},
+          {"source": "by_resource/blue_subresource_loading.png"},
+          {"source": "by_resource/red_subresource_loading.css"},
+          {"source": "by_resource/red_subresource_loading.png"}
         ]
       },
       {
-        "output": "blocked_bundle.wbn",
+        "output": "by_bundle_file.wbn",
         "resources": [
-          {"source": "blocked_bundle/green.png"},
-          {"source": "blocked_bundle/purple.png"}
+          {"source": "by_bundle_file/green_subresource_loading.css"},
+          {"source": "by_bundle_file/green_subresource_loading.png"},
+          {"source": "by_bundle_file/purple_subresource_loading.css"},
+          {"source": "by_bundle_file/purple_subresource_loading.png"}
         ]
       },
       {
         "output": "by_scope.wbn",
         "resources": [
-          {"source": "by_scope/orange.png"},
-          {"source": "by_scope/pink.png"}
+          {"source": "by_scope/orange_subresource_loading.css"},
+          {"source": "by_scope/orange_subresource_loading.png"},
+          {"source": "by_scope/pink_subresource_loading.css"},
+          {"source": "by_scope/pink_subresource_loading.png"}
         ]
       },
       {
@@ -30,8 +36,10 @@
         "resources": [
           {"source": "uuid_in_package_by_resource/index.html",
            "uuid": "429fcc4e-0696-4bad-b099-ee9175f023ae"},
-          {"source": "uuid_in_package_by_resource/skyblue.png"},
-          {"source": "uuid_in_package_by_resource/yellowgreen.png"}
+          {"source": "uuid_in_package_by_resource/skyblue_subresource_loading.css"},
+          {"source": "uuid_in_package_by_resource/skyblue_subresource_loading.png"},
+          {"source": "uuid_in_package_by_resource/yellowgreen_subresource_loading.css"},
+          {"source": "uuid_in_package_by_resource/yellowgreen_subresource_loading.png"}
         ]
       },
       {
@@ -39,8 +47,10 @@
         "resources": [
           {"source": "uuid_in_package_by_scope/index.html",
            "uuid": "429fcc4e-0696-4bad-b099-ee9175f023ad"},
-          {"source": "uuid_in_package_by_scope/darkgrey.png"},
-          {"source": "uuid_in_package_by_scope/orangered.png"}
+          {"source": "uuid_in_package_by_scope/navy_subresource_loading.css"},
+          {"source": "uuid_in_package_by_scope/navy_subresource_loading.png"},
+          {"source": "uuid_in_package_by_scope/orangered_subresource_loading.css"},
+          {"source": "uuid_in_package_by_scope/orangered_subresource_loading.png"}
         ]
       }
     ]
@@ -48,32 +58,40 @@
   {
     "host": "localhost",
     "port": 8081,
-    "baseDir": "offline_bundle",
+    "baseDir": "navigation_to_unsigned_bundles",
     "wbnCreationInfoList": [
       {
-        "output": "offline_bundle.wbn",
+        "output": "navigation_to_unsigned_bundles.wbn",
         "resources": [
           {"source": "index.html",
            "url": "{{{baseUrl}}}",
            "primary": true},
-          {"source": "green.css",
-           "url": "{{{baseUrl}}}/green.css"},
-          {"source": "red.css",
-           "url": "{{{baseUrl}}}/red.css"},
-          {"source": "yellow.css",
-           "url": "{{{baseUrl}}}/yellow.css"},
-          {"source": "blue.css",
-           "url": "{{{baseUrl}}}/blue.css"},
-          {"source": "../offline_bundle_subresource/index.html",
-           "url": "{{{offline_bundle_subresource_baseUrl}}}"},
-          {"source": "../offline_bundle_subresource/green.css",
-           "url": "{{{offline_bundle_subresource_baseUrl}}}/green.css"},
-          {"source": "../offline_bundle_subresource/red.css",
-           "url": "{{{offline_bundle_subresource_baseUrl}}}/red.css"},
-          {"source": "../offline_bundle_subresource/yellow.css",
-           "url": "{{{offline_bundle_subresource_baseUrl}}}/yellow.css"},
-          {"source": "../offline_bundle_subresource/blue.css",
-           "url": "{{{offline_bundle_subresource_baseUrl}}}/blue.css"}
+          {"source": "green_unsigned_bundle.css",
+           "url": "{{{baseUrl}}}/green_unsigned_bundle.css"},
+          {"source": "green_unsigned_bundle.png",
+           "url": "{{{baseUrl}}}/green_unsigned_bundle.png"},
+          {"source": "red_unsigned_bundle.css",
+           "url": "{{{baseUrl}}}/red_unsigned_bundle.css"},
+          {"source": "red_unsigned_bundle.png",
+           "url": "{{{baseUrl}}}/red_unsigned_bundle.png"},
+          {"source": "blue_unsigned_bundle.css",
+           "url": "{{{baseUrl}}}/blue_unsigned_bundle.css"},
+          {"source": "blue_unsigned_bundle.png",
+           "url": "{{{baseUrl}}}/blue_unsigned_bundle.png"},
+          {"source": "../navigation_within_unsigned_bundle/index.html",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}"},
+          {"source": "../navigation_within_unsigned_bundle/green_unsigned_bundle.css",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/green_unsigned_bundle.css"},
+          {"source": "../navigation_within_unsigned_bundle/green_unsigned_bundle.png",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/green_unsigned_bundle.png"},
+          {"source": "../navigation_within_unsigned_bundle/red_unsigned_bundle.css",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/red_unsigned_bundle.css"},
+          {"source": "../navigation_within_unsigned_bundle/red_unsigned_bundle.png",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/red_unsigned_bundle.png"},
+          {"source": "../navigation_within_unsigned_bundle/blue_unsigned_bundle.css",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/blue_unsigned_bundle.css"},
+          {"source": "../navigation_within_unsigned_bundle/blue_unsigned_bundle.png",
+           "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}/blue_unsigned_bundle.png"}
         ]
       }
     ]
@@ -81,7 +99,7 @@
   {
     "host": "localhost",
     "port": 8082,
-    "baseDir": "offline_bundle_subresource",
+    "baseDir": "navigation_within_unsigned_bundle",
     "wbnCreationInfoList": []
   }
 ]

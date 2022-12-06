@@ -6,7 +6,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "blocked_bundle",
+      "urlFilter": "by_bundle_file",
       "resourceTypes": [
         "webbundle"
       ]
@@ -19,9 +19,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "blue.png",
+      "urlFilter": "blue_subresource_loading",
       "resourceTypes": [
-        "image"
+        "stylesheet", "image"
       ]
     }
   },
@@ -32,9 +32,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "red.png",
+      "urlFilter": "red_subresource_loading",
       "resourceTypes": [
-        "image"
+        "stylesheet", "image"
       ]
     }
   },
@@ -55,9 +55,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "yellowgreen.png",
+      "urlFilter": "yellowgreen_subresource_loading",
       "resourceTypes": [
-        "image"
+        "stylesheet", "image"
       ]
     }
   },
@@ -68,9 +68,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "skyblue.png",
+      "urlFilter": "skyblue_subresource_loading",
       "resourceTypes": [
-        "image"
+        "stylesheet", "image"
       ]
     }
   },
@@ -91,10 +91,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "red.css",
-      "domains": ["localhost"],
+      "urlFilter": "red_unsigned_bundle",
       "resourceTypes": [
-        "stylesheet"
+        "stylesheet", "image"
       ]
     }
   },
@@ -105,9 +104,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "localhost:8081/green.css",
+      "urlFilter": "localhost:8081/green_unsigned_bundle",
       "resourceTypes": [
-        "stylesheet"
+        "stylesheet", "image"
       ]
     }
   },
@@ -118,10 +117,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "blue.css",
-      "domains": ["localhost"],
+      "urlFilter": "localhost:8082/blue_unsigned_bundle",
       "resourceTypes": [
-        "stylesheet"
+        "stylesheet", "image"
       ]
     }
   },
@@ -132,23 +130,9 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "localhost:8082/yellow.css",
+      "urlFilter": "purple_unsigned_bundle",
       "resourceTypes": [
-        "stylesheet"
-      ]
-    }
-  },
-  {
-    "id": 12,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "urlFilter": "purple.css",
-      "domains": ["localhost"],
-      "resourceTypes": [
-        "stylesheet"
+        "stylesheet", "image"
       ]
     }
   }
