@@ -101,5 +101,26 @@
     "port": 8082,
     "baseDir": "navigation_within_unsigned_bundle",
     "wbnCreationInfoList": []
+  },
+  {
+    "scheme": "https",
+    "host": "localhost",
+    "port": 8083,
+    "baseDir": "signed_subresource_loading",
+    "wbnCreationInfoList": [
+      {
+        "output": "unsigned_subresource_loading.wbn",
+        "resources": [
+          {"source": "blue_signed_subresource_loading.css",
+           "url": "{{{baseUrl}}}/blue_signed_subresource_loading.css"},
+          {"source": "blue_signed_subresource_loading.png",
+           "url": "{{{baseUrl}}}/blue_signed_subresource_loading.png"},
+          {"source": "red_signed_subresource_loading.css",
+           "url": "{{{baseUrl}}}/red_signed_subresource_loading.css"},
+          {"source": "red_signed_subresource_loading.png",
+           "url": "{{{baseUrl}}}/red_signed_subresource_loading.png"}
+        ]
+      }
+    ]
   }
 ]
