@@ -135,5 +135,31 @@
         "stylesheet", "image"
       ]
     }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "blue_signed_subresource_loading",
+      "resourceTypes": [
+        "stylesheet", "image"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "red_signed_subresource_loading",
+      "resourceTypes": [
+        "stylesheet", "image"
+      ]
+    }
   }
 ]

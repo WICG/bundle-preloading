@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<script type="webbundle">
+{
+    "source": "signed_subresource_loading.wbn",
+    "resources": [ 
+        "blue_signed_subresource_loading.css",
+        "blue_signed_subresource_loading.png",
+        "red_signed_subresource_loading.css",
+        "red_signed_subresource_loading.png"
+    ]
+}
+</script>
+
+<link rel="stylesheet" href="blue_signed_subresource_loading.css">
+<link rel="stylesheet" href="red_signed_subresource_loading.css">
+
+<style>
+div {
+  background-color: grey;
+  width: 30px;
+  height: 30px;
+}
+img {
+  width: 30px;
+  height: 30px;
+}
+</style>
+
+<h3>Chromium Web bundles test</h3>
+
+<h4>Isolated web app</h4>
+
+<ul>
+  <li>Shows blue box with blue_signed_subresource_loading.css, grey box after the css blocked:
+      <div class="blue"></div></li>
+  <li>Shows blue_signed_subresource_loading.png, nothing after the png blocked:
+      <br><img src="blue_signed_subresource_loading.png" /></li>
+  <li>Shows red box with red_signed_subresource_loading.css, grey box after the css blocked:
+      <div class="red"></div></li>
+  <li>Shows red_signed_subresource_loading.png, nothing after the png blocked:
+      <br><img src="red_signed_subresource_loading.png" /></li>
+</ul>

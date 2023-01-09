@@ -1,5 +1,6 @@
 const mustache = require('mustache');
 const http = require('http');
+const https = require('https');
 const { URL } = require('url');
 const wbn = require('wbn');
 const fs = require('fs');
@@ -9,6 +10,11 @@ const {performance} = require('perf_hooks');
 const assert = require('assert');
 const { ArgumentParser } = require('argparse');
 
+const privKeyPath = 'certificate/priv.key';
+const certPemPath = 'certificate/cert.pem';
+
+const schemeChoices = ['http', 'https'];
+const defaultScheme = 'http';
 const defaultHost = 'localhost';
 const defaultPort = 8080;
 
@@ -25,6 +31,10 @@ if (commandArgs['command'] == 'simple') {
       {prog: `${path.basename(__filename)} simple`,
        description: 'Start server to test web bundle with simple argument.'});
   simpleCommandParser.add_argument(
+      '-s', '--scheme',
+      {choices: schemeChoices, default: defaultScheme,
+       help: `scheme (default: ${defaultScheme})`});
+  simpleCommandParser.add_argument(
       '-H', '--host',
       {action: 'store', default: defaultHost,
        help: `host name (default: ${defaultHost})`});
@@ -40,8 +50,8 @@ if (commandArgs['command'] == 'simple') {
       '-w', '--wbnResourceDir',
       {action: 'append', help:'wbn resource directory in baseDir'});
   let args = simpleCommandParser.parse_args(process.argv.slice(3));
-  let config = {host: args.host, port: args.port,
-                baseUrl: `http://${args.host}:${args.port}`,
+  let config = {scheme: args.scheme, host: args.host, port: args.port,
+                baseUrl: `${args.scheme}://${args.host}:${args.port}`,
                 baseDir: path.resolve(args.baseDir), wbnCreationInfoList: []};
   if (args.wbnResourceDir) {
     args.wbnResourceDir.forEach(resourceDir => {
@@ -63,6 +73,10 @@ if (commandArgs['command'] == 'simple') {
       {prog: `${path.basename(__filename)} full`,
        description: "Start server to test web bundle with configuration file"});
   fullCommandParser.add_argument(
+      '-s', '--scheme',
+      {choices: schemeChoices, default: defaultScheme,
+       help: `scheme (default: ${defaultScheme})`});
+  fullCommandParser.add_argument(
       '-H', '--host',
       {action: 'store', default: defaultHost,
        help: `host name (default: ${defaultHost})`});
@@ -80,10 +94,11 @@ if (commandArgs['command'] == 'simple') {
   let fallbackPort = args.port;
   let configsDir = path.dirname(configsPath);
   serverConfigs.forEach(config => {
+    config['scheme'] = config['scheme'] || args.scheme;
     config['host'] = config['host'] || args.host;
     config['port'] = config['port'] || fallbackPort++;
     assert(config['baseUrl'] == null);
-    config['baseUrl'] = `http://${config['host']}:${config['port']}`,
+    config['baseUrl'] = `${config['scheme']}://${config['host']}:${config['port']}`,
     defaultMustacheView[`${config['baseDir']}_baseUrl`] = config['baseUrl'];
     defaultMustacheView[`${config['baseDir']}_port`] = config['port'];
     config['baseDir'] = path.join(configsDir, config['baseDir']);
@@ -100,7 +115,9 @@ const contentTypeMap = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
-  '.wbn': 'application/webbundle'
+  '.wbn': 'application/webbundle',
+  '.cbor': 'application/cert-chain+cbor',
+  '.sxg': 'application/signed-exchange;v=b3'
 };
 
 function createWbn(baseDir, baseUrl, wbnCreationInfo) {
@@ -139,7 +156,8 @@ function createWbn(baseDir, baseUrl, wbnCreationInfo) {
     assert(fs.existsSync(sourcePath), `Cannot find ${sourcePath}`);
     
     let fileExt = path.parse(resource['source']).ext;
-    let contentType = contentTypeMap[fileExt] || 'application/javascript';
+    let contentType = resource['contentType'] || contentTypeMap[fileExt] ||
+                      'application/javascript';
     let fileData = fs.readFileSync(sourcePath);
     builder.addExchange(resource['url'],
                         200,
@@ -156,11 +174,11 @@ function createWbn(baseDir, baseUrl, wbnCreationInfo) {
                `in ${(performance.now() - t0).toFixed(1)} ms`].join(' '));
 }
 
-function startServer(baseUrl, port, baseDir) {
+function startServer(scheme, baseUrl, port, baseDir) {
   console.log(`Base URL: ${baseUrl}`);
   console.log(`Base directory: ${baseDir}`);
 
-  http.createServer(function (request, response) {
+  let func = function (request, response) {
     console.log(`${request.method} ${request.url}`);
     var t0 = performance.now();
 
@@ -260,7 +278,24 @@ function startServer(baseUrl, port, baseDir) {
         console.log(`Serving a single file took ${(t1 - t0).toFixed(1)} ms.`);
       }
     });
-  }).listen(parseInt(port));
+  };
+
+  if (scheme == 'http') {
+    http.createServer(func).listen(parseInt(port));
+  } else {
+    let refUrlForCertificate = 'https://github.com/WICG/webpackage/blob/main/go/signedexchange/README.md#creating-our-first-signed-exchange';
+    assert(scheme == 'https');
+    assert(fs.existsSync(privKeyPath),
+           `${privKeyPath} doesn't exist. (Please refer ${refUrlForCertificate})`);
+    assert(fs.existsSync(certPemPath),
+           `${certPemPath} doesn't exist. (Please refer ${refUrlForCertificate})`);
+    const options = {
+      key: fs.readFileSync(privKeyPath),
+      cert: fs.readFileSync(certPemPath)
+    };
+
+    https.createServer(options, func).listen(parseInt(port));
+  }
 
   console.log('Server listening on port ' + port);
 }
@@ -279,5 +314,5 @@ serverConfigs.forEach(config => {
                         mustacheView);
     fs.writeFileSync(indexPath, sourceData);
   }
-  startServer(config['baseUrl'], config['port'], config['baseDir']);
+  startServer(config['scheme'], config['baseUrl'], config['port'], config['baseDir']);
 });

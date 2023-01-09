@@ -8,8 +8,33 @@ Try it out it by running the [Bundle Preloading prototype server](../../server) 
 
 ```shell
 cd ../../server
-node server.js full -H localhost -p 8080 -c ../examples/chromium-web-bundles-test/server_configs.json
+node server.js full -s http -H localhost -p 8080 -c ../examples/chromium-web-bundles-test/server_configs.json
 ```
+
+Please note that, you need to do the following steps to test subresource loading from signed bundle:
+
+1. Create 'priv.key', 'cert.cbor' and 'cert.pem' to sign wbn and run https localhost<br>
+   (ref: https://github.com/WICG/webpackage/blob/main/go/signedexchange/README.md)
+
+2. Install the certificate
+   ```bash
+   $ certutil -d sql:$HOME/.pki/nssdb -A -t "CT,c,c" -n "localhost" -i cert.pem
+   ```
+
+3. Copy 'priv.key' and 'cert.pem' under 'prototypes/server/certificate/'
+
+4. run server
+   ```bash
+   $ node server.js full -H localhost -p 8080 -c \
+       ../examples/chromium-web-bundles-test/server_configs.json
+   ```
+
+5. Sign generated wbn file ('unsigned_subresource_loading.wbn') with the certificate<br>
+   (ref: https://github.com/WICG/webpackage/tree/main/go/bundle#using-signatures-section-sub-command)
+   ```bash
+   $ sign-bundle signatures-section -i unsigned_subresource_loading.wbn \
+       -certificate cert.cbor -privateKey priv.key -o signed_subresource_loading.wbn
+   ```
 
 ## Content blocking
 
