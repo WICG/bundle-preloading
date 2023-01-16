@@ -1,22 +1,4 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="by_resource/blue_subresource_loading.css">
-<link rel="stylesheet" href="by_resource/red_subresource_loading.css">
-<link rel="stylesheet" href="by_bundle_file/green_subresource_loading.css">
-<link rel="stylesheet" href="by_bundle_file/purple_subresource_loading.css">
-<link rel="stylesheet" href="by_scope/orange_subresource_loading.css">
-<link rel="stylesheet" href="by_scope/pink_subresource_loading.css">
-<style>
-div {
-  background-color: grey;
-  width: 30px;
-  height: 30px;
-}
-img {
-  width: 30px;
-  height: 30px;
-}
-</style>
-
 <script type="webbundle">
 {
     "source": "by_resource.wbn",
@@ -28,7 +10,6 @@ img {
     ]
 }
 </script>
-
 <script type="webbundle">
     {
         "source": "by_bundle_file.wbn",
@@ -40,7 +21,6 @@ img {
         ]
     }
 </script>
-
 <script type="webbundle">
     {
         "source": "by_scope.wbn",
@@ -49,7 +29,6 @@ img {
         ]
     }
 </script>
-
 <script type="webbundle">
     {
         "source": "uuid_in_package_by_resource.wbn",
@@ -58,7 +37,6 @@ img {
         ]
     }
 </script>
-
 <script type="webbundle">
     {
         "source": "uuid_in_package_by_scope.wbn",
@@ -67,6 +45,25 @@ img {
         ]
     }
 </script>
+
+<link rel="stylesheet" href="by_resource/blue_subresource_loading.css">
+<link rel="stylesheet" href="by_resource/red_subresource_loading.css">
+<link rel="stylesheet" href="by_bundle_file/green_subresource_loading.css">
+<link rel="stylesheet" href="by_bundle_file/purple_subresource_loading.css">
+<link rel="stylesheet" href="by_scope/orange_subresource_loading.css">
+<link rel="stylesheet" href="by_scope/pink_subresource_loading.css">
+
+<style>
+div {
+  background-color: grey;
+  width: 30px;
+  height: 30px;
+}
+img {
+  width: 30px;
+  height: 30px;
+}
+</style>
 
 <h3>Chromium Web bundles test</h3>
 

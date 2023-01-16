@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html>
+ <script type="webbundle">
+     {
+         "source": "{{{baseUrl}}}/uuid_in_package_by_resource.wbn",
+         "resources": [
+             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.css",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.png",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.css",
+             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.png"
+         ]
+     }
+ </script>
+
  <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.css">
  <link rel="stylesheet" href="{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.css">
  <style>
@@ -13,18 +25,6 @@
      height: 30px;
    }
  </style>
-
- <script type="webbundle">
-     {
-         "source": "{{{baseUrl}}}/uuid_in_package_by_resource.wbn",
-         "resources": [
-             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.css",
-             "{{{baseUrl}}}/uuid_in_package_by_resource/skyblue_subresource_loading.png",
-             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.css",
-             "{{{baseUrl}}}/uuid_in_package_by_resource/yellowgreen_subresource_loading.png"
-         ]
-     }
- </script>
 
  <h4>Identified by resource inside opaque origin iframe</h4>
 
