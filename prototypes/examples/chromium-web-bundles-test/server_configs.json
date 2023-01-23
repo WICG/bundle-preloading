@@ -10,7 +10,9 @@
           {"source": "by_resource/blue_subresource_loading.css"},
           {"source": "by_resource/blue_subresource_loading.png"},
           {"source": "by_resource/red_subresource_loading.css"},
-          {"source": "by_resource/red_subresource_loading.png"}
+          {"source": "by_resource/red_subresource_loading.png"},
+          {"source": "by_resource/fetch_result_1_subresource_loading.json"},
+          {"source": "by_resource/xhr_result_1_subresource_loading.json"}
         ]
       },
       {
@@ -19,7 +21,9 @@
           {"source": "by_bundle_file/green_subresource_loading.css"},
           {"source": "by_bundle_file/green_subresource_loading.png"},
           {"source": "by_bundle_file/purple_subresource_loading.css"},
-          {"source": "by_bundle_file/purple_subresource_loading.png"}
+          {"source": "by_bundle_file/purple_subresource_loading.png"},
+          {"source": "by_bundle_file/fetch_result_2_subresource_loading.json"},
+          {"source": "by_bundle_file/xhr_result_2_subresource_loading.json"}
         ]
       },
       {
@@ -28,7 +32,9 @@
           {"source": "by_scope/orange_subresource_loading.css"},
           {"source": "by_scope/orange_subresource_loading.png"},
           {"source": "by_scope/pink_subresource_loading.css"},
-          {"source": "by_scope/pink_subresource_loading.png"}
+          {"source": "by_scope/pink_subresource_loading.png"},
+          {"source": "by_scope/fetch_result_3_subresource_loading.json"},
+          {"source": "by_scope/xhr_result_3_subresource_loading.json"}
         ]
       },
       {
@@ -51,6 +57,13 @@
           {"source": "uuid_in_package_by_scope/navy_subresource_loading.png"},
           {"source": "uuid_in_package_by_scope/orangered_subresource_loading.css"},
           {"source": "uuid_in_package_by_scope/orangered_subresource_loading.png"}
+        ]
+      },
+      {
+        "output": "blocked_bundle.wbn",
+        "resources": [
+          {"source": "blocked_bundle/fetch_result_1_blocked_bundle.json"},
+          {"source": "blocked_bundle/fetch_result_2_blocked_bundle.json"}
         ]
       }
     ]
@@ -78,6 +91,10 @@
            "url": "{{{baseUrl}}}/blue_unsigned_bundle.css"},
           {"source": "blue_unsigned_bundle.png",
            "url": "{{{baseUrl}}}/blue_unsigned_bundle.png"},
+          {"source": "fetch_result_1_unsigned_bundle.json",
+           "url": "{{{baseUrl}}}/fetch_result_1_unsigned_bundle.json"},
+          {"source": "xhr_result_1_unsigned_bundle.json",
+           "url": "{{{baseUrl}}}/xhr_result_1_unsigned_bundle.json"},
           {"source": "../navigation_within_unsigned_bundle/index.html",
            "url": "{{{navigation_within_unsigned_bundle_baseUrl}}}"},
           {"source": "../navigation_within_unsigned_bundle/green_unsigned_bundle.css",

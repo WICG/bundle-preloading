@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<script type="webbundle">
+    {
+        "source": "blocked_bundle.wbn",
+        "resources": [
+            "blocked_bundle/fetch_result_1_blocked_bundle.json",
+            "blocked_bundle/fetch_result_2_blocked_bundle.json"
+        ]
+    }
+</script>
+
+<h3>Chromium Web bundles test</h3>
+
+<h4>Fetch subresources in a blocked WebBundle</h4>
+
+<ul>
+  <li> Resources in blocked_bundle.wbn
+       <ul>
+         <li>Shows fetch result for blocked_bundle/fetch_result_1_blocked_bundle.json (fetch immediately):
+             <br><code id='fetch_result_1'>Pending</code></li>
+         <li>Shows fetch result for blocked_bundle/fetch_result_2_blocked_bundle.json (fetch after 100ms):
+             <br><code id='fetch_result_2'>Pending</code></li>
+       </ul>
+  </li>
+</ul>
+
+<script>
+function testFetch(url, log_element) {
+  fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        log_element.innerHTML = `fetch succeeded: ${JSON.stringify(data)}`;
+      })
+      .catch((error) => {
+        log_element.innerHTML = `Error occured: ${error}`;
+      });
+}
+
+testFetch("blocked_bundle/fetch_result_1_blocked_bundle.json", fetch_result_1);
+setTimeout(() => {
+    testFetch("blocked_bundle/fetch_result_2_blocked_bundle.json", fetch_result_2);
+  }, 100);
+</script>

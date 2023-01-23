@@ -34,6 +34,10 @@ img {
           <div class="blue"></div></li>
       <li>Shows blue_unsigned_bundle.png. The png will not be blocked in main page:
           <br><img src="blue_unsigned_bundle.png" /></li>
+      <li>Shows xhr result for xhr_result_1_unsigned_bundle.json:
+          <br><code id='xhr_result_from_bundle'>Pending</code></li>
+      <li>Shows fetch result for fetch_result_1_unsigned_bundle.json:
+          <br><code id='fetch_result_from_bundle'>Pending</code></li>
     </ul>
   </li>
   <li> Resources over network
@@ -42,6 +46,10 @@ img {
           <div class="purple"></div></li>
       <li>Shows purple_unsigned_bundle.png, nothing after the png blocked:
           <br><img src="purple_unsigned_bundle.png" /></li>
+      <li>Shows xhr result for xhr_result_2_unsigned_bundle.json:
+          <br><code id='xhr_result_over_network'>Pending</code></li>
+      <li>Shows fetch result for fetch_result_2_unsigned_bundle.json:
+          <br><code id='fetch_result_over_network'>Pending</code></li>
     </ul>
   </li> 
 </ul> 
@@ -51,3 +59,35 @@ img {
 <p>
   Please <a href="{{{navigation_within_unsigned_bundle_baseUrl}}}">click here</a> to navigate within this unsigned bundle.
 </p>
+
+<script>
+function testFetchXHR(method, url, log_element) {
+  if (method == "fetch") {
+    fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          log_element.innerHTML = `fetch succeeded: ${JSON.stringify(data)}`;
+        })
+        .catch((error) => {
+          log_element.innerHTML = `Error occured: ${error}`;
+        });
+  } else if (method == "xhr") {
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener("load", (e) => {
+      log_element.innerHTML = `XMLHttpRequest succeeded: ${xhr.response}`;
+    });
+    xhr.addEventListener("error", (e) => {
+      log_element.innerHTML = `Error occured: ${e.type}`;
+    });
+    xhr.open("GET", url);
+    xhr.send();
+  } else {
+    log_element.innerHTML = `Invalid method: ${method}`;
+  }
+}
+
+testFetchXHR("xhr", "xhr_result_1_unsigned_bundle.json", xhr_result_from_bundle);
+testFetchXHR("fetch", "fetch_result_1_unsigned_bundle.json", fetch_result_from_bundle);
+testFetchXHR("xhr", "xhr_result_2_unsigned_bundle.json", xhr_result_over_network);
+testFetchXHR("fetch", "fetch_result_2_unsigned_bundle.json", fetch_result_over_network);
+</script>
