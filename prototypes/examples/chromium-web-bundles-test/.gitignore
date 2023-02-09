@@ -1,5 +1,5 @@
 *.wbn
-extension-block-web-bundles-test/_metadata/
+extension-block-web-bundles-test/*/_metadata/
 subresource_loading/uuid_in_package_by_resource/index.html
 subresource_loading/uuid_in_package_by_scope/index.html
 subresource_loading/index.html
