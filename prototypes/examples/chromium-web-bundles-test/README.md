@@ -38,6 +38,8 @@ Please note that, you need to do the following steps to test subresource loading
 
 ## Content blocking
 
-The folder [`extension-block-web-bundles-test`](./extension-block-web-bundles-test) contains a Chromium extension that is able to block content in the Web bundles in this example. The blocking can affect individual content inside the bundle or the Web bundle as a whole.
+The folder [`extension-block-web-bundles-test`](./extension-block-web-bundles-test) contains Chromium extensions those are able to block content in the Web bundles in this example. The blocking can affect individual content inside the bundle or the Web bundle as a whole.
+- [`extension-block-web-bundles-test/v2`](./extension-block-web-bundles-test/v2): Extension using [WebRequest](https://developer.chrome.com/docs/extensions/reference/webRequest/).
+- [`extension-block-web-bundles-test/v3`](./extension-block-web-bundles-test/v3): Extension using [DeclarativeNetRequest](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/).
 
-To try it out, open `chrome://extensions/` in Chromium, click on `Load unpacked` and select the folder `extension-block-web-bundles-test`. Then try to load the page again.
+To try it out, open `chrome://extensions/` in Chromium, click on `Load unpacked` and select the folder in `extension-block-web-bundles-test`. Then try to load the page again.

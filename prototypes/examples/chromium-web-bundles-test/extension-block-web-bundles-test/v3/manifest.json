@@ -1,5 +1,5 @@
 {
-  "name": "Block Web bundles test",
+  "name": "Block Web bundles test v3",
   "description": "Test for Web bundles and Declarative Net Request",
   "version": "1.0",
   "manifest_version": 3,
@@ -9,9 +9,9 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "ruleset_1",
+        "id": "ruleset",
         "enabled": true,
-        "path": "rules_1.json"
+        "path": "rules.json"
       }
     ]
   },
