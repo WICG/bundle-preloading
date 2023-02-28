@@ -8,7 +8,10 @@
         "by_resource/red_subresource_loading.css",
         "by_resource/red_subresource_loading.png",
         "by_resource/fetch_result_1_subresource_loading.json",
-        "by_resource/xhr_result_1_subresource_loading.json"
+        "by_resource/xhr_result_1_subresource_loading.json",
+        "uuid-in-package:298bedfd-91ba-4030-bc35-8040c6536d5d",
+        "uuid-in-package:a94ddaa3-6042-44db-9b8f-cb77b6b72999",
+        "uuid-in-package:9cac3c3a-0a40-49aa-b05a-e06ff64f81ff"
     ]
 }
 </script>
@@ -88,6 +91,12 @@ img {
              <br><code id='xhr_result_by_resource'>Pending</code></li>
          <li>Shows fetch result for by_resource/fetch_result_1_subresource_loading.json:
              <br><code id='fetch_result_by_resource'>Pending</code></li>
+         <li>Shows by_resource/subframe_subresource_loading.html, nothing after the html blocked (uuid-in-package:298bedfd-91ba-4030-bc35-8040c6536d5d):
+             <br><iframe src="uuid-in-package:298bedfd-91ba-4030-bc35-8040c6536d5d" width="100%" height="50px"></iframe></li>
+         <li>Shows by_resource/script_subresource_loading.js loading result (uuid-in-package:a94ddaa3-6042-44db-9b8f-cb77b6b72999):
+             <br><code id='script_result_by_resource'>Pending</code></li>
+         <li>Shows by_resource/skyblue_subresource_loading.png, nothing after the png blocked (uuid-in-package:9cac3c3a-0a40-49aa-b05a-e06ff64f81ff):
+             <br><img src="uuid-in-package:9cac3c3a-0a40-49aa-b05a-e06ff64f81ff" /></li>
        </ul>
   </li>
 </ul>
@@ -171,6 +180,17 @@ function testFetchXHR(method, url, log_element) {
     log_element.innerHTML = `Invalid method: ${method}`;
   }
 }
+function testScriptLoad(url, log_element) {
+  const script = document.createElement('script');
+  script.addEventListener('load', () => {
+    log_element.innerHTML = `${url} loaded`;
+  });
+  script.addEventListener('error', () => {
+    log_element.innerHTML = `${url} loading error`;
+  });
+  script.src = url;
+  document.body.appendChild(script);
+}
 
 testFetchXHR("xhr", "by_resource/xhr_result_1_subresource_loading.json", xhr_result_by_resource);
 testFetchXHR("fetch", "by_resource/fetch_result_1_subresource_loading.json", fetch_result_by_resource);
@@ -178,4 +198,6 @@ testFetchXHR("xhr", "by_bundle_file/xhr_result_2_subresource_loading.json", xhr_
 testFetchXHR("fetch", "by_bundle_file/fetch_result_2_subresource_loading.json", fetch_result_by_bundle_file);
 testFetchXHR("xhr", "by_scope/xhr_result_3_subresource_loading.json", xhr_result_by_scope);
 testFetchXHR("fetch", "by_scope/fetch_result_3_subresource_loading.json", fetch_result_by_scope);
+
+testScriptLoad('uuid-in-package:a94ddaa3-6042-44db-9b8f-cb77b6b72999', script_result_by_resource);
 </script>

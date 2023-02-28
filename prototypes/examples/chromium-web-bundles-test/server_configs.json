@@ -12,7 +12,13 @@
           {"source": "by_resource/red_subresource_loading.css"},
           {"source": "by_resource/red_subresource_loading.png"},
           {"source": "by_resource/fetch_result_1_subresource_loading.json"},
-          {"source": "by_resource/xhr_result_1_subresource_loading.json"}
+          {"source": "by_resource/xhr_result_1_subresource_loading.json"},
+          {"source": "by_resource/subframe_subresource_loading.html",
+           "uuid": "298bedfd-91ba-4030-bc35-8040c6536d5d"},
+          {"source": "by_resource/script_subresource_loading.js",
+           "uuid": "a94ddaa3-6042-44db-9b8f-cb77b6b72999"},
+          {"source": "by_resource/skyblue_subresource_loading.png",
+           "uuid": "9cac3c3a-0a40-49aa-b05a-e06ff64f81ff"}
         ]
       },
       {
