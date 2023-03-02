@@ -252,5 +252,44 @@
         "webbundle"
       ]
     }
+  },
+  {
+    "id": 21,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "uuid-in-package:298bedfd-91ba-4030-bc35-8040c6536d5d",
+      "resourceTypes": [
+        "sub_frame"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "uuid-in-package:a94ddaa3-6042-44db-9b8f-cb77b6b72999",
+      "resourceTypes": [
+        "script"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "uuid-in-package:9cac3c3a-0a40-49aa-b05a-e06ff64f81ff",
+      "resourceTypes": [
+        "image"
+      ]
+    }
   }
 ]
